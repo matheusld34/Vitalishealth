@@ -1,0 +1,359 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Histórico do Paciente | Vitalis Health</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&amp;family=Hanken+Grotesk:wght@600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f3f4f5",
+                        "on-primary-container": "#003726",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#81d7b2",
+                        "inverse-primary": "#81d7b2",
+                        "on-secondary-container": "#5c6764",
+                        "secondary-fixed-dim": "#bec9c5",
+                        "secondary-container": "#dae5e1",
+                        "tertiary-container": "#7a9e8f",
+                        "primary-container": "#50a684",
+                        "primary": "#006c4e",
+                        "on-background": "#191c1d",
+                        "outline-variant": "#bec9c1",
+                        "on-tertiary-fixed-variant": "#2b4d41",
+                        "tertiary-fixed-dim": "#a9cfbf",
+                        "on-tertiary-fixed": "#002117",
+                        "on-secondary-fixed-variant": "#3f4946",
+                        "tertiary-fixed": "#c5ebda",
+                        "surface-variant": "#e1e3e4",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f8f9fa",
+                        "secondary-fixed": "#dae5e1",
+                        "error": "#ba1a1a",
+                        "on-surface": "#191c1d",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#00513a",
+                        "on-primary-fixed": "#002115",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-container": "#edeeef",
+                        "on-secondary": "#ffffff",
+                        "surface": "#f8f9fa",
+                        "surface-tint": "#006c4e",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-surface-variant": "#3f4943",
+                        "background": "#f8f9fa",
+                        "surface-dim": "#d9dadb",
+                        "secondary": "#56615e",
+                        "outline": "#6f7a73",
+                        "inverse-surface": "#2e3132",
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#9df4ce",
+                        "on-error": "#ffffff",
+                        "tertiary": "#436558",
+                        "on-tertiary-container": "#12352a",
+                        "on-secondary-fixed": "#141d1b",
+                        "inverse-on-surface": "#f0f1f2"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "body-sm": ["Manrope"],
+                        "label-caps": ["Hanken Grotesk"],
+                        "body-base": ["Manrope"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .custom-shadow {
+            box-shadow: 0px 4px 20px rgba(80, 166, 132, 0.05);
+        }
+        .timeline-line {
+            width: 2px;
+            background: linear-gradient(to bottom, #50a684 0%, #bec9c1 100%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-base antialiased">
+<!-- SideNavBar Anchor -->
+<aside class="fixed left-0 top-0 h-full w-64 flex flex-col py-8 bg-surface-container-low border-r border-outline-variant z-50">
+<div class="px-6 mb-10">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Vitalis Health</h1>
+<p class="text-[12px] uppercase tracking-wider text-on-secondary-container font-label-caps">Wellness Clinic</p>
+</div>
+<nav class="flex-1 flex flex-col gap-2 px-4">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-on-secondary-container hover:bg-secondary-container" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-primary font-bold border-r-4 border-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-medium">Patients</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-on-secondary-container hover:bg-secondary-container" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-medium">Appointments</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-on-secondary-container hover:bg-secondary-container" href="#">
+<span class="material-symbols-outlined">medical_services</span>
+<span class="font-medium">Doctors</span>
+</a>
+</nav>
+<div class="mt-auto px-4 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors text-on-secondary-container hover:bg-secondary-container" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-medium">Settings</span>
+</a>
+<div class="mt-4 flex items-center gap-3 px-4 py-3 bg-surface-container-high rounded-xl">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A professional medical administrative assistant smiling warmly, set against a bright, airy healthcare office with soft emerald accents and minimalist wooden furniture. The lighting is natural and inviting, conveying a sense of assured calm and professional reliability." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdf0rr6sXM44l9RwGiFo0cWIz9NriOzhGQjf0SPApuNR_NbdDOAsZwIxtkfZTMPQXuq5q1jsSak9FuAoM8CBXx6Kt9Hd-fR2UleWVEoutyKeLxq0c5v4hgZTTW-EUA1eeHBrU2aXACRnkPEBpC4Q_wS3RsgBv5gmdHjxXZGNWEsIYavWyc8O3hRZieC2gG0ltHWGm95Yle5WWnSHOmKzQho7Sglf2XonYAyItnr_4n6JKVFxkPpOSGSQ">
+<div class="overflow-hidden">
+<p class="text-sm font-bold truncate">Clinic Admin</p>
+<p class="text-xs text-on-surface-variant truncate">Vitalis Wellness</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen">
+<!-- TopAppBar Anchor -->
+<header class="flex justify-between items-center w-full px-10 py-6 bg-surface shadow-sm sticky top-0 z-40">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary text-3xl">history</span>
+<h2 class="font-headline-md text-headline-md font-semibold text-on-surface">Patient Record Management</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container rounded-full border-none focus:ring-2 focus:ring-primary w-64 text-sm" placeholder="Search patient history..." type="text">
+</div>
+<button class="bg-primary text-on-primary px-6 py-2.5 rounded-full font-bold hover:opacity-90 active:scale-95 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined">save</span>
+                    Save Record
+                </button>
+</div>
+</header>
+<!-- Page Content -->
+<div class="max-w-[1280px] mx-auto p-10 space-y-8">
+<!-- Patient Profile Header Card -->
+<section class="relative overflow-hidden bg-surface-container-lowest rounded-xl custom-shadow p-8 flex flex-col md:flex-row items-center gap-10">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-20 -mt-20"></div>
+<div class="relative z-10 w-32 h-32 rounded-3xl overflow-hidden shadow-lg border-4 border-white">
+<img class="w-full h-full object-cover" data-alt="A dignified close-up portrait of an elderly man named Arnaldo Silveira with kind eyes and grey hair, wearing a casual linen shirt. The portrait is captured in high-key soft lighting within a modern, minimalist room with emerald green plants in the background, exuding a sense of peace and wellbeing." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDI2Kl3RNjXNUcnrRFGbdXTbNijgb6xbfrLr4lb1zDp9pjJOrJBn2gYaTwS7KIbc370kzCVwR2YhkzAGltJFdJzEjUrI7Deknm_Zln7TT8zuzljMaNQkZFxxSZU7Xeep7NIZNHLLCGPbaGCRpDaiT5E-vFJNYXIviJnvAr9-ncd77hNQfzHEW7l6wh4vy8i9BVuZnkoYVCDVHNFJvnSUJ8Ky4Lu8ySc05pRYv6fLdQqpEwPJs22IuctJw">
+</div>
+<div class="relative z-10 flex-1 text-center md:text-left">
+<div class="flex flex-col md:flex-row md:items-center gap-3 mb-4">
+<h3 class="font-display-lg text-4xl text-on-surface">Arnaldo Silveira</h3>
+<span class="bg-secondary-container text-primary px-3 py-1 rounded-full text-sm font-bold w-fit mx-auto md:mx-0">Active Patient</span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+<div>
+<p class="text-xs font-label-caps text-outline uppercase">Age</p>
+<p class="font-bold text-lg">68 years</p>
+</div>
+<div>
+<p class="text-xs font-label-caps text-outline uppercase">Blood Type</p>
+<p class="font-bold text-lg text-error">O+</p>
+</div>
+<div>
+<p class="text-xs font-label-caps text-outline uppercase">Insurance</p>
+<p class="font-bold text-lg">Vitalis Platinum</p>
+</div>
+<div>
+<p class="text-xs font-label-caps text-outline uppercase">Last Visit</p>
+<p class="font-bold text-lg">12 Oct 2023</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-3">
+<button class="bg-primary text-on-primary px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-on-primary-fixed-variant transition-colors">
+<span class="material-symbols-outlined">add_circle</span>
+                        Nova Consulta
+                    </button>
+<button class="border border-primary text-primary px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined">upload_file</span>
+                        Adicionar Exame
+                    </button>
+</div>
+</section>
+<!-- Main Grid: Timeline & Assets -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Evolution Timeline (Bento Style) -->
+<section class="lg:col-span-2 space-y-6">
+<div class="flex items-center justify-between">
+<h4 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">timeline</span>
+                            Histórico de Evolução
+                        </h4>
+<button class="text-primary font-bold text-sm flex items-center gap-1 hover:underline">
+                            View Full History <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="relative pl-8 ml-4">
+<div class="absolute left-0 top-0 bottom-0 timeline-line rounded-full"></div>
+<!-- Timeline Item 1 -->
+<div class="relative mb-10">
+<div class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-primary border-4 border-white shadow-sm"></div>
+<div class="bg-surface-container-lowest rounded-xl p-6 custom-shadow border border-outline-variant/30">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="text-xs font-label-caps text-primary bg-primary/10 px-2 py-1 rounded">Cardiology</span>
+<p class="text-lg font-bold mt-1">12 Out 2023</p>
+</div>
+<span class="text-sm text-outline">Dr. Ricardo Montes</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed mb-4">
+                                    Paciente apresenta melhora significativa na pressão arterial após ajuste na dosagem do Losartana. Relata caminhadas diárias de 20 minutos sem fadiga extrema. Saturação estável em 98%.
+                                </p>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-surface-container-high rounded-full text-xs text-on-surface-variant font-medium">BP: 120/80</span>
+<span class="px-3 py-1 bg-surface-container-high rounded-full text-xs text-on-surface-variant font-medium">Weight: 74kg</span>
+</div>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative mb-10">
+<div class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-outline-variant border-4 border-white shadow-sm"></div>
+<div class="bg-surface-container-lowest rounded-xl p-6 custom-shadow border border-outline-variant/30">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="text-xs font-label-caps text-secondary bg-secondary/10 px-2 py-1 rounded">Routine Checkup</span>
+<p class="text-lg font-bold mt-1">05 Set 2023</p>
+</div>
+<span class="text-sm text-outline">Dra. Elisa Nunes</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed">
+                                    Consulta de rotina. Exames de sangue iniciais demonstram glicemia levemente alterada (104 mg/dL). Recomendado acompanhamento nutricional para ajuste de dieta mediterrânea.
+                                </p>
+</div>
+</div>
+<!-- Timeline Item 3 -->
+<div class="relative">
+<div class="absolute -left-[41px] top-0 w-5 h-5 rounded-full bg-outline-variant border-4 border-white shadow-sm"></div>
+<div class="bg-surface-container-lowest rounded-xl p-6 custom-shadow border border-outline-variant/30 opacity-70">
+<div class="flex justify-between items-start mb-4">
+<div>
+<span class="text-xs font-label-caps text-secondary bg-secondary/10 px-2 py-1 rounded">Initial Consultation</span>
+<p class="text-lg font-bold mt-1">20 Jul 2023</p>
+</div>
+<span class="text-sm text-outline">Dr. Ricardo Montes</span>
+</div>
+<p class="text-on-surface-variant leading-relaxed">
+                                    Primeiro atendimento na unidade Vitalis Health. Histórico familiar de cardiopatia. Solicitado eletrocardiograma e hemograma completo.
+                                </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Exams & Attachments (Sidebar Bento) -->
+<section class="space-y-6">
+<h4 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">folder_open</span>
+                        Exames e Anexos
+                    </h4>
+<div class="grid grid-cols-1 gap-4">
+<!-- Exam Card 1 -->
+<div class="group bg-surface-container-lowest rounded-xl p-4 border border-outline-variant/30 custom-shadow hover:border-primary transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">radiology</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-sm">Raio-X Tórax</p>
+<p class="text-xs text-outline">14 Out 2023 • 2.4 MB</p>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary">download</span>
+</div>
+</div>
+<!-- Exam Card 2 -->
+<div class="group bg-surface-container-lowest rounded-xl p-4 border border-outline-variant/30 custom-shadow hover:border-primary transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center text-secondary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">bloodtype</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-sm">Hemograma Completo</p>
+<p class="text-xs text-outline">06 Set 2023 • 1.1 MB</p>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary">download</span>
+</div>
+</div>
+<!-- Exam Card 3 -->
+<div class="group bg-surface-container-lowest rounded-xl p-4 border border-outline-variant/30 custom-shadow hover:border-primary transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-tertiary-container/20 rounded-lg flex items-center justify-center text-tertiary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">ecg</span>
+</div>
+<div class="flex-1">
+<p class="font-bold text-sm">Eletrocardiograma</p>
+<p class="text-xs text-outline">22 Jul 2023 • 3.8 MB</p>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary">download</span>
+</div>
+</div>
+<!-- Quick Preview Area -->
+
+</div>
+<!-- Health Metrics Bento Item -->
+<div class="bg-primary text-on-primary p-6 rounded-2xl shadow-xl">
+<p class="text-xs font-label-caps opacity-80 mb-2 uppercase">Próximo Retorno</p>
+<h5 class="text-2xl font-bold mb-4">15 Nov 2023</h5>
+<div class="flex items-center gap-3 bg-white/10 p-3 rounded-xl backdrop-blur-sm">
+<span class="material-symbols-outlined">notification_important</span>
+<p class="text-sm">Jejum de 12h necessário para exames laboratoriais.</p>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Micro-interactions Script -->
+<script>
+        document.querySelectorAll('.custom-shadow').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+                card.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                card.classList.add('shadow-xl');
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+                card.classList.remove('shadow-xl');
+            });
+        });
+
+        // Simulating some focus states on navigation
+        const navItems = document.querySelectorAll('nav a');
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                navItems.forEach(i => {
+                    i.classList.remove('text-primary', 'font-bold', 'border-r-4', 'border-primary');
+                    i.classList.add('text-on-secondary-container');
+                });
+                item.classList.add('text-primary', 'font-bold', 'border-r-4', 'border-primary');
+                item.classList.remove('text-on-secondary-container');
+            });
+        });
+    </script>
+
+
+</body></html>

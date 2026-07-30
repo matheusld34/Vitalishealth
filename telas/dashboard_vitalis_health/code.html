@@ -1,0 +1,315 @@
+<!DOCTYPE html><html class="light" lang="pt-br" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Vitalis Health - Painel de Controle</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Hanken+Grotesk:wght@600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@100..900&amp;family=Manrope:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#dae5e1",
+                        "on-tertiary": "#ffffff",
+                        "surface-container": "#edeeef",
+                        "tertiary-fixed-dim": "#a9cfbf",
+                        "on-primary": "#ffffff",
+                        "on-surface": "#191c1d",
+                        "on-secondary-container": "#5c6764",
+                        "tertiary": "#436558",
+                        "inverse-on-surface": "#f0f1f2",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#dae5e1",
+                        "on-primary-fixed": "#002115",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#e1e3e4",
+                        "secondary-fixed-dim": "#bec9c5",
+                        "primary": "#006c4e",
+                        "surface": "#f8f9fa",
+                        "secondary": "#56615e",
+                        "background": "#f8f9fa",
+                        "tertiary-container": "#7a9e8f",
+                        "on-primary-fixed-variant": "#00513a",
+                        "on-primary-container": "#003726",
+                        "on-secondary-fixed-variant": "#3f4946",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#2b4d41",
+                        "on-surface-variant": "#3f4943",
+                        "tertiary-fixed": "#c5ebda",
+                        "primary-container": "#50a684",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed": "#141d1b",
+                        "on-error": "#ffffff",
+                        "surface-bright": "#f8f9fa",
+                        "on-tertiary-fixed": "#002117",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-background": "#191c1d",
+                        "surface-dim": "#d9dadb",
+                        "surface-tint": "#006c4e",
+                        "on-tertiary-container": "#12352a",
+                        "surface-container-high": "#e7e8e9",
+                        "outline": "#6f7a73",
+                        "inverse-primary": "#81d7b2",
+                        "primary-fixed": "#9df4ce",
+                        "surface-container-low": "#f3f4f5",
+                        "primary-fixed-dim": "#81d7b2",
+                        "outline-variant": "#bec9c1",
+                        "inverse-surface": "#2e3132"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "40px",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "margin-mobile": "16px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Hanken Grotesk"],
+                        "display-lg-mobile": ["Manrope"],
+                        "body-sm": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "display-lg": ["Manrope"],
+                        "body-base": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-base": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chart-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-base antialiased min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-desktop py-4 bg-surface dark:bg-inverse-surface shadow-sm">
+<div class="flex items-center gap-4">
+<img alt="Vitalis Health Logo" class="h-10 w-auto" src="https://lh3.googleusercontent.com/aida/AP1WRLuwRcdKyhZsc5apP-y6--yUQ_CEdeT60IkFb0iqi4VkQ1PVDaMe1tz9Mz4mKMtI7btxpalMJzto93aex3T1l-eAuK933MLkIQtHvqSA_PSExNy5X4ISEnIKtpXpdjPPiwcNeAzF09GyEBi0j7VfAR0kIA-U-xhK8V4RevXpCHvaXX-9wgPx4eGJjnL6QQ63G3PUGNyzi4chgLFiVcXvgGTCt3og9XO4HUGk5MfE3GpUhp3vhTsVhw0oPbLh">
+<span class="font-display-lg text-headline-md font-bold text-primary dark:text-primary-fixed">Vitalis Health</span>
+</div>
+<nav class="hidden md:flex items-center space-x-8">
+
+
+
+
+</nav>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined p-2 rounded-full hover:bg-surface-container-low transition-all text-on-surface-variant cursor-pointer active:scale-95">notifications</button>
+<button class="material-symbols-outlined p-2 rounded-full hover:bg-surface-container-low transition-all text-on-surface-variant cursor-pointer active:scale-95">settings</button>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img class="w-full h-full object-cover" data-alt="A professional portrait of a medical administrator in a bright, modern clinic office setting. The lighting is soft and natural, emphasizing a calm and reliable professional persona. The background features subtle health-related equipment in soft focus, maintaining the brand's emerald and white color palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsN8XzmpAk95Sts0fX6HeX090X-HKhCXu6BxbA9Qhk7CEgTmaCg1-0A1Ls-f1N4pI9ERZCxLwyWQn3HEWuRSydJMFHhcHCJJlLzqhTzdsNaAWaEtMWBW_yGM6CsBpuHhIYiqd9VKBMvh1R1MILt_0FtZw2RxpEf72pc8aj-BBOKyHRjfUq4JO5t9f1tfT2njE7JnAXAEngXY0WmP1EW_cn_1V2xLXcFgMLcwhbtwwjnv-RK3-Dmw5Pgw">
+</div>
+</div>
+</header>
+<!-- Sidebar Navigation (Desktop) -->
+<aside class="hidden lg:flex flex-col h-screen fixed left-0 top-0 pt-24 px-4 space-y-2 bg-surface-container-low border-r border-outline-variant w-64">
+<div class="px-4 mb-6">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant opacity-60">SISTEMA</h3>
+</div>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-lg font-bold transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-secondary-container rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-caps text-label-caps">Agendamento</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-secondary-container rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-caps text-label-caps">Pacientes</span>
+</a><a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-secondary-container rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">medical_services</span>
+<span class="font-label-caps text-label-caps">Médicos</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-secondary-container rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Relatórios</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-secondary-container rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps">Configurações</span>
+</a>
+<div class="mt-auto pb-8 px-4">
+<button class="w-full bg-primary text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:bg-primary-container transition-all active:scale-95" style="transform: translateY(0px);">
+<span class="material-symbols-outlined">add</span>
+                Novo Atendimento
+            </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="lg:ml-64 pt-24 px-margin-mobile md:px-margin-desktop pb-12 min-h-screen">
+<div class="max-w-container-max mx-auto">
+<!-- Header Section -->
+<div class="mb-10">
+<h1 class="font-display-lg text-headline-md text-on-surface mb-2">Painel de Controle - Visão Geral</h1>
+<p class="text-on-surface-variant font-body-base">Bem-vindo de volta, Administrador. Aqui está o resumo do dia.</p>
+</div>
+<!-- Dashboard Grid (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Chart 1: Atendimentos Realizados -->
+<div class="md:col-span-6 bg-white p-8 rounded-xl shadow-sm border border-surface-container-high flex flex-col items-center justify-center transition-transform hover:shadow-md" style="transform: translateY(0px);">
+<h2 class="font-headline-md text-primary mb-6 text-center">Atendimentos Realizados (Hoje)</h2>
+<div class="chart-container flex items-center justify-center">
+<svg class="w-full h-full" viewBox="0 0 100 100">
+<circle class="text-surface-container-high" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-width="10"></circle>
+<circle class="text-primary progress-ring__circle" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="87.92" stroke-linecap="round" stroke-width="10"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-3xl font-bold text-on-surface">65%</span>
+<span class="text-xs text-on-surface-variant font-label-caps uppercase">Concluído</span>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-2 gap-8 w-full border-t border-surface-container pt-6">
+<div class="text-center">
+<p class="text-2xl font-bold text-on-surface">42</p>
+<p class="text-sm text-on-surface-variant font-label-caps">TOTAL PREVISTO</p>
+</div>
+<div class="text-center border-l border-surface-container">
+<p class="text-2xl font-bold text-primary">27</p>
+<p class="text-sm text-on-surface-variant font-label-caps">FINALIZADOS</p>
+</div>
+</div>
+</div>
+<!-- Chart 2: Atendimentos Pendentes -->
+<div class="md:col-span-6 bg-white p-8 rounded-xl shadow-sm border border-surface-container-high flex flex-col items-center justify-center transition-transform hover:shadow-md" style="transform: translateY(0px);">
+<h2 class="font-headline-md text-secondary mb-6 text-center">Atendimentos Pendentes (Hoje)</h2>
+<div class="chart-container flex items-center justify-center">
+<svg class="w-full h-full" viewBox="0 0 100 100">
+<circle class="text-surface-container-high" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-width="10"></circle>
+<circle class="text-tertiary progress-ring__circle" cx="50" cy="50" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="163.28" stroke-linecap="round" stroke-width="10"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-3xl font-bold text-on-surface">35%</span>
+<span class="text-xs text-on-surface-variant font-label-caps uppercase">Aguardando</span>
+</div>
+</div>
+<div class="mt-8 grid grid-cols-2 gap-8 w-full border-t border-surface-container pt-6">
+<div class="text-center">
+<p class="text-2xl font-bold text-on-surface">15</p>
+<p class="text-sm text-on-surface-variant font-label-caps">NA FILA</p>
+</div>
+<div class="text-center border-l border-surface-container">
+<p class="text-2xl font-bold text-tertiary">08</p>
+<p class="text-sm text-on-surface-variant font-label-caps">EM ATENDIMENTO</p>
+</div>
+</div>
+</div>
+<!-- Extra Insights Section -->
+<div class="md:col-span-12 bg-white p-6 rounded-xl shadow-sm border border-surface-container-high overflow-hidden">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline-md text-on-surface">Atividades Recentes</h3>
+<button class="text-primary font-bold text-sm hover:underline">Ver tudo</button>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-4 p-3 hover:bg-surface-container-low rounded-lg transition-all">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div class="flex-grow">
+<p class="font-bold text-on-surface">João Silva</p>
+<p class="text-xs text-on-surface-variant">Check-in realizado para Clínica Geral</p>
+</div>
+<span class="text-xs text-outline font-label-caps">09:15</span>
+</div>
+<div class="flex items-center gap-4 p-3 hover:bg-surface-container-low rounded-lg transition-all border-t border-surface-container">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<div class="flex-grow">
+<p class="font-bold text-on-surface">Maria Oliveira</p>
+<p class="text-xs text-on-surface-variant">Consulta finalizada - Dr. Arnaldo</p>
+</div>
+<span class="text-xs text-outline font-label-caps">08:45</span>
+</div>
+<div class="flex items-center gap-4 p-3 hover:bg-surface-container-low rounded-lg transition-all border-t border-surface-container">
+<div class="w-10 h-10 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined">edit_calendar</span>
+</div>
+<div class="flex-grow">
+<p class="font-bold text-on-surface">Agendamento Web</p>
+<p class="text-xs text-on-surface-variant">Nova marcação: Exame de Sangue</p>
+</div>
+<span class="text-xs text-outline font-label-caps">08:30</span>
+</div>
+</div>
+</div>
+<!-- Stats Summary -->
+<div class="md:col-span-4 flex flex-col gap-gutter">
+
+
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile Bottom Navigation -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface shadow-[0_-2px_10px_rgba(0,0,0,0.05)] flex justify-around items-center py-3 px-4 z-50">
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-[10px] font-bold">Dashboard</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="text-[10px]">Agendas</span>
+</button>
+<div class="relative -top-8">
+<button class="bg-primary text-on-primary w-14 h-14 rounded-full shadow-lg flex items-center justify-center border-4 border-surface">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">group</span>
+<span class="text-[10px]">Pacientes</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px]">Ajustes</span>
+</button>
+</nav>
+<script>
+        // Simple interaction for charts or dashboard elements
+        document.querySelectorAll('.rounded-xl').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+
+
+</body></html>

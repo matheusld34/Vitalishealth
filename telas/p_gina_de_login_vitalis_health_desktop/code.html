@@ -1,0 +1,251 @@
+<!DOCTYPE html><html class="light" lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Login | Vitalis Health</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Hanken+Grotesk:wght@600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed-dim": "#bec9c5",
+                        "on-primary-fixed-variant": "#00513a",
+                        "background": "#f8f9fa",
+                        "surface": "#f8f9fa",
+                        "on-tertiary-fixed": "#002117",
+                        "tertiary-container": "#7a9e8f",
+                        "tertiary-fixed": "#c5ebda",
+                        "on-secondary-container": "#5c6764",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f8f9fa",
+                        "tertiary": "#436558",
+                        "surface-variant": "#e1e3e4",
+                        "inverse-primary": "#81d7b2",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#3f4946",
+                        "secondary-fixed": "#dae5e1",
+                        "on-surface-variant": "#3f4943",
+                        "primary-container": "#50a684",
+                        "on-primary-fixed": "#002115",
+                        "outline-variant": "#bec9c1",
+                        "surface-container-low": "#f3f4f5",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-container": "#12352a",
+                        "surface-container": "#edeeef",
+                        "on-tertiary-fixed-variant": "#2b4d41",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#191c1d",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-container-high": "#e7e8e9",
+                        "primary-fixed": "#9df4ce",
+                        "on-primary-container": "#003726",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "secondary": "#56615e",
+                        "error": "#ba1a1a",
+                        "outline": "#6f7a73",
+                        "surface-tint": "#006c4e",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#2e3132",
+                        "on-secondary-fixed": "#141d1b",
+                        "tertiary-fixed-dim": "#a9cfbf",
+                        "on-background": "#191c1d",
+                        "surface-dim": "#d9dadb",
+                        "primary-fixed-dim": "#81d7b2",
+                        "primary": "#006c4e",
+                        "secondary-container": "#dae5e1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "container-max": "1280px",
+                        "gutter": "24px",
+                        "margin-desktop": "40px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Hanken Grotesk"],
+                        "display-lg-mobile": ["Manrope"],
+                        "body-sm": ["Manrope"],
+                        "body-base": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "display-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-base": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .login-transition {
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+    </style>
+</head>
+<body class="flex min-h-screen overflow-hidden">
+<!-- Left Side: Brand Experience -->
+<section class="hidden lg:flex lg:w-1/2 bg-primary relative flex-col items-center justify-center p-[40px] overflow-hidden">
+<!-- Background atmospheric effect -->
+<div class="absolute inset-0 opacity-20 pointer-events-none">
+<div class="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-primary-fixed-dim rounded-full blur-[120px]"></div>
+<div class="absolute bottom-[-5%] left-[-5%] w-[400px] h-[400px] bg-primary-container rounded-full blur-[100px]"></div>
+</div>
+<!-- Brand Content -->
+<div class="relative z-10 flex flex-col items-center text-center max-w-md">
+<div class="mb-8 p-6 bg-white/10 backdrop-blur-md rounded-xl border border-white/20">
+<img alt="Vitalis Health Logo" class="w-24 h-24 object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLuwRcdKyhZsc5apP-y6--yUQ_CEdeT60IkFb0iqi4VkQ1PVDaMe1tz9Mz4mKMtI7btxpalMJzto93aex3T1l-eAuK933MLkIQtHvqSA_PSExNy5X4ISEnIKtpXpdjPPiwcNeAzF09GyEBi0j7VfAR0kIA-U-xhK8V4RevXpCHvaXX-9wgPx4eGJjnL6QQ63G3PUGNyzi4chgLFiVcXvgGTCt3og9XO4HUGk5MfE3GpUhp3vhTsVhw0oPbLh">
+</div>
+<h1 class="text-display-lg text-on-primary mb-4">Vitalis Health</h1>
+<p class="text-body-base text-primary-fixed opacity-90 text-lg">
+            Cuidado e tecnologia para sua saúde. Acesse o portal da clínica.
+        </p>
+</div>
+<!-- Bottom subtle decoration -->
+<div class="absolute bottom-8 left-8 right-8 flex justify-between items-center opacity-40">
+<span class="text-label-caps text-on-primary uppercase">Cuidado Integral e Tecnológico</span>
+<div class="flex gap-2">
+<div class="w-2 h-2 bg-on-primary rounded-full"></div>
+<div class="w-2 h-2 bg-on-primary/40 rounded-full"></div>
+<div class="w-2 h-2 bg-on-primary/40 rounded-full"></div>
+</div>
+</div>
+</section>
+<!-- Right Side: Login Interface -->
+<main class="w-full lg:w-1/2 bg-surface-container-lowest flex items-center justify-center p-6 sm:p-[40px] relative">
+<!-- Mobile Top Brand (Visible only on mobile) -->
+<div class="lg:hidden absolute top-6 left-6 flex items-center gap-2">
+<img alt="Vitalis Health Logo" class="w-8 h-8" src="https://lh3.googleusercontent.com/aida/AP1WRLuwRcdKyhZsc5apP-y6--yUQ_CEdeT60IkFb0iqi4VkQ1PVDaMe1tz9Mz4mKMtI7btxpalMJzto93aex3T1l-eAuK933MLkIQtHvqSA_PSExNy5X4ISEnIKtpXpdjPPiwcNeAzF09GyEBi0j7VfAR0kIA-U-xhK8V4RevXpCHvaXX-9wgPx4eGJjnL6QQ63G3PUGNyzi4chgLFiVcXvgGTCt3og9XO4HUGk5MfE3GpUhp3vhTsVhw0oPbLh">
+<span class="text-headline-md text-primary font-bold">Vitalis Health</span>
+</div>
+<div class="w-full max-w-[440px] login-transition">
+<!-- Header -->
+<header class="mb-12 text-center lg:text-left">
+<h2 class="text-headline-md text-on-surface mb-2 text-3xl">Bem-vindo de volta</h2>
+<p class="text-body-base text-on-surface-variant">Acesse sua conta para continuar</p>
+</header>
+<!-- Form -->
+<form action="#" class="space-y-6" method="POST">
+<!-- Email Field -->
+<div class="flex flex-col gap-2">
+<label class="text-label-caps text-on-surface-variant ml-1" for="email">E-mail</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">mail</span>
+<input class="w-full pl-12 pr-4 py-4 bg-surface border border-outline-variant rounded-lg text-body-base text-on-surface focus:outline-none focus:border-2 focus:border-primary transition-all placeholder:text-outline-variant" id="email" name="email" placeholder="nome@email.com" required="" type="email">
+</div>
+</div>
+<!-- Password Field -->
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center px-1">
+<label class="text-label-caps text-on-surface-variant" for="password">Senha</label>
+<a class="text-label-caps text-primary hover:underline transition-all" href="#">Esqueceu a senha?</a>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">lock</span>
+<input class="w-full pl-12 pr-4 py-4 bg-surface border border-outline-variant rounded-lg text-body-base text-on-surface focus:outline-none focus:border-2 focus:border-primary transition-all placeholder:text-outline-variant" id="password" name="password" placeholder="••••••••" required="" type="password">
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline-variant hover:text-outline transition-colors" type="button">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+<!-- Actions -->
+<div class="pt-2">
+<button class="w-full py-4 bg-primary text-on-primary text-headline-md rounded-lg hover:bg-primary/90 active:scale-[0.98] transition-all shadow-sm flex items-center justify-center gap-2" type="submit">
+                    Entrar
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<!-- Separator -->
+<div class="relative flex items-center py-4">
+<div class="flex-grow border-t border-outline-variant"></div>
+<span class="flex-shrink mx-4 text-label-caps text-outline-variant">Ou entre com</span>
+<div class="flex-grow border-t border-outline-variant"></div>
+</div>
+<!-- Google Login -->
+<button class="w-full py-4 bg-surface border border-outline-variant text-on-surface text-headline-md rounded-lg hover:bg-surface-container-low transition-all flex items-center justify-center gap-4" type="button">
+<svg class="w-6 h-6" viewBox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+                Entrar com Google
+            </button>
+</form>
+<!-- Footer -->
+<footer class="mt-12 text-center">
+<p class="text-body-base text-on-surface-variant">
+                Não tem uma conta? 
+                <a class="text-primary font-semibold hover:underline decoration-2 underline-offset-4 transition-all" href="#">Criar nova conta</a>
+</p>
+</footer>
+</div>
+<!-- Page Footer Meta -->
+<div class="absolute bottom-8 text-center w-full px-6"><div class="flex flex-col items-center gap-4">
+    <div class="flex gap-6">
+        <a href="#" class="text-label-caps text-outline hover:text-primary transition-colors">Privacidade</a>
+        <a href="#" class="text-label-caps text-outline hover:text-primary transition-colors">Termos de Uso</a>
+        <a href="#" class="text-label-caps text-outline hover:text-primary transition-colors">Suporte</a>
+    </div>
+    <p class="text-label-caps text-outline-variant">
+        © 2024 Vitalis Health. Todos os direitos reservados.
+    </p>
+</div></div>
+</main>
+<script>
+    // Micro-interactions for input fields
+    const inputs = document.querySelectorAll('input');
+    const primaryColor = '#006c4e';
+    const outlineColor = '#6f7a73';
+
+    inputs.forEach(input => {
+        input.addEventListener('focus', () => {
+            const icon = input.parentElement.querySelector('.material-symbols-outlined');
+            if (icon) icon.style.color = primaryColor;
+        });
+        input.addEventListener('blur', () => {
+            const icon = input.parentElement.querySelector('.material-symbols-outlined');
+            if (icon) icon.style.color = outlineColor;
+        });
+    });
+
+    // Basic toggle password visibility
+    const togglePassBtn = document.querySelector('button[type="button"] .material-symbols-outlined');
+    if (togglePassBtn) {
+        togglePassBtn.parentElement.addEventListener('click', () => {
+            const passInput = document.getElementById('password');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                togglePassBtn.innerText = 'visibility_off';
+            } else {
+                passInput.type = 'password';
+                togglePassBtn.innerText = 'visibility';
+            }
+        });
+    }
+</script>
+
+
+</body></html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Corpo Clínico | Vitalis Health</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Hanken+Grotesk:wght@600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#002115",
+                        "inverse-primary": "#81d7b2",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-dim": "#d9dadb",
+                        "on-background": "#191c1d",
+                        "on-primary-container": "#003726",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#00513a",
+                        "background": "#f8f9fa",
+                        "tertiary-fixed": "#c5ebda",
+                        "secondary-fixed-dim": "#bec9c5",
+                        "surface-bright": "#f8f9fa",
+                        "secondary": "#56615e",
+                        "secondary-fixed": "#dae5e1",
+                        "inverse-surface": "#2e3132",
+                        "on-tertiary-fixed": "#002117",
+                        "surface": "#f8f9fa",
+                        "on-secondary-fixed-variant": "#3f4946",
+                        "surface-tint": "#006c4e",
+                        "primary-fixed": "#9df4ce",
+                        "primary-container": "#50a684",
+                        "secondary-container": "#dae5e1",
+                        "on-error-container": "#93000a",
+                        "surface-variant": "#e1e3e4",
+                        "on-secondary-fixed": "#141d1b",
+                        "on-surface": "#191c1d",
+                        "primary": "#006c4e",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#5c6764",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#12352a",
+                        "surface-container": "#edeeef",
+                        "outline-variant": "#bec9c1",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#81d7b2",
+                        "tertiary-fixed-dim": "#a9cfbf",
+                        "tertiary-container": "#7a9e8f",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-container-highest": "#e1e3e4",
+                        "outline": "#6f7a73",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#2b4d41",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#436558",
+                        "surface-container-low": "#f3f4f5",
+                        "on-surface-variant": "#3f4943"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "container-max": "1280px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "40px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Hanken Grotesk"],
+                        "body-base": ["Manrope"],
+                        "display-lg-mobile": ["Manrope"],
+                        "body-sm": ["Manrope"],
+                        "display-lg": ["Manrope"],
+                        "headline-md": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "body-base": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .doctor-card-shadow {
+            box-shadow: 0px 4px 20px rgba(80, 166, 132, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #bec9c1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen text-on-surface">
+<!-- SideNavBar Anchor -->
+<aside class="hidden lg:flex flex-col h-screen fixed left-0 top-0 px-4 space-y-2 bg-surface-container-low border-r border-outline-variant w-64 z-50 pt-8"><div class="px-4 mb-8 flex items-center gap-3"><img alt="Vitalis Health Logo" class="h-8 w-auto" src="https://lh3.googleusercontent.com/aida/AP1WRLuwRcdKyhZsc5apP-y6--yUQ_CEdeT60IkFb0iqi4VkQ1PVDaMe1tz9Mz4mKMtI7btxpalMJzto93aex3T1l-eAuK933MLkIQtHvqSA_PSExNy5X4ISEnIKtpXpdjPPiwcNeAzF09GyEBi0j7VfAR0kIA-U-xhK8V4RevXpCHvaXX-9wgPx4eGJjnL6QQ63G3PUGNyzi4chgLFiVcXvgGTCt3og9XO4HUGk5MfE3GpUhp3vhTsVhw0oPbLh"/><span class="font-display-lg text-body-base font-bold text-primary">Vitalis Health</span></div><div class="px-4 mb-6">
+<h3 class="font-label-caps text-label-caps text-on-surface-variant opacity-60">SISTEMA</h3>
+</div>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-secondary-container rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-secondary-container rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-caps text-label-caps">Agendamento</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-secondary-container rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-caps text-label-caps">Pacientes</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-lg font-bold transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style='font-variation-settings: "FILL" 1;'>medical_services</span>
+<span class="font-label-caps text-label-caps">Médicos</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-secondary-container rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps">Relatórios</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-secondary-container rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps">Configurações</span>
+</a>
+<div class="mt-auto pb-8 px-4">
+<button class="w-full bg-primary text-on-primary py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:bg-primary-container transition-all active:scale-95">
+<span class="material-symbols-outlined">add</span>
+                Novo Atendimento
+            </button>
+</div></aside>
+<div class="flex-1 flex flex-col min-w-0 bg-background">
+<!-- TopNavBar Anchor -->
+<header class="w-full top-0 sticky z-40 bg-surface dark:bg-surface-dim shadow-sm flex justify-between items-center px-gutter py-4 max-w-container-max mx-auto lg:ml-64"><div class="flex items-center gap-4 mr-6"></div>
+<div class="flex items-center flex-1 max-w-xl">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container rounded-full border-none focus:ring-2 focus:ring-primary text-body-sm font-body-sm" placeholder="Buscar médicos, especialidades..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4 ml-gutter">
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-8 w-px bg-outline-variant"></div>
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full object-cover border-2 border-primary-container" data-alt="Professional headshot of a female clinic administrator with a friendly expression, soft lighting, wearing a professional blazer, clinical but warm atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwok2EuPmJ4ZOX65G6g6pxdBwaGtVCkvsCRI49MqNzkyG9vFCzIb7zOta8UFDcMDAXEUGrT5sB3WyIoUBLzqB5ya4UnaNwO5YXEWndLIvLK9gFUM5ZoOGVl5jeaPVjvAvk5GJ9LUMfOuARJNFhiEiup86nSqDSXe2s7eOZlOkykiABR5bs9-MbCVj-xZrPOqFMIuUD8r1ABx1OjpTQgJL7Q7aaFGdlo9XZL6iL331RLNhaZS-IU3RrSA"/>
+<div class="hidden lg:block text-right">
+<p class="font-body-base text-body-base font-bold text-primary">Dra. Mariana Silva</p>
+<p class="text-xs text-on-surface-variant">Administradora</p>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 p-margin-desktop max-w-container-max mx-auto w-full lg:ml-64">
+<!-- Page Header Section -->
+<div class="relative group/carousel"><div class="flex overflow-x-auto gap-6 pb-8 custom-scrollbar snap-x snap-mandatory scroll-smooth"><div class="bg-surface-container-lowest rounded-xl p-6 doctor-card-shadow border border-surface-variant/50 group hover:-translate-y-1 transition-all duration-300 min-w-[300px] snap-start"><div class="relative mb-4"><img class="w-24 h-24 rounded-2xl object-cover mx-auto ring-4 ring-primary-container/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGQIrALwFRJnhvRBySYsXZT9GcmrkNwT7tcaLBa7jy8gnDwWWjta2j30IaTkPlQrwCj8Au8jHHVXDX9cT1gsRVVLDz6OGlulDle7i7kjaNpEL7BOhnRPu3PV34liRDELPs0Lf5F9Pgc4IlQnQRLCrXv9dGaghAzLdCLEuAm0kXV3t-V30IFDYs_dYYJihHDKeiqEQDO09M3JhAGNEflPnEibfFwkAEIPzNtCCDtDDS1MfnsLXixha1zg"/><span class="absolute bottom-0 right-1/2 translate-x-12 bg-primary text-white text-[10px] px-2 py-0.5 rounded-full font-bold">DISPONÍVEL</span></div><div class="text-center mb-6"><h3 class="font-headline-md text-headline-md text-on-surface mb-1">Dr. Arnaldo Souza</h3><p class="font-label-caps text-label-caps text-primary bg-secondary-container px-3 py-1 rounded-full inline-block">Clínica Geral</p></div><div class="space-y-3 mb-6"><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">calendar_today</span><span class="text-body-sm">Seg, Qua, Sex</span></div><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">grade</span><span class="text-body-sm">4.9 (120 avaliações)</span></div></div><button class="w-full border-2 border-primary text-primary font-bold py-2.5 rounded-xl hover:bg-primary hover:text-white transition-colors duration-300 flex items-center justify-center gap-2"><span>Ver Perfil</span><span class="material-symbols-outlined text-sm">arrow_forward</span></button></div><div class="bg-surface-container-lowest rounded-xl p-6 doctor-card-shadow border border-surface-variant/50 group hover:-translate-y-1 transition-all duration-300 min-w-[300px] snap-start"><div class="relative mb-4"><img class="w-24 h-24 rounded-2xl object-cover mx-auto ring-4 ring-primary-container/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKq2GGS3MCqv75UPSmzaClD_Q_nk_mkzZdGBSX78oPqMuD462ZqzZCBrdSs-IhosKG65WDoaTorGHhggoS0ROgaQt2fPBW_Psd33S1w4naCOVWEJ3RwX_7nQ9TZ3aguEnVnFC22wbL3lQnFaua11-ttlNOiyV_Y1Ms1mctQBfte9Omh95GoHfoFiL69lysZh_8pKtONK_ATE6cmZ96i7TlBq_yYMUA9AqEI0DYLeuelY54KvGGX7tasA"/><span class="absolute bottom-0 right-1/2 translate-x-12 bg-secondary text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">EM CONSULTA</span></div><div class="text-center mb-6"><h3 class="font-headline-md text-headline-md text-on-surface mb-1">Dra. Beatriz Costa</h3><p class="font-label-caps text-label-caps text-primary bg-secondary-container px-3 py-1 rounded-full inline-block">Cardiologia</p></div><div class="space-y-3 mb-6"><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">calendar_today</span><span class="text-body-sm">Ter, Qui, Sáb</span></div><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">grade</span><span class="text-body-sm">5.0 (84 avaliações)</span></div></div><button class="w-full border-2 border-primary text-primary font-bold py-2.5 rounded-xl hover:bg-primary hover:text-white transition-colors duration-300 flex items-center justify-center gap-2"><span>Ver Perfil</span><span class="material-symbols-outlined text-sm">arrow_forward</span></button></div><div class="bg-surface-container-lowest rounded-xl p-6 doctor-card-shadow border border-surface-variant/50 group hover:-translate-y-1 transition-all duration-300 min-w-[300px] snap-start"><div class="relative mb-4"><img class="w-24 h-24 rounded-2xl object-cover mx-auto ring-4 ring-primary-container/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8XORQaMfkBjT4FoNCKPEO47c0RdHJIHznO6Eso5A6wIgi-NMEEwBstav-_VjAoajVO-KQj5Poo8zGnuIH0PKCgWrue2RdJ70v2FnnZd4sUnVFK7VNEJilBqJI6nnSMPXHq6_OfEnLbOOzENLAbfnTRHtClm7UQ8ZTmIj0VyTADrIAxqEL9eqMYdgV-cMw4VO9GptrYwRuo7IU2X3zBUG-doOJ72rD6X48DknWKC5k4jYVCrWTXmHWow"/><span class="absolute bottom-0 right-1/2 translate-x-12 bg-primary text-white text-[10px] px-2 py-0.5 rounded-full font-bold">DISPONÍVEL</span></div><div class="text-center mb-6"><h3 class="font-headline-md text-headline-md text-on-surface mb-1">Dr. Ricardo Mendes</h3><p class="font-label-caps text-label-caps text-primary bg-secondary-container px-3 py-1 rounded-full inline-block">Pediatria</p></div><div class="space-y-3 mb-6"><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">calendar_today</span><span class="text-body-sm">Diário</span></div><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">grade</span><span class="text-body-sm">4.8 (215 avaliações)</span></div></div><button class="w-full border-2 border-primary text-primary font-bold py-2.5 rounded-xl hover:bg-primary hover:text-white transition-colors duration-300 flex items-center justify-center gap-2"><span>Ver Perfil</span><span class="material-symbols-outlined text-sm">arrow_forward</span></button></div><div class="bg-surface-container-lowest rounded-xl p-6 doctor-card-shadow border border-surface-variant/50 group hover:-translate-y-1 transition-all duration-300 min-w-[300px] snap-start"><div class="relative mb-4"><img class="w-24 h-24 rounded-2xl object-cover mx-auto ring-4 ring-primary-container/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCv-iOl9QBHeHO4-8FoCEanL2uhBL8Ql8mbx8ngR50AfCDL6v7yp3pVmIWJgA9vcOv2x-Pyzkh_mtcC6orqjVclipHzcaXiqMEUJxtbu9JcfyZEYYnzAicrkHjnDUK1jiyUfWpQO-mwE7xX4aLKIRv4wv7gMD8ID_VmadvnaYaxIK4LpZ0drfseZMZyM2laPNoc9FYEj6gZ2q4YNShRSE5rThIWOwOZntaLFatXwhYpQMJR7x4vgnAG6g"/><span class="absolute bottom-0 right-1/2 translate-x-12 bg-primary text-white text-[10px] px-2 py-0.5 rounded-full font-bold">DISPONÍVEL</span></div><div class="text-center mb-6"><h3 class="font-headline-md text-headline-md text-on-surface mb-1">Dra. Julia Ramos</h3><p class="font-label-caps text-label-caps text-primary bg-secondary-container px-3 py-1 rounded-full inline-block">Dermatologia</p></div><div class="space-y-3 mb-6"><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">calendar_today</span><span class="text-body-sm">Seg, Ter, Qui</span></div><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">grade</span><span class="text-body-sm">4.9 (56 avaliações)</span></div></div><button class="w-full border-2 border-primary text-primary font-bold py-2.5 rounded-xl hover:bg-primary hover:text-white transition-colors duration-300 flex items-center justify-center gap-2"><span>Ver Perfil</span><span class="material-symbols-outlined text-sm">arrow_forward</span></button></div><div class="bg-surface-container-lowest rounded-xl p-6 doctor-card-shadow border border-surface-variant/50 group hover:-translate-y-1 transition-all duration-300 min-w-[300px] snap-start"><div class="relative mb-4"><img class="w-24 h-24 rounded-2xl object-cover mx-auto ring-4 ring-primary-container/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmtrDz33nwkDgHEQmfvz_QKnaKZS31M39o0DN8F5VCQtuAeQRZTJEoYR70YKwb26fR1b5ZbXQe1KMWEIi-qng7FnLv1JwAOiOy5VCK922au10zLGiKYzfBXRJhTU5vZi3QbuS19hkB_5NcEeQG7oL5zMOQBOUZHxowQjotIW6Xg7iDsZFAiYWdF_0DySIa6KOrxfxHFR0vCyDRcQWn4s-QTtBq0DFLhvC4wV3Mc4yR2OpOPxhVDhhVHQ"/><span class="absolute bottom-0 right-1/2 translate-x-12 bg-error text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">INDISPONÍVEL</span></div><div class="text-center mb-6"><h3 class="font-headline-md text-headline-md text-on-surface mb-1">Dr. Marcos Vinícius</h3><p class="font-label-caps text-label-caps text-primary bg-secondary-container px-3 py-1 rounded-full inline-block">Neurologia</p></div><div class="space-y-3 mb-6"><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">calendar_today</span><span class="text-body-sm">Quarta-feira</span></div><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">grade</span><span class="text-body-sm">5.0 (142 avaliações)</span></div></div><button class="w-full border-2 border-primary text-primary font-bold py-2.5 rounded-xl hover:bg-primary hover:text-white transition-colors duration-300 flex items-center justify-center gap-2"><span>Ver Perfil</span><span class="material-symbols-outlined text-sm">arrow_forward</span></button></div><div class="bg-surface-container-lowest rounded-xl p-6 doctor-card-shadow border border-surface-variant/50 group hover:-translate-y-1 transition-all duration-300 min-w-[300px] snap-start"><div class="relative mb-4"><img class="w-24 h-24 rounded-2xl object-cover mx-auto ring-4 ring-primary-container/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGJ275SQoq9aAec8SK0lsWpXwdOq6cYyuTCtV_CHNcuMvQbgyWbOP5u2wQacOHbrLNVCGA6EuYCtQtIsfg_zRpezWS1kjbZ7xOSsgYwbi2Wt2pUQN6aE5Mmlo30Ez-TpQK7A57TIyQPyU02tiLbozwD4iPNwNS1KWy6ERRjCA0YyTvuORKn3uTSutbF1Ao5IJpwmpdfycPvWst3JWpHhnFlJ04XPiumxhe1WLfe11YEXOw12esDedleA"/><span class="absolute bottom-0 right-1/2 translate-x-12 bg-primary text-white text-[10px] px-2 py-0.5 rounded-full font-bold">DISPONÍVEL</span></div><div class="text-center mb-6"><h3 class="font-headline-md text-headline-md text-on-surface mb-1">Dra. Helena Souza</h3><p class="font-label-caps text-label-caps text-primary bg-secondary-container px-3 py-1 rounded-full inline-block">Ginecologia</p></div><div class="space-y-3 mb-6"><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">calendar_today</span><span class="text-body-sm">Seg a Sex</span></div><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">grade</span><span class="text-body-sm">4.7 (198 avaliações)</span></div></div><button class="w-full border-2 border-primary text-primary font-bold py-2.5 rounded-xl hover:bg-primary hover:text-white transition-colors duration-300 flex items-center justify-center gap-2"><span>Ver Perfil</span><span class="material-symbols-outlined text-sm">arrow_forward</span></button></div><div class="border-2 border-dashed border-outline-variant rounded-xl p-6 flex flex-col items-center justify-center text-on-surface-variant hover:border-primary hover:text-primary transition-all duration-300 cursor-pointer group min-w-[300px] snap-start"><div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-4 group-hover:bg-primary-container/10 transition-colors"><span class="material-symbols-outlined text-3xl">person_add</span></div><p class="font-bold text-center">Registrar novo profissional no sistema</p></div></div><button class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-12 h-12 bg-surface-container-lowest rounded-full shadow-xl border border-outline-variant flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 z-10" onclick="this.nextElementSibling.scrollBy({left: -320, behavior: 'smooth'})"><span class="material-symbols-outlined">chevron_left</span></button><button class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-12 h-12 bg-surface-container-lowest rounded-full shadow-xl border border-outline-variant flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 z-10" onclick="this.previousElementSibling.previousElementSibling.scrollBy({left: 320, behavior: 'smooth'})"><span class="material-symbols-outlined">chevron_right</span></button></div>
+<!-- Bento Grid of Doctors -->
+<div class="relative group/carousel"><div class="flex overflow-x-auto gap-6 pb-8 custom-scrollbar snap-x snap-mandatory scroll-smooth"><div class="bg-surface-container-lowest rounded-xl p-6 doctor-card-shadow border border-surface-variant/50 group hover:-translate-y-1 transition-all duration-300 min-w-[300px] snap-start"><div class="relative mb-4"><img class="w-24 h-24 rounded-2xl object-cover mx-auto ring-4 ring-primary-container/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGQIrALwFRJnhvRBySYsXZT9GcmrkNwT7tcaLBa7jy8gnDwWWjta2j30IaTkPlQrwCj8Au8jHHVXDX9cT1gsRVVLDz6OGlulDle7i7kjaNpEL7BOhnRPu3PV34liRDELPs0Lf5F9Pgc4IlQnQRLCrXv9dGaghAzLdCLEuAm0kXV3t-V30IFDYs_dYYJihHDKeiqEQDO09M3JhAGNEflPnEibfFwkAEIPzNtCCDtDDS1MfnsLXixha1zg"/><span class="absolute bottom-0 right-1/2 translate-x-12 bg-primary text-white text-[10px] px-2 py-0.5 rounded-full font-bold">DISPONÍVEL</span></div><div class="text-center mb-6"><h3 class="font-headline-md text-headline-md text-on-surface mb-1">Dr. Arnaldo Souza</h3><p class="font-label-caps text-label-caps text-primary bg-secondary-container px-3 py-1 rounded-full inline-block">Clínica Geral</p></div><div class="space-y-3 mb-6"><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">calendar_today</span><span class="text-body-sm">Seg, Qua, Sex</span></div><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">grade</span><span class="text-body-sm">4.9 (120 avaliações)</span></div></div><button class="w-full border-2 border-primary text-primary font-bold py-2.5 rounded-xl hover:bg-primary hover:text-white transition-colors duration-300 flex items-center justify-center gap-2"><span>Ver Perfil</span><span class="material-symbols-outlined text-sm">arrow_forward</span></button></div><div class="bg-surface-container-lowest rounded-xl p-6 doctor-card-shadow border border-surface-variant/50 group hover:-translate-y-1 transition-all duration-300 min-w-[300px] snap-start"><div class="relative mb-4"><img class="w-24 h-24 rounded-2xl object-cover mx-auto ring-4 ring-primary-container/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKq2GGS3MCqv75UPSmzaClD_Q_nk_mkzZdGBSX78oPqMuD462ZqzZCBrdSs-IhosKG65WDoaTorGHhggoS0ROgaQt2fPBW_Psd33S1w4naCOVWEJ3RwX_7nQ9TZ3aguEnVnFC22wbL3lQnFaua11-ttlNOiyV_Y1Ms1mctQBfte9Omh95GoHfoFiL69lysZh_8pKtONK_ATE6cmZ96i7TlBq_yYMUA9AqEI0DYLeuelY54KvGGX7tasA"/><span class="absolute bottom-0 right-1/2 translate-x-12 bg-secondary text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">EM CONSULTA</span></div><div class="text-center mb-6"><h3 class="font-headline-md text-headline-md text-on-surface mb-1">Dra. Beatriz Costa</h3><p class="font-label-caps text-label-caps text-primary bg-secondary-container px-3 py-1 rounded-full inline-block">Cardiologia</p></div><div class="space-y-3 mb-6"><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">calendar_today</span><span class="text-body-sm">Ter, Qui, Sáb</span></div><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">grade</span><span class="text-body-sm">5.0 (84 avaliações)</span></div></div><button class="w-full border-2 border-primary text-primary font-bold py-2.5 rounded-xl hover:bg-primary hover:text-white transition-colors duration-300 flex items-center justify-center gap-2"><span>Ver Perfil</span><span class="material-symbols-outlined text-sm">arrow_forward</span></button></div><div class="bg-surface-container-lowest rounded-xl p-6 doctor-card-shadow border border-surface-variant/50 group hover:-translate-y-1 transition-all duration-300 min-w-[300px] snap-start"><div class="relative mb-4"><img class="w-24 h-24 rounded-2xl object-cover mx-auto ring-4 ring-primary-container/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8XORQaMfkBjT4FoNCKPEO47c0RdHJIHznO6Eso5A6wIgi-NMEEwBstav-_VjAoajVO-KQj5Poo8zGnuIH0PKCgWrue2RdJ70v2FnnZd4sUnVFK7VNEJilBqJI6nnSMPXHq6_OfEnLbOOzENLAbfnTRHtClm7UQ8ZTmIj0VyTADrIAxqEL9eqMYdgV-cMw4VO9GptrYwRuo7IU2X3zBUG-doOJ72rD6X48DknWKC5k4jYVCrWTXmHWow"/><span class="absolute bottom-0 right-1/2 translate-x-12 bg-primary text-white text-[10px] px-2 py-0.5 rounded-full font-bold">DISPONÍVEL</span></div><div class="text-center mb-6"><h3 class="font-headline-md text-headline-md text-on-surface mb-1">Dr. Ricardo Mendes</h3><p class="font-label-caps text-label-caps text-primary bg-secondary-container px-3 py-1 rounded-full inline-block">Pediatria</p></div><div class="space-y-3 mb-6"><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">calendar_today</span><span class="text-body-sm">Diário</span></div><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">grade</span><span class="text-body-sm">4.8 (215 avaliações)</span></div></div><button class="w-full border-2 border-primary text-primary font-bold py-2.5 rounded-xl hover:bg-primary hover:text-white transition-colors duration-300 flex items-center justify-center gap-2"><span>Ver Perfil</span><span class="material-symbols-outlined text-sm">arrow_forward</span></button></div><div class="bg-surface-container-lowest rounded-xl p-6 doctor-card-shadow border border-surface-variant/50 group hover:-translate-y-1 transition-all duration-300 min-w-[300px] snap-start"><div class="relative mb-4"><img class="w-24 h-24 rounded-2xl object-cover mx-auto ring-4 ring-primary-container/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCv-iOl9QBHeHO4-8FoCEanL2uhBL8Ql8mbx8ngR50AfCDL6v7yp3pVmIWJgA9vcOv2x-Pyzkh_mtcC6orqjVclipHzcaXiqMEUJxtbu9JcfyZEYYnzAicrkHjnDUK1jiyUfWpQO-mwE7xX4aLKIRv4wv7gMD8ID_VmadvnaYaxIK4LpZ0drfseZMZyM2laPNoc9FYEj6gZ2q4YNShRSE5rThIWOwOZntaLFatXwhYpQMJR7x4vgnAG6g"/><span class="absolute bottom-0 right-1/2 translate-x-12 bg-primary text-white text-[10px] px-2 py-0.5 rounded-full font-bold">DISPONÍVEL</span></div><div class="text-center mb-6"><h3 class="font-headline-md text-headline-md text-on-surface mb-1">Dra. Julia Ramos</h3><p class="font-label-caps text-label-caps text-primary bg-secondary-container px-3 py-1 rounded-full inline-block">Dermatologia</p></div><div class="space-y-3 mb-6"><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">calendar_today</span><span class="text-body-sm">Seg, Ter, Qui</span></div><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">grade</span><span class="text-body-sm">4.9 (56 avaliações)</span></div></div><button class="w-full border-2 border-primary text-primary font-bold py-2.5 rounded-xl hover:bg-primary hover:text-white transition-colors duration-300 flex items-center justify-center gap-2"><span>Ver Perfil</span><span class="material-symbols-outlined text-sm">arrow_forward</span></button></div><div class="bg-surface-container-lowest rounded-xl p-6 doctor-card-shadow border border-surface-variant/50 group hover:-translate-y-1 transition-all duration-300 min-w-[300px] snap-start"><div class="relative mb-4"><img class="w-24 h-24 rounded-2xl object-cover mx-auto ring-4 ring-primary-container/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmtrDz33nwkDgHEQmfvz_QKnaKZS31M39o0DN8F5VCQtuAeQRZTJEoYR70YKwb26fR1b5ZbXQe1KMWEIi-qng7FnLv1JwAOiOy5VCK922au10zLGiKYzfBXRJhTU5vZi3QbuS19hkB_5NcEeQG7oL5zMOQBOUZHxowQjotIW6Xg7iDsZFAiYWdF_0DySIa6KOrxfxHFR0vCyDRcQWn4s-QTtBq0DFLhvC4wV3Mc4yR2OpOPxhVDhhVHQ"/><span class="absolute bottom-0 right-1/2 translate-x-12 bg-error text-white text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">INDISPONÍVEL</span></div><div class="text-center mb-6"><h3 class="font-headline-md text-headline-md text-on-surface mb-1">Dr. Marcos Vinícius</h3><p class="font-label-caps text-label-caps text-primary bg-secondary-container px-3 py-1 rounded-full inline-block">Neurologia</p></div><div class="space-y-3 mb-6"><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">calendar_today</span><span class="text-body-sm">Quarta-feira</span></div><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">grade</span><span class="text-body-sm">5.0 (142 avaliações)</span></div></div><button class="w-full border-2 border-primary text-primary font-bold py-2.5 rounded-xl hover:bg-primary hover:text-white transition-colors duration-300 flex items-center justify-center gap-2"><span>Ver Perfil</span><span class="material-symbols-outlined text-sm">arrow_forward</span></button></div><div class="bg-surface-container-lowest rounded-xl p-6 doctor-card-shadow border border-surface-variant/50 group hover:-translate-y-1 transition-all duration-300 min-w-[300px] snap-start"><div class="relative mb-4"><img class="w-24 h-24 rounded-2xl object-cover mx-auto ring-4 ring-primary-container/10" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGJ275SQoq9aAec8SK0lsWpXwdOq6cYyuTCtV_CHNcuMvQbgyWbOP5u2wQacOHbrLNVCGA6EuYCtQtIsfg_zRpezWS1kjbZ7xOSsgYwbi2Wt2pUQN6aE5Mmlo30Ez-TpQK7A57TIyQPyU02tiLbozwD4iPNwNS1KWy6ERRjCA0YyTvuORKn3uTSutbF1Ao5IJpwmpdfycPvWst3JWpHhnFlJ04XPiumxhe1WLfe11YEXOw12esDedleA"/><span class="absolute bottom-0 right-1/2 translate-x-12 bg-primary text-white text-[10px] px-2 py-0.5 rounded-full font-bold">DISPONÍVEL</span></div><div class="text-center mb-6"><h3 class="font-headline-md text-headline-md text-on-surface mb-1">Dra. Helena Souza</h3><p class="font-label-caps text-label-caps text-primary bg-secondary-container px-3 py-1 rounded-full inline-block">Ginecologia</p></div><div class="space-y-3 mb-6"><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">calendar_today</span><span class="text-body-sm">Seg a Sex</span></div><div class="flex items-center gap-3 text-on-surface-variant"><span class="material-symbols-outlined text-body-sm">grade</span><span class="text-body-sm">4.7 (198 avaliações)</span></div></div><button class="w-full border-2 border-primary text-primary font-bold py-2.5 rounded-xl hover:bg-primary hover:text-white transition-colors duration-300 flex items-center justify-center gap-2"><span>Ver Perfil</span><span class="material-symbols-outlined text-sm">arrow_forward</span></button></div><div class="border-2 border-dashed border-outline-variant rounded-xl p-6 flex flex-col items-center justify-center text-on-surface-variant hover:border-primary hover:text-primary transition-all duration-300 cursor-pointer group min-w-[300px] snap-start"><div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center mb-4 group-hover:bg-primary-container/10 transition-colors"><span class="material-symbols-outlined text-3xl">person_add</span></div><p class="font-bold text-center">Registrar novo profissional no sistema</p></div></div><button class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-12 h-12 bg-surface-container-lowest rounded-full shadow-xl border border-outline-variant flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 z-10" onclick="this.nextElementSibling.scrollBy({left: -320, behavior: 'smooth'})"><span class="material-symbols-outlined">chevron_left</span></button><button class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 w-12 h-12 bg-surface-container-lowest rounded-full shadow-xl border border-outline-variant flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all opacity-0 group-hover/carousel:opacity-100 z-10" onclick="this.previousElementSibling.previousElementSibling.scrollBy({left: 320, behavior: 'smooth'})"><span class="material-symbols-outlined">chevron_right</span></button></div>
+</main>
+</div>
+<!-- Floating Quick Actions (FAB contextually suppressed if needed, but useful for clinic admin) -->
+<div class="fixed bottom-8 right-8 flex flex-col gap-3">
+<button class="w-14 h-14 bg-tertiary text-on-tertiary rounded-full shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined">chat</span>
+</button>
+<button class="w-14 h-14 bg-primary text-on-primary rounded-full shadow-xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined">add_task</span>
+</button>
+</div>
+<script>
+        // Simple intersection observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-4');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.doctor-card-shadow').forEach(card => {
+            card.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-4');
+            observer.observe(card);
+        });
+
+        // Search Bar Focus Effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('ring-2', 'ring-primary/20');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('ring-2', 'ring-primary/20');
+        });
+    </script>
+</body></html>
