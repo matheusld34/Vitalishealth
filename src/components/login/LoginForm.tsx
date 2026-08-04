@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import Link from "next/link";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -235,9 +236,9 @@ const LoginForm = () => {
             </div>
             <p className="text-center text-gray-600">
               Não tem uma conta?{" "}
-              <a href="#" className="font-semibold text-brand-700 hover:text-brand-800 transition-colors">
+              <Link href="/cadastro" className="font-semibold text-brand-700 hover:text-brand-800 transition-colors">
                 Criar nova conta
-              </a>
+              </Link>
             </p>
             <p className="text-center text-sm text-gray-400 mt-3">
               © 2026 Vitalis Health. Todos os direitos reservados.
@@ -249,9 +250,9 @@ const LoginForm = () => {
       <div className="md:hidden px-6 pb-10 pt-4 space-y-6 bg-white">
         <p className="text-center text-gray-600 text-base">
           Não tem uma conta?{" "}
-          <a href="#" className="font-semibold text-brand-700 hover:text-brand-800 transition-colors">
+          <Link href="/cadastro" className="font-semibold text-brand-700 hover:text-brand-800 transition-colors">
             Criar nova conta
-          </a>
+          </Link>
         </p>
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
           <a href="#" className="hover:text-gray-700 transition-colors">Privacidade</a>
