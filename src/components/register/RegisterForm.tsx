@@ -2,9 +2,19 @@
 
 import { useState, FormEvent } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 
+type FieldErrors = {
+  fullName?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  general?: string;
+};
+
 const RegisterForm = () => {
+  const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [cpf, setCpf] = useState("");
   const [phone, setPhone] = useState("");
@@ -15,18 +25,67 @@ const RegisterForm = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [errors, setErrors] = useState<FieldErrors>({});
 
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     await signIn("google", { callbackUrl: "/" });
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setErrors({});
+
+    const newErrors: FieldErrors = {};
+    if (!fullName.trim()) newErrors.fullName = "Nome é obrigatório";
+    if (!email.trim()) newErrors.email = "E-mail é obrigatório";
+    if (password.length < 8) newErrors.password = "Senha deve ter no mínimo 8 caracteres";
+    if (password !== confirmPassword) newErrors.confirmPassword = "Senhas não conferem";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     setIsLoading(true);
-    setTimeout(() => {
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fullName, cpf, phone, email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (data.error?.includes("e-mail") || data.error?.includes("E-mail")) {
+          setErrors({ email: data.error });
+        } else if (data.error?.includes("CPF")) {
+          setErrors({ general: data.error });
+        } else {
+          setErrors({ general: data.error || "Erro ao criar conta" });
+        }
+        setIsLoading(false);
+        return;
+      }
+
+      const signInRes = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (signInRes?.error) {
+        router.push("/");
+        return;
+      }
+
+      router.push("/");
+      router.refresh();
+    } catch (err) {
+      setErrors({ general: "Erro de conexão. Tente novamente." });
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
@@ -40,6 +99,11 @@ const RegisterForm = () => {
             <p className="text-gray-500 text-lg">
               Preencha os dados para se cadastrar
             </p>
+            {errors.general && (
+              <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-600">
+                {errors.general}
+              </div>
+            )}
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -74,9 +138,15 @@ const RegisterForm = () => {
                   placeholder="Seu nome completo"
                   autoComplete="name"
                   required
-                  className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all duration-200 text-base"
+                  className={`w-full pl-12 pr-4 py-4 bg-gray-50 border rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all duration-200 text-base ${errors.fullName
+                    ? "border-red-300 focus:ring-red-500/30 focus:border-red-500"
+                    : "border-gray-200"
+                    }`}
                 />
               </div>
+              {errors.fullName && (
+                <p className="text-sm text-red-500">{errors.fullName}</p>
+              )}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -110,7 +180,6 @@ const RegisterForm = () => {
                     onChange={(e) => setCpf(e.target.value)}
                     placeholder="000.000.000-00"
                     autoComplete="off"
-                    required
                     className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all duration-200 text-base"
                   />
                 </div>
@@ -145,7 +214,6 @@ const RegisterForm = () => {
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="(00) 00000-0000"
                     autoComplete="tel"
-                    required
                     className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all duration-200 text-base"
                   />
                 </div>
@@ -183,9 +251,15 @@ const RegisterForm = () => {
                   placeholder="nome@email.com"
                   autoComplete="email"
                   required
-                  className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all duration-200 text-base"
+                  className={`w-full pl-12 pr-4 py-4 bg-gray-50 border rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all duration-200 text-base ${errors.email
+                    ? "border-red-300 focus:ring-red-500/30 focus:border-red-500"
+                    : "border-gray-200"
+                    }`}
                 />
               </div>
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -220,7 +294,10 @@ const RegisterForm = () => {
                   autoComplete="new-password"
                   required
                   minLength={8}
-                  className="w-full pl-12 pr-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all duration-200 text-base"
+                  className={`w-full pl-12 pr-12 py-4 bg-gray-50 border rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all duration-200 text-base ${errors.password
+                    ? "border-red-300 focus:ring-red-500/30 focus:border-red-500"
+                    : "border-gray-200"
+                    }`}
                 />
                 <button
                   type="button"
@@ -261,6 +338,9 @@ const RegisterForm = () => {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-sm text-red-500">{errors.password}</p>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -296,7 +376,10 @@ const RegisterForm = () => {
                   autoComplete="new-password"
                   required
                   minLength={8}
-                  className="w-full pl-12 pr-12 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all duration-200 text-base"
+                  className={`w-full pl-12 pr-12 py-4 bg-gray-50 border rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all duration-200 text-base ${errors.confirmPassword
+                      ? "border-red-300 focus:ring-red-500/30 focus:border-red-500"
+                      : "border-gray-200"
+                    }`}
                 />
                 <button
                   type="button"
@@ -337,6 +420,9 @@ const RegisterForm = () => {
                   )}
                 </button>
               </div>
+              {errors.confirmPassword && (
+                <p className="text-sm text-red-500">{errors.confirmPassword}</p>
+              )}
             </div>
 
             <div className="flex items-start gap-3 pt-2">
