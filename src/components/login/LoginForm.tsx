@@ -17,7 +17,7 @@ const LoginForm = () => {
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     setError(null);
-    await signIn("google", { callbackUrl: "/" });
+    await signIn("google", { callbackUrl: "/dashboard" });
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -37,7 +37,8 @@ const LoginForm = () => {
       return;
     }
 
-    router.push("/");
+    setIsLoading(false);
+    router.replace("/dashboard");
     router.refresh();
   };
 

@@ -29,7 +29,7 @@ const RegisterForm = () => {
 
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
-    await signIn("google", { callbackUrl: "/" });
+    await signIn("google", { callbackUrl: "/dashboard" });
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -75,12 +75,14 @@ const RegisterForm = () => {
         redirect: false,
       });
 
+      setIsLoading(false);
+
       if (signInRes?.error) {
-        router.push("/");
+        router.replace("/");
         return;
       }
 
-      router.push("/");
+      router.replace("/dashboard");
       router.refresh();
     } catch (err) {
       setErrors({ general: "Erro de conexão. Tente novamente." });
@@ -377,8 +379,8 @@ const RegisterForm = () => {
                   required
                   minLength={8}
                   className={`w-full pl-12 pr-12 py-4 bg-gray-50 border rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all duration-200 text-base ${errors.confirmPassword
-                      ? "border-red-300 focus:ring-red-500/30 focus:border-red-500"
-                      : "border-gray-200"
+                    ? "border-red-300 focus:ring-red-500/30 focus:border-red-500"
+                    : "border-gray-200"
                     }`}
                 />
                 <button

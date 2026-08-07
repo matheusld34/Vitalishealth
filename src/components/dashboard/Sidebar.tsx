@@ -12,6 +12,7 @@ type Props = {
 type Item = {
     href: string
     label: string
+    description?: string
     icon: JSX.Element
     roles: Role[]
 }
@@ -20,6 +21,7 @@ const items: Item[] = [
     {
         href: "/dashboard",
         label: "Dashboard",
+        description: "Visão geral da clínica",
         roles: ["MASTER", "SECRETARY", "DOCTOR"],
         icon: (
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -33,6 +35,7 @@ const items: Item[] = [
     {
         href: "/dashboard/agendamento",
         label: "Agendamento",
+        description: "Consultas e horários",
         roles: ["MASTER", "SECRETARY", "DOCTOR"],
         icon: (
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -46,6 +49,7 @@ const items: Item[] = [
     {
         href: "/dashboard/pacientes",
         label: "Pacientes",
+        description: "Cadastro e prontuários",
         roles: ["MASTER", "SECRETARY", "DOCTOR"],
         icon: (
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -59,6 +63,7 @@ const items: Item[] = [
     {
         href: "/dashboard/medicos",
         label: "Médicos",
+        description: "Corpo clínico",
         roles: ["MASTER", "SECRETARY"],
         icon: (
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -73,6 +78,7 @@ const items: Item[] = [
     {
         href: "/dashboard/relatorios",
         label: "Relatórios",
+        description: "Indicadores e métricas",
         roles: ["MASTER", "DOCTOR"],
         icon: (
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -85,6 +91,7 @@ const items: Item[] = [
     {
         href: "/dashboard/configuracoes",
         label: "Configurações",
+        description: "Sistema e preferências",
         roles: ["MASTER"],
         icon: (
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -101,14 +108,14 @@ export default function Sidebar({ userRole, onNavigate }: Props) {
     const canCreateAppointment = userRole === "MASTER" || userRole === "SECRETARY"
 
     return (
-        <div className="h-full flex flex-col">
-            <div className="px-4 md:px-6 pt-6 pb-3">
-                <p className="text-[11px] font-semibold tracking-[0.18em] text-neutral-400 uppercase">
-                    Sistema
+        <div className="h-full flex flex-col px-3 md:px-4 py-4 md:py-5">
+            <div className="px-3 pb-2 pt-1">
+                <p className="text-[10.5px] font-semibold tracking-[0.22em] text-neutral-400 uppercase">
+                    Navegação
                 </p>
             </div>
 
-            <nav className="px-3 md:px-4 flex-1 space-y-1">
+            <nav className="space-y-1 overflow-y-auto pr-1 -mr-1">
                 {visible.map((item) => {
                     const isActive =
                         item.href === "/dashboard"
@@ -119,53 +126,78 @@ export default function Sidebar({ userRole, onNavigate }: Props) {
                             key={item.href}
                             href={item.href}
                             onClick={onNavigate}
-                            className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                            className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 ${
                                 isActive
-                                    ? "bg-brand-500 text-white shadow-sm"
-                                    : "text-neutral-700 hover:bg-neutral-100"
+                                    ? "bg-gradient-to-r from-brand-500/10 via-brand-500/8 to-brand-500/0 text-brand-800 shadow-[inset_2px_0_0_rgba(16,142,93,0.65)]"
+                                    : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
                             }`}
                         >
                             <span
-                                className={`${
-                                    isActive ? "text-white" : "text-neutral-500"
+                                className={`relative h-8 w-8 shrink-0 inline-flex items-center justify-center rounded-lg transition-all duration-200 ${
+                                    isActive
+                                        ? "bg-brand-500 text-white shadow-[0_4px_10px_rgba(16,142,93,0.22)]"
+                                        : "bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200 group-hover:text-neutral-700"
                                 }`}
                             >
                                 {item.icon}
                             </span>
-                            <span>{item.label}</span>
+                            <div className="flex-1 min-w-0 leading-tight">
+                                <span className={`block font-medium truncate ${isActive ? "text-brand-800" : ""}`}>
+                                    {item.label}
+                                </span>
+                                {item.description && (
+                                    <span className={`block truncate text-[11px] mt-0.5 ${isActive ? "text-brand-700/70" : "text-neutral-400 group-hover:text-neutral-500"}`}>
+                                        {item.description}
+                                    </span>
+                                )}
+                            </div>
+                            {isActive && (
+                                <span className="h-1.5 w-1.5 rounded-full bg-brand-500 shadow-[0_0_0_3px_rgba(16,142,93,0.15)]" />
+                            )}
                         </Link>
                     )
                 })}
             </nav>
 
-            <div className="p-4 md:p-6">
-                {canCreateAppointment ? (
-                    <Link
-                        href="/dashboard/agendamento/novo"
-                        onClick={onNavigate}
-                        className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-brand-700 text-white py-3 px-4 font-semibold shadow-md hover:bg-brand-800 active:bg-brand-900 transition-colors"
-                    >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <line x1="12" y1="5" x2="12" y2="19" />
-                            <line x1="5" y1="12" x2="19" y2="12" />
-                        </svg>
-                        Novo Atendimento
-                    </Link>
-                ) : (
-                    <Link
-                        href="/dashboard/agenda"
-                        onClick={onNavigate}
-                        className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-brand-700 text-white py-3 px-4 font-semibold shadow-md hover:bg-brand-800 active:bg-brand-900 transition-colors"
-                    >
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <rect x="3" y="4" width="18" height="18" rx="2" />
-                            <line x1="16" y1="2" x2="16" y2="6" />
-                            <line x1="8" y1="2" x2="8" y2="6" />
-                            <line x1="3" y1="10" x2="21" y2="10" />
-                        </svg>
-                        Minha Agenda
-                    </Link>
-                )}
+            <div className="mt-7 px-1">
+                <div className="rounded-2xl border border-neutral-200/70 bg-gradient-to-br from-brand-50/60 via-white to-white p-3 md:p-3.5 shadow-[0_2px_8px_rgba(15,23,42,0.04)]">
+                    {canCreateAppointment ? (
+                        <Link
+                            href="/dashboard/agendamento/novo"
+                            onClick={onNavigate}
+                            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 text-white py-2.5 px-4 font-semibold text-sm shadow-[0_6px_16px_rgba(16,142,93,0.22)] hover:shadow-[0_8px_22px_rgba(16,142,93,0.3)] hover:brightness-[1.02] active:brightness-100 transition-all duration-200"
+                        >
+                            <span className="relative inline-flex h-6 w-6 items-center justify-center rounded-lg bg-white/15 ring-1 ring-white/20">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                            </span>
+                            Novo Atendimento
+                        </Link>
+                    ) : (
+                        <Link
+                            href="/dashboard/agenda"
+                            onClick={onNavigate}
+                            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 text-white py-2.5 px-4 font-semibold text-sm shadow-[0_6px_16px_rgba(16,142,93,0.22)] hover:shadow-[0_8px_22px_rgba(16,142,93,0.3)] hover:brightness-[1.02] active:brightness-100 transition-all duration-200"
+                        >
+                            <span className="relative inline-flex h-6 w-6 items-center justify-center rounded-lg bg-white/15 ring-1 ring-white/20">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                                    <line x1="16" y1="2" x2="16" y2="6" />
+                                    <line x1="8" y1="2" x2="8" y2="6" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                            </span>
+                            Minha Agenda
+                        </Link>
+                    )}
+                    <p className="mt-2.5 px-1 text-[11px] leading-relaxed text-neutral-500">
+                        {canCreateAppointment
+                            ? "Marque consultas, exames e procedimentos para qualquer médico."
+                            : "Visualize sua agenda diária, confirme consultas e acesse prontuários."}
+                    </p>
+                </div>
             </div>
         </div>
     )
