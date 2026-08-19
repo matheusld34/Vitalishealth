@@ -57,6 +57,8 @@ model User {
   passwordHash            String?           @map("password_hash") @db.Text
   cpf                     String?           @unique
   phone                   String?
+  birthDate               DateTime?         @map("birth_date")
+  gender                  String?
   role                    Role              @default(SECRETARY)
   createdAt               DateTime          @default(now()) @map("created_at")
   updatedAt               DateTime          @default(now()) @updatedAt @map("updated_at")
@@ -72,12 +74,21 @@ model User {
 }
 
 model DoctorProfile {
-  id        String  @id @default(cuid())
-  userId    String  @unique @map("user_id")
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  crm       String  @unique
-  specialty String
-  bio       String?
+  id             String   @id @default(cuid())
+  userId         String   @unique @map("user_id")
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  crm            String   @unique
+  crmUf          String   @map("crm_uf")
+  specialties    String[]
+  bio            String?  @db.Text
+  workDays       String[] @default([])
+  startMorning   String?  @map("start_morning")
+  endMorning     String?  @map("end_morning")
+  startAfternoon String?  @map("start_afternoon")
+  endAfternoon   String?  @map("end_afternoon")
+  notes          String?  @db.Text
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map("doctor_profiles")
 }
