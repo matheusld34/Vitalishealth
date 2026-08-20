@@ -1,9 +1,233 @@
 "use client"
 
 import Link from "next/link"
+import { useEffect, useMemo, useState } from "react"
+
+type DoctorDetail = {
+    id: string
+    fullName: string
+    specialty: string
+    specialties: string[]
+    status: string
+    crm: string
+    rating: string
+    reviews: number
+    experience: number
+    email: string
+    phone: string
+    avatarGradient: string
+    initials: string
+    workDays: string[]
+    startMorning: string | null
+    endMorning: string | null
+    startAfternoon: string | null
+    endAfternoon: string | null
+    bio: string | null
+}
+
+type ApiDoctor = {
+    id: string
+    name: string | null
+    email: string | null
+    phone: string | null
+    birthDate: string | null
+    gender: string | null
+    doctorProfile: {
+        id: string
+        crm: string
+        crmUf: string
+        specialties: string[]
+        bio: string | null
+        workDays: string[]
+        startMorning: string | null
+        endMorning: string | null
+        startAfternoon: string | null
+        endAfternoon: string | null
+        notes: string | null
+    } | null
+}
+
+const DAY_INITIALS: Record<string, string> = {
+    seg: "S",
+    ter: "T",
+    qua: "W",
+    qui: "T",
+    sex: "F",
+    sáb: "S",
+    dom: "D",
+}
+
+const GRADIENTS = [
+    "from-sky-400 to-blue-600",
+    "from-fuchsia-400 to-rose-500",
+    "from-amber-300 to-orange-500",
+    "from-violet-400 to-purple-600",
+    "from-slate-400 to-slate-700",
+    "from-teal-400 to-emerald-600",
+]
+
+const FALLBACK_DB: Record<string, DoctorDetail> = {
+    "1": {
+        id: "1",
+        fullName: "Dr. Arnaldo Souza",
+        specialty: "General Clinic / Internal Medicine",
+        specialties: ["Clínica Geral", "Medicina Interna", "Geriatria"],
+        status: "AVAILABLE",
+        crm: "123456/SP",
+        rating: "4.9",
+        reviews: 124,
+        experience: 12,
+        email: "arnaldo.souza@vitalis.com",
+        phone: "+55 (11) 98765-4321",
+        avatarGradient: "from-sky-400 to-blue-600",
+        initials: "AS",
+        workDays: ["seg", "ter", "qua", "qui", "sex"],
+        startMorning: "08:00",
+        endMorning: "12:00",
+        startAfternoon: "13:30",
+        endAfternoon: "18:00",
+        bio: "Dr. Arnaldo Souza é graduado pela Faculdade de Medicina da USP, com mais de 12 anos de experiência dedicados ao atendimento humanizado e preventivo. Especialista em Clínica Geral e Medicina Interna, foca sua prática no equilíbrio integral da saúde do paciente, combinando tecnologia diagnóstica avançada com uma abordagem empática.\n\nAcredita que o papel do médico vai além do tratamento de doenças, atuando como um parceiro na jornada de bem-estar e longevidade de cada indivíduo atendido no Vitalis Health.",
+    },
+}
+
+function hash(str: string): number {
+    let h = 0
+    for (let i = 0; i < str.length; i++) {
+        h = (h << 5) - h + str.charCodeAt(i)
+        h |= 0
+    }
+    return Math.abs(h)
+}
+
+function calcExperience(birthDate: string | null): number {
+    if (!birthDate) return 0
+    const b = new Date(birthDate)
+    if (isNaN(b.getTime())) return 0
+    const now = new Date()
+    let years = now.getFullYear() - b.getFullYear()
+    const m = now.getMonth() - b.getMonth()
+    if (m < 0 || (m === 0 && now.getDate() < b.getDate())) years--
+    return Math.max(0, Math.round(years * 0.5))
+}
+
+function mapApiToDetail(ad: ApiDoctor): DoctorDetail {
+    const fullName = ad.name?.trim() || "Médico(a)"
+    const initials =
+        fullName
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((n) => n[0]?.toUpperCase() ?? "")
+            .join("") || "?"
+
+    const paletteIdx = hash(ad.id) % GRADIENTS.length
+
+    const specialties = ad.doctorProfile?.specialties ?? []
+    const specialty = specialties.slice(0, 2).join(" / ") || "Especialidade"
+
+    const crm = ad.doctorProfile
+        ? `${ad.doctorProfile.crm}/${ad.doctorProfile.crmUf}`
+        : "—"
+
+    return {
+        id: ad.id,
+        fullName,
+        specialty,
+        specialties: specialties.length ? specialties : ["Especialidade"],
+        status: "DISPONÍVEL",
+        crm,
+        rating: "—",
+        reviews: 0,
+        experience: calcExperience(ad.birthDate),
+        email: ad.email || "Não informado",
+        phone: ad.phone || "Não informado",
+        avatarGradient: GRADIENTS[paletteIdx],
+        initials,
+        workDays: ad.doctorProfile?.workDays ?? [],
+        startMorning: ad.doctorProfile?.startMorning ?? null,
+        endMorning: ad.doctorProfile?.endMorning ?? null,
+        startAfternoon: ad.doctorProfile?.startAfternoon ?? null,
+        endAfternoon: ad.doctorProfile?.endAfternoon ?? null,
+        bio: ad.doctorProfile?.bio ?? null,
+    }
+}
 
 export default function DoctorProfilePage({ id }: { id: string }) {
-    const doctor = getDoctorById(id)
+    const [doctor, setDoctor] = useState<DoctorDetail | null>(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+
+    useEffect(() => {
+        let cancelled = false
+        async function load() {
+            try {
+                const res = await fetch(`/api/doctors/${id}`)
+                if (!res.ok) {
+                    const data = await res.json().catch(() => ({}))
+                    if (data.error) throw new Error(data.error)
+                    throw new Error("Falha ao carregar dados")
+                }
+                const data = await res.json()
+                if (cancelled) return
+                const ad: ApiDoctor = data.doctor
+                setDoctor(mapApiToDetail(ad))
+            } catch (e: any) {
+                console.error(e)
+                if (!cancelled) {
+                    const fallback = FALLBACK_DB[id] ?? FALLBACK_DB["1"]
+                    if (fallback) {
+                        setDoctor(fallback)
+                    } else {
+                        setError(e?.message || "Médico não encontrado")
+                    }
+                }
+            } finally {
+                if (!cancelled) setLoading(false)
+            }
+        }
+        load()
+        return () => {
+            cancelled = true
+        }
+    }, [id])
+
+    const scheduleRanges = useMemo(() => {
+        if (!doctor) return []
+        const ranges: string[] = []
+        if (doctor.startMorning && doctor.endMorning) {
+            ranges.push(`${doctor.startMorning} – ${doctor.endMorning}`)
+        }
+        if (doctor.startAfternoon && doctor.endAfternoon) {
+            ranges.push(`${doctor.startAfternoon} – ${doctor.endAfternoon}`)
+        }
+        return ranges
+    }, [doctor])
+
+    if (loading && !doctor) {
+        return (
+            <div className="space-y-6 pb-10">
+                <div className="mx-auto max-w-md h-12 rounded-full bg-white shadow animate-pulse" />
+                <div className="h-8 w-48 rounded-xl bg-neutral-100 animate-pulse" />
+                <div className="h-64 rounded-3xl bg-white shadow animate-pulse" />
+            </div>
+        )
+    }
+
+    if (error || !doctor) {
+        return (
+            <div className="rounded-3xl border border-red-200 bg-red-50 p-6 text-center">
+                <p className="text-lg font-semibold text-red-700">
+                    {error || "Médico não encontrado"}
+                </p>
+                <Link
+                    href="/dashboard/medicos"
+                    className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-brand-700 px-5 py-2.5 text-sm font-bold text-white hover:bg-brand-800 transition-colors"
+                >
+                    Voltar para listagem
+                </Link>
+            </div>
+        )
+    }
 
     return (
         <div className="space-y-6 md:space-y-7 pb-10">
@@ -18,7 +242,7 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                     </span>
                     <input
                         type="search"
-                        placeholder="Search for patients, reports, or data..."
+                        placeholder="Buscar no perfil..."
                         className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-3 pl-11 pr-4 text-sm placeholder:text-neutral-400 shadow-[0_2px_10px_rgba(15,23,42,0.05)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
                     />
                 </div>
@@ -27,7 +251,7 @@ export default function DoctorProfilePage({ id }: { id: string }) {
             {/* Breadcrumb */}
             <nav className="flex items-center gap-2 text-sm text-neutral-500">
                 <Link href="/dashboard/medicos" className="hover:text-neutral-800 transition-colors">
-                    Doctors
+                    Médicos
                 </Link>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300" aria-hidden="true">
                     <polyline points="9 18 15 12 9 6" />
@@ -50,8 +274,7 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                                 {doctor.initials}
                             </span>
                         </div>
-                        {/* Ponto verde disponibilidade */}
-                        {doctor.status === "DISPONÍVEL" && (
+                        {String(doctor.status).toUpperCase().includes("DISP") && (
                             <span className="absolute -bottom-1 right-1 md:-bottom-0.5 md:right-2 h-6 w-6 md:h-7 md:w-7 rounded-full bg-brand-500 border-4 border-white shadow-[0_4px_14px_rgba(16,142,93,0.5)]">
                                 <span className="sr-only">Disponível</span>
                             </span>
@@ -77,17 +300,18 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                                     <span className="inline-flex items-center gap-1.5">
                                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-brand-600">
                                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                                            <text x="12" y="16" textAnchor="middle" fill="currentColor" fontSize="6" fontWeight="bold" fontFamily="Arial"></text>
                                         </svg>
                                         <span className="font-semibold text-neutral-800">CRM {doctor.crm}</span>
                                     </span>
-                                    <span className="inline-flex items-center gap-1.5">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b" aria-hidden="true">
-                                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                                        </svg>
-                                        <span className="font-semibold text-neutral-900">{doctor.rating}</span>
-                                        <span className="text-neutral-500">({doctor.reviews} reviews)</span>
-                                    </span>
+                                    {doctor.rating !== "—" && (
+                                        <span className="inline-flex items-center gap-1.5">
+                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b" aria-hidden="true">
+                                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                            </svg>
+                                            <span className="font-semibold text-neutral-900">{doctor.rating}</span>
+                                            <span className="text-neutral-500">({doctor.reviews} avaliações)</span>
+                                        </span>
+                                    )}
                                 </div>
                                 <p className="mt-2.5 inline-flex items-center gap-2 text-sm text-neutral-600">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-neutral-500">
@@ -97,7 +321,7 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                                         <line x1="3" y1="10" x2="21" y2="10" />
                                     </svg>
                                     <span>
-                                        <span className="font-semibold text-neutral-900">{doctor.experience}+ Years Exp.</span>
+                                        <span className="font-semibold text-neutral-900">{doctor.experience || "—"} anos de experiência</span>
                                     </span>
                                 </p>
                             </div>
@@ -105,8 +329,8 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                             {/* Botões de ação */}
                             <div className="flex flex-col sm:items-end gap-3 shrink-0 w-full sm:w-auto">
                                 <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-                                    <button
-                                        type="button"
+                                    <Link
+                                        href="/dashboard/agendamento/novo"
                                         className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-brand-700 px-4 md:px-5 py-2.5 md:py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-700 hover:text-white hover:shadow-[0_10px_22px_-6px_rgba(16,142,93,0.35)] transition-all"
                                     >
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -114,7 +338,7 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                                             <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                                         </svg>
                                         Editar Informações
-                                    </button>
+                                    </Link>
                                     <button
                                         type="button"
                                         className="inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-2.5 md:py-3 text-[14px] font-bold text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
@@ -154,20 +378,30 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                             <InfoRow label="CRM" value={doctor.crm} />
                             <InfoRow label="E-MAIL" value={doctor.email} />
                             <InfoRow label="PHONE" value={doctor.phone} />
+                            {scheduleRanges.length > 0 && (
+                                <InfoRow label="HORÁRIOS" value={scheduleRanges.join("  |  ")} />
+                            )}
 
                             <div className="pt-1">
                                 <dt className="block text-[11px] font-bold tracking-[0.16em] uppercase text-neutral-500 mb-2">
-                                    WORKING DAYS
+                                    DIAS DE ATENDIMENTO
                                 </dt>
                                 <div className="flex flex-wrap gap-2">
-                                    {["S", "T", "W", "T", "F"].map((d, i) => (
-                                        <span key={i} className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-600 text-white text-[12px] font-bold shadow-[0_4px_10px_-2px_rgba(16,142,93,0.3)]">
-                                            {d}
-                                        </span>
-                                    ))}
-                                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-neutral-200 text-neutral-500 text-[12px] font-bold">
-                                        S
-                                    </span>
+                                    {Object.keys(DAY_INITIALS).map((k) => {
+                                        const active = doctor.workDays.includes(k)
+                                        return (
+                                            <span
+                                                key={k}
+                                                className={`inline-flex h-8 w-8 items-center justify-center rounded-full text-[12px] font-bold ${
+                                                    active
+                                                        ? "bg-brand-600 text-white shadow-[0_4px_10px_-2px_rgba(16,142,93,0.3)]"
+                                                        : "bg-neutral-200 text-neutral-500"
+                                                }`}
+                                            >
+                                                {DAY_INITIALS[k]}
+                                            </span>
+                                        )
+                                    })}
                                 </div>
                             </div>
                         </dl>
@@ -188,35 +422,18 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                         </header>
 
                         <div className="flex flex-wrap gap-2.5">
-                            {["Clínica Geral", "Medicina Interna", "Geriatria"].map((s) => (
+                            {doctor.specialties.map((s) => (
                                 <span key={s} className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-brand-50 text-brand-700 text-[13px] font-semibold ring-1 ring-brand-600/10">
                                     {s}
-                                    <button type="button" aria-label={`Remover especialidade ${s}`} className="h-4.5 w-4.5 inline-flex items-center justify-center rounded-full bg-brand-600/10 text-brand-700 hover:bg-brand-600 hover:text-white transition-colors">
-                                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                            <line x1="18" y1="6" x2="6" y2="18" />
-                                            <line x1="6" y1="6" x2="18" y2="18" />
-                                        </svg>
-                                    </button>
                                 </span>
                             ))}
                         </div>
-
-                        <button
-                            type="button"
-                            className="mt-4 inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-neutral-100 text-neutral-500 text-sm font-semibold hover:bg-neutral-200 hover:text-neutral-800 transition-colors w-full justify-center"
-                        >
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                <line x1="12" y1="5" x2="12" y2="19" />
-                                <line x1="5" y1="12" x2="19" y2="12" />
-                            </svg>
-                            Adicionar Especialidade...
-                        </button>
                     </section>
                 </div>
 
                 {/* Coluna 2: Bio + Appointments + RecentActivity */}
                 <div className="space-y-5 md:space-y-6">
-                    {/* Bio / Descrição com watermark 99 */}
+                    {/* Bio / Descrição */}
                     <section className="relative rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] overflow-hidden">
                         <div aria-hidden="true" className="pointer-events-none absolute -top-6 right-3 md:-top-2 md:right-6 select-none text-7xl md:text-[120px] font-black text-brand-700/10 leading-none tracking-tight font-serif">
                             99
@@ -234,35 +451,32 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                         </header>
 
                         <div className="space-y-5 text-[14.5px] md:text-[15.5px] leading-[1.75] text-neutral-700 relative">
-                            <p>
-                                Dr. Arnaldo Souza é graduado pela Faculdade de Medicina da USP, com mais de 12 anos de experiência dedicados ao atendimento humanizado e preventivo. Especialista em Clínica Geral e Medicina Interna, foca sua prática no equilíbrio integral da saúde do paciente, combinando tecnologia diagnóstica avançada com uma abordagem empática.
-                            </p>
-                            <p>
-                                Acredita que o papel do médico vai além do tratamento de doenças, atuando como um parceiro na jornada de bem-estar e longevidade de cada indivíduo atendido no Vitalis Health.
-                            </p>
+                            {doctor.bio ? (
+                                doctor.bio.split(/\n+/).map((p, i) => (
+                                    <p key={i}>{p}</p>
+                                ))
+                            ) : (
+                                <p className="italic text-neutral-500">
+                                    Nenhuma biografia cadastrada para este médico.
+                                </p>
+                            )}
                         </div>
                     </section>
 
-                    {/* Appointments This Month + Recent Activity (2 colunas) */}
+                    {/* Appointments This Month + Recent Activity */}
                     <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-5 md:gap-6">
-                        {/* Appointments This Month - verde */}
                         <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 text-white p-5 md:p-6 shadow-[0_16px_40px_-8px_rgba(16,142,93,0.45)]">
                             <div aria-hidden="true" className="absolute -right-10 -bottom-12 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
                             <p className="text-[11px] md:text-xs font-bold tracking-[0.2em] uppercase text-white/75 relative">
-                                APPOINTMENTS THIS MONTH
+                                ATENDIMENTOS NO MÊS
                             </p>
                             <div className="mt-3 flex items-end justify-between relative">
                                 <div>
-                                    <p className="text-5xl md:text-6xl font-black tracking-tight">154</p>
+                                    <p className="text-5xl md:text-6xl font-black tracking-tight">—</p>
                                     <div className="mt-4 flex items-center gap-2">
-                                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/15 ring-1 ring-white/10 text-[12px] font-bold">
-                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                                <polyline points="17 11 12 6 7 11" />
-                                                <line x1="12" y1="18" x2="12" y2="6" />
-                                            </svg>
-                                            12%
+                                        <span className="text-[12.5px] text-white/85">
+                                            Dados serão exibidos após atendimentos registrados
                                         </span>
-                                        <span className="text-[12.5px] text-white/85">vs last month</span>
                                     </div>
                                 </div>
                                 <span aria-hidden="true" className="h-20 w-20 md:h-24 md:w-24 rounded-3xl bg-white/10 ring-1 ring-white/10 flex items-center justify-center relative overflow-hidden">
@@ -271,47 +485,21 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                                         <line x1="3" y1="10" x2="21" y2="10" />
                                         <line x1="8" y1="3" x2="8" y2="7" />
                                         <line x1="16" y1="3" x2="16" y2="7" />
-                                        <line x1="7" y1="15" x2="8" y2="15" />
-                                        <line x1="12" y1="15" x2="13" y2="15" />
-                                        <line x1="7" y1="18" x2="8" y2="18" />
-                                        <line x1="12" y1="18" x2="13" y2="18" />
-                                        <line x1="16.5" y1="15" x2="17.5" y2="15" />
-                                        <line x1="16.5" y1="18" x2="17.5" y2="18" />
                                     </svg>
                                 </span>
                             </div>
                         </section>
 
-                        {/* Recent Activity */}
                         <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-6 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)]">
                             <p className="text-[11px] md:text-xs font-bold tracking-[0.18em] uppercase text-neutral-500 mb-5">
-                                RECENT ACTIVITY
+                                ATIVIDADES RECENTES
                             </p>
 
                             <ol className="space-y-4">
-                                <ActivityItem
-                                    color="bg-brand-600"
-                                    title="Updated patient record #4402"
-                                    time="2 hours ago"
-                                />
-                                <ActivityItem
-                                    color="bg-slate-700"
-                                    title="Finished consultation with Maria Silva"
-                                    time="4 hours ago"
-                                    bold
-                                />
+                                <li className="text-sm text-neutral-500 italic">
+                                    Sem atividades registradas ainda.
+                                </li>
                             </ol>
-
-                            <Link
-                                href={`/dashboard/medicos/${id}/atividades`}
-                                className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-brand-700 hover:text-brand-800 transition-colors"
-                            >
-                                View full activity log
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                    <line x1="5" y1="12" x2="19" y2="12" />
-                                    <polyline points="12 5 19 12 12 19" />
-                                </svg>
-                            </Link>
                         </section>
                     </div>
 
@@ -333,7 +521,7 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                                 href="/dashboard/agendamento"
                                 className="text-sm font-bold text-brand-700 hover:text-brand-800 transition-colors shrink-0"
                             >
-                                View Schedule
+                                Ver Agenda
                             </Link>
                         </header>
 
@@ -341,15 +529,18 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                             <table className="w-full text-sm">
                                 <thead>
                                     <tr className="text-left border-b border-neutral-100">
-                                        <th className="py-3 px-2 text-[11.5px] font-bold tracking-[0.16em] uppercase text-neutral-500">Patient</th>
-                                        <th className="py-3 px-2 text-[11.5px] font-bold tracking-[0.16em] uppercase text-neutral-500">Time</th>
-                                        <th className="py-3 px-2 text-[11.5px] font-bold tracking-[0.16em] uppercase text-neutral-500">Type</th>
+                                        <th className="py-3 px-2 text-[11.5px] font-bold tracking-[0.16em] uppercase text-neutral-500">Paciente</th>
+                                        <th className="py-3 px-2 text-[11.5px] font-bold tracking-[0.16em] uppercase text-neutral-500">Horário</th>
+                                        <th className="py-3 px-2 text-[11.5px] font-bold tracking-[0.16em] uppercase text-neutral-500">Tipo</th>
                                         <th className="py-3 px-2 text-right text-[11.5px] font-bold tracking-[0.16em] uppercase text-neutral-500">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-neutral-100">
-                                    <UpcomingRow patient="João Silva" initials="JS" color="from-sky-400 to-blue-600" time="09:30 AM" type="Regular Checkup" status="CONFIRMED" />
-                                    <UpcomingRow patient="Ana Ferreira" initials="AF" color="from-emerald-400 to-green-600" time="11:00 AM" type="Follow-up" status="PENDING" />
+                                    <tr>
+                                        <td colSpan={4} className="py-6 text-center text-sm text-neutral-500 italic">
+                                            Nenhum atendimento agendado para este médico.
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -360,175 +551,13 @@ export default function DoctorProfilePage({ id }: { id: string }) {
     )
 }
 
-type DoctorDetail = {
-    id: string
-    fullName: string
-    specialty: string
-    status: string
-    crm: string
-    rating: string
-    reviews: number
-    experience: number
-    email: string
-    phone: string
-    avatarGradient: string
-    initials: string
-}
-
-const DOCTORS_DB: Record<string, DoctorDetail> = {
-    "1": {
-        id: "1",
-        fullName: "Dr. Arnaldo Souza",
-        specialty: "General Clinic / Internal Medicine",
-        status: "AVAILABLE",
-        crm: "123456-SP",
-        rating: "4.9",
-        reviews: 124,
-        experience: 12,
-        email: "arnaldo.souza@vitalis.com",
-        phone: "+55 (11) 98765-4321",
-        avatarGradient: "from-sky-400 to-blue-600",
-        initials: "AS",
-    },
-    "2": {
-        id: "2",
-        fullName: "Dra. Beatriz Costa",
-        specialty: "Cardiologia",
-        status: "EM CONSULTA",
-        crm: "234567-SP",
-        rating: "5.0",
-        reviews: 84,
-        experience: 9,
-        email: "beatriz.costa@vitalis.com",
-        phone: "+55 (11) 97654-3210",
-        avatarGradient: "from-fuchsia-400 to-rose-500",
-        initials: "BC",
-    },
-    "3": {
-        id: "3",
-        fullName: "Dr. Ricardo Mendes",
-        specialty: "Pediatria",
-        status: "AVAILABLE",
-        crm: "345678-SP",
-        rating: "4.8",
-        reviews: 215,
-        experience: 15,
-        email: "ricardo.mendes@vitalis.com",
-        phone: "+55 (11) 98888-1234",
-        avatarGradient: "from-amber-300 to-orange-500",
-        initials: "RM",
-    },
-    "4": {
-        id: "4",
-        fullName: "Dra. Julia Ramos",
-        specialty: "Dermatologia",
-        status: "AVAILABLE",
-        crm: "456789-SP",
-        rating: "4.9",
-        reviews: 56,
-        experience: 8,
-        email: "julia.ramos@vitalis.com",
-        phone: "+55 (11) 99000-2020",
-        avatarGradient: "from-violet-400 to-purple-600",
-        initials: "JR",
-    },
-    "5": {
-        id: "5",
-        fullName: "Dr. Marcos Vinícius",
-        specialty: "Neurologia",
-        status: "INDISPONÍVEL",
-        crm: "567890-SP",
-        rating: "5.0",
-        reviews: 142,
-        experience: 20,
-        email: "marcos.vinicius@vitalis.com",
-        phone: "+55 (11) 97000-3030",
-        avatarGradient: "from-slate-400 to-slate-700",
-        initials: "MV",
-    },
-    "6": {
-        id: "6",
-        fullName: "Dra. Helena Souza",
-        specialty: "Ginecologia",
-        status: "AVAILABLE",
-        crm: "678901-SP",
-        rating: "4.7",
-        reviews: 198,
-        experience: 11,
-        email: "helena.souza@vitalis.com",
-        phone: "+55 (11) 99876-5000",
-        avatarGradient: "from-teal-400 to-emerald-600",
-        initials: "HS",
-    },
-}
-
-function getDoctorById(id: string): DoctorDetail {
-    return DOCTORS_DB[id] ?? DOCTORS_DB["1"]
-}
-
 function InfoRow({ label, value }: { label: string; value: string }) {
     return (
         <div>
             <dt className="block text-[11px] font-bold tracking-[0.16em] uppercase text-neutral-500 mb-1.5">
                 {label}
             </dt>
-            <dd className="text-[15px] font-semibold text-neutral-900">{value}</dd>
+            <dd className="text-[15px] font-semibold text-neutral-900 break-words">{value}</dd>
         </div>
-    )
-}
-
-function ActivityItem({ color, title, time, bold }: { color: string; title: string; time: string; bold?: boolean }) {
-    return (
-        <li className="flex items-start gap-3">
-            <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${color} shadow-sm`} />
-            <div className="flex-1 min-w-0">
-                <p className={`text-[14px] ${bold ? "font-semibold text-neutral-900" : "text-neutral-700"} leading-snug`}>
-                    {title}
-                </p>
-                <p className="text-xs text-neutral-500 mt-0.5">{time}</p>
-            </div>
-        </li>
-    )
-}
-
-type UpcomingStatus = "CONFIRMED" | "PENDING"
-
-function UpcomingRow({
-    patient,
-    initials,
-    color,
-    time,
-    type,
-    status,
-}: {
-    patient: string
-    initials: string
-    color: string
-    time: string
-    type: string
-    status: UpcomingStatus
-}) {
-    const pill =
-        status === "CONFIRMED"
-            ? "bg-green-100 text-green-700 ring-1 ring-green-700/15"
-            : "bg-amber-100 text-amber-700 ring-1 ring-amber-600/15"
-    return (
-        <tr className="hover:bg-neutral-50/70 transition-colors">
-            <td className="py-4 px-2">
-                <div className="flex items-center gap-3">
-                    <span className={`inline-flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br ${color} text-white text-[11px] font-bold ring-2 ring-white shadow-sm`}>
-                        {initials}
-                    </span>
-                    <span className="font-semibold text-neutral-900">{patient}</span>
-                </div>
-            </td>
-            <td className="py-4 px-2 text-neutral-700 font-medium tabular-nums">{time}</td>
-            <td className="py-4 px-2 text-neutral-700">{type}</td>
-            <td className="py-4 px-2 text-right">
-                <span className={`inline-flex px-3 py-1 rounded-full text-[10.5px] font-extrabold tracking-wide uppercase ${pill}`}>
-                    {status}
-                </span>
-            </td>
-        </tr>
     )
 }

@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 type FormState = {
@@ -54,7 +55,10 @@ const DAYS: Array<{ key: string; label: string }> = [
 ]
 
 export default function RegisterDoctorPage() {
+    const router = useRouter()
     const [form, setForm] = useState<FormState>(initialState)
+    const [submitting, setSubmitting] = useState(false)
+    const [apiError, setApiError] = useState<string | null>(null)
 
     const update = (field: keyof FormState, value: string | string[] | Record<string, boolean>) => {
         setForm((prev) => ({ ...prev, [field]: value as never }))
@@ -74,6 +78,51 @@ export default function RegisterDoctorPage() {
 
     const removeSpecialty = (s: string) => {
         update("specialties", form.specialties.filter((x) => x !== s))
+    }
+
+    const handleSubmit = async () => {
+        setApiError(null)
+        setSubmitting(true)
+        try {
+            const payload = {
+                fullName: form.fullName,
+                birthDate: form.birthDate || null,
+                gender: form.gender || null,
+                documentId: form.documentId || null,
+                email: form.email || null,
+                phone: form.phone || null,
+                crm: form.crm,
+                crmUf: form.crmUf,
+                specialties: form.specialties,
+                bio: form.bio || null,
+                days: form.days,
+                startMorning: form.startMorning || null,
+                endMorning: form.endMorning || null,
+                startAfternoon: form.startAfternoon || null,
+                endAfternoon: form.endAfternoon || null,
+                notes: form.notes || null,
+            }
+
+            const res = await fetch("/api/doctors", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            })
+
+            const data = await res.json().catch(() => ({}))
+            if (!res.ok) {
+                setApiError(data.error || "Erro ao cadastrar médico")
+                return
+            }
+
+            router.push(`/dashboard/medicos/${data.id}`)
+            router.refresh()
+        } catch (err) {
+            console.error(err)
+            setApiError("Falha de comunicação com o servidor. Tente novamente.")
+        } finally {
+            setSubmitting(false)
+        }
     }
 
     return (
@@ -340,11 +389,10 @@ export default function RegisterDoctorPage() {
                                         type="button"
                                         disabled={exists}
                                         onClick={() => update("specialties", [...form.specialties, s])}
-                                        className={`px-3 py-1.5 rounded-full text-[11.5px] font-semibold transition-all ${
-                                            exists
-                                                ? "bg-neutral-100 text-neutral-400 cursor-not-allowed"
-                                                : "bg-neutral-100 text-neutral-600 hover:bg-brand-50 hover:text-brand-700 ring-1 ring-transparent hover:ring-brand-600/10"
-                                        }`}
+                                        className={`px-3 py-1.5 rounded-full text-[11.5px] font-semibold transition-all ${exists
+                                            ? "bg-neutral-100 text-neutral-400 cursor-not-allowed"
+                                            : "bg-neutral-100 text-neutral-600 hover:bg-brand-50 hover:text-brand-700 ring-1 ring-transparent hover:ring-brand-600/10"
+                                            }`}
                                     >
                                         + {s}
                                     </button>
@@ -380,11 +428,10 @@ export default function RegisterDoctorPage() {
                                         type="button"
                                         key={key}
                                         onClick={() => toggleDay(key)}
-                                        className={`relative h-12 md:h-14 rounded-2xl text-[12px] md:text-[13px] font-bold transition-all ${
-                                            active
-                                                ? "bg-gradient-to-br from-brand-600 to-brand-700 text-white shadow-[0_8px_16px_-4px_rgba(16,142,93,0.35)] ring-1 ring-white/20"
-                                                : "bg-neutral-100 text-neutral-500 hover:bg-neutral-200/80 hover:text-neutral-700"
-                                        }`}
+                                        className={`relative h-12 md:h-14 rounded-2xl text-[12px] md:text-[13px] font-bold transition-all ${active
+                                            ? "bg-gradient-to-br from-brand-600 to-brand-700 text-white shadow-[0_8px_16px_-4px_rgba(16,142,93,0.35)] ring-1 ring-white/20"
+                                            : "bg-neutral-100 text-neutral-500 hover:bg-neutral-200/80 hover:text-neutral-700"
+                                            }`}
                                     >
                                         {label}
                                     </button>
@@ -490,6 +537,12 @@ export default function RegisterDoctorPage() {
             {/* Divisória e botões */}
             <div className="h-px w-full bg-neutral-200/70" />
 
+            {apiError && (
+                <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-[14px] font-semibold text-red-700 ring-1 ring-red-500/10">
+                    {apiError}
+                </div>
+            )}
+
             <footer className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4">
                 <Link
                     href="/dashboard/medicos"
@@ -500,22 +553,31 @@ export default function RegisterDoctorPage() {
                 <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3">
                     <button
                         type="button"
-                        className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-neutral-200 px-5 py-3.5 text-[14px] font-bold text-neutral-600 hover:bg-neutral-50 transition-colors"
+                        disabled={submitting}
+                        className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-neutral-200 px-5 py-3.5 text-[14px] font-bold text-neutral-600 hover:bg-neutral-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                         Salvar como Rascunho
                     </button>
                     <button
                         type="button"
-                        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 px-7 py-3.5 text-[15px] font-bold text-white shadow-[0_12px_28px_rgba(16,142,93,0.32)] hover:brightness-[1.04] active:brightness-100 transition-all"
+                        onClick={handleSubmit}
+                        disabled={submitting}
+                        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 px-7 py-3.5 text-[15px] font-bold text-white shadow-[0_12px_28px_rgba(16,142,93,0.32)] hover:brightness-[1.04] active:brightness-100 transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:brightness-100"
                     >
                         <span className="relative inline-flex h-6 w-6 items-center justify-center rounded-lg bg-white/15 ring-1 ring-white/20">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-                                <polyline points="17 21 17 13 7 13 7 21" />
-                                <polyline points="7 3 7 8 15 8" />
-                            </svg>
+                            {submitting ? (
+                                <svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true">
+                                    <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                                </svg>
+                            ) : (
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                                    <polyline points="17 21 17 13 7 13 7 21" />
+                                    <polyline points="7 3 7 8 15 8" />
+                                </svg>
+                            )}
                         </span>
-                        Salvar e Ativar Médico
+                        {submitting ? "Salvando..." : "Salvar e Ativar Médico"}
                     </button>
                 </div>
             </footer>

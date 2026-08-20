@@ -81,7 +81,7 @@ model DoctorProfile {
   crmUf          String   @map("crm_uf")
   specialties    String[]
   bio            String?  @db.Text
-  workDays       String[] @default([])
+  workDays       String[] @default([]) @map("work_days")
   startMorning   String?  @map("start_morning")
   endMorning     String?  @map("end_morning")
   startAfternoon String?  @map("start_afternoon")

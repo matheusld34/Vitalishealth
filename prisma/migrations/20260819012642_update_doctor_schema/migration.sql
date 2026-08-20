@@ -28,7 +28,7 @@ CREATE TABLE "doctor_profiles" (
     "crm_uf" TEXT NOT NULL,
     "specialties" TEXT[],
     "bio" TEXT,
-    "workDays" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "work_days" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "start_morning" TEXT,
     "end_morning" TEXT,
     "start_afternoon" TEXT,

@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 type DoctorStatus = "DISPONÍVEL" | "EM CONSULTA" | "INDISPONÍVEL"
 
@@ -19,7 +19,26 @@ type Doctor = {
     accent: string
 }
 
-const doctors: Doctor[] = [
+type ApiDoctor = {
+    id: string
+    name: string | null
+    email: string | null
+    phone: string | null
+    doctorProfile: {
+        id: string
+        crm: string
+        crmUf: string
+        specialties: string[]
+        bio: string | null
+        workDays: string[]
+        startMorning: string | null
+        endMorning: string | null
+        startAfternoon: string | null
+        endAfternoon: string | null
+    } | null
+}
+
+const FALLBACK_DOCTORS: Doctor[] = [
     {
         id: "1",
         name: "Dr. Arnaldo Souza",
@@ -100,6 +119,84 @@ const doctors: Doctor[] = [
     },
 ]
 
+const GRADIENTS = [
+    "from-sky-400 to-blue-600",
+    "from-fuchsia-400 to-rose-500",
+    "from-amber-300 to-orange-500",
+    "from-violet-400 to-purple-600",
+    "from-slate-400 to-slate-700",
+    "from-teal-400 to-emerald-600",
+    "from-indigo-400 to-indigo-600",
+    "from-cyan-400 to-sky-600",
+]
+
+const ACCENTS = [
+    "bg-sky-500",
+    "bg-rose-500",
+    "bg-amber-500",
+    "bg-violet-500",
+    "bg-slate-500",
+    "bg-emerald-500",
+    "bg-indigo-500",
+    "bg-cyan-500",
+]
+
+const DAY_LABELS: Record<string, string> = {
+    seg: "Seg",
+    ter: "Ter",
+    qua: "Qua",
+    qui: "Qui",
+    sex: "Sex",
+    sáb: "Sáb",
+    dom: "Dom",
+}
+
+function hash(str: string): number {
+    let h = 0
+    for (let i = 0; i < str.length; i++) {
+        h = (h << 5) - h + str.charCodeAt(i)
+        h |= 0
+    }
+    return Math.abs(h)
+}
+
+function mapApiToDoctor(ad: ApiDoctor, idx: number): Doctor {
+    const name = ad.name?.trim() || "Médico(a)"
+    const initials = name
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((n) => n[0]?.toUpperCase() ?? "")
+        .join("") || "?"
+
+    const paletteIdx = hash(ad.id) % GRADIENTS.length
+
+    const workingDaysArr = ad.doctorProfile?.workDays ?? []
+    const workingDays =
+        workingDaysArr.length === 0
+            ? "Agenda a definir"
+            : workingDaysArr
+                  .map((k) => DAY_LABELS[k] ?? k)
+                  .filter(Boolean)
+                  .join(", ")
+
+    const specialty = (ad.doctorProfile?.specialties ?? []).slice(0, 2).join(" / ") || "Especialidade"
+
+    return {
+        id: ad.id,
+        name,
+        title: /(dra|sra|senhora)/i.test(name) ? "Médica" : "Médico",
+        specialty,
+        workingDays,
+        rating: "—",
+        reviewsCount: 0,
+        status: "DISPONÍVEL",
+        avatarGradient: GRADIENTS[paletteIdx],
+        initials,
+        accent: ACCENTS[paletteIdx],
+    }
+}
+
 function statusStyle(s: DoctorStatus) {
     switch (s) {
         case "DISPONÍVEL":
@@ -113,6 +210,46 @@ function statusStyle(s: DoctorStatus) {
 
 export default function DoctorsPage() {
     const [search, setSearch] = useState("")
+    const [doctors, setDoctors] = useState<Doctor[]>([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        let cancelled = false
+        async function load() {
+            try {
+                const res = await fetch("/api/doctors")
+                if (!res.ok) throw new Error("Failed to load")
+                const data = await res.json()
+                if (cancelled) return
+                const list: ApiDoctor[] = data.doctors ?? []
+                if (list.length === 0) {
+                    setDoctors(FALLBACK_DOCTORS)
+                    return
+                }
+                const mapped = list.map((ad, i) => mapApiToDoctor(ad, i))
+                setDoctors(mapped)
+            } catch (e) {
+                console.error(e)
+                if (!cancelled) setDoctors(FALLBACK_DOCTORS)
+            } finally {
+                if (!cancelled) setLoading(false)
+            }
+        }
+        load()
+        return () => {
+            cancelled = true
+        }
+    }, [])
+
+    const filtered = useMemo(() => {
+        const q = search.trim().toLowerCase()
+        if (!q) return doctors
+        return doctors.filter((d) =>
+            [d.name, d.specialty, d.workingDays, d.initials].some((x) =>
+                x.toLowerCase().includes(q)
+            )
+        )
+    }, [doctors, search])
 
     return (
         <div className="space-y-6 md:space-y-8 relative">
@@ -173,9 +310,9 @@ export default function DoctorsPage() {
 
             {/* Doctors grid */}
             <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
-                {doctors.map((d) => (
-                    <DoctorCard key={d.id} doctor={d} />
-                ))}
+                {loading && doctors.length === 0
+                    ? Array.from({ length: 4 }).map((_, i) => <DoctorCardSkeleton key={i} />)
+                    : filtered.map((d) => <DoctorCard key={d.id} doctor={d} />)}
 
                 {/* Add new card */}
                 <Link
@@ -269,17 +406,19 @@ function DoctorCard({ doctor }: { doctor: Doctor }) {
                     </span>
                     <span className="font-medium">{doctor.workingDays}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 text-amber-500">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                        </svg>
-                    </span>
-                    <span className="font-semibold text-neutral-800">{doctor.rating}</span>
-                    <span className="text-neutral-500 text-[13px]">
-                        ({doctor.reviewsCount} avaliações)
-                    </span>
-                </div>
+                {doctor.rating !== "—" && (
+                    <div className="flex items-center gap-2">
+                        <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 text-amber-500">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                            </svg>
+                        </span>
+                        <span className="font-semibold text-neutral-800">{doctor.rating}</span>
+                        <span className="text-neutral-500 text-[13px]">
+                            ({doctor.reviewsCount} avaliações)
+                        </span>
+                    </div>
+                )}
             </div>
 
             {/* Action */}
@@ -293,6 +432,24 @@ function DoctorCard({ doctor }: { doctor: Doctor }) {
                     <polyline points="12 5 19 12 12 19" />
                 </svg>
             </Link>
+        </article>
+    )
+}
+
+function DoctorCardSkeleton() {
+    return (
+        <article className="rounded-3xl border border-neutral-200/60 bg-white p-5 md:p-6 shadow-[0_4px_20px_-14px_rgba(15,23,42,0.1)] min-h-[420px]">
+            <div className="mx-auto h-24 w-24 rounded-2xl bg-neutral-100 animate-pulse" />
+            <div className="mx-auto -mt-3 h-6 w-24 rounded-full bg-white ring-2 ring-white" />
+            <div className="mt-8 space-y-2 text-center">
+                <div className="mx-auto h-6 w-3/4 rounded-xl bg-neutral-100 animate-pulse" />
+                <div className="mx-auto mt-2 h-6 w-1/2 rounded-full bg-brand-50 animate-pulse" />
+            </div>
+            <div className="mt-6 space-y-3">
+                <div className="h-4 w-full rounded-xl bg-neutral-100 animate-pulse" />
+                <div className="h-4 w-2/3 rounded-xl bg-neutral-100 animate-pulse" />
+            </div>
+            <div className="mt-6 h-11 w-full rounded-2xl border-2 border-brand-700/30 bg-white animate-pulse" />
         </article>
     )
 }
