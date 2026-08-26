@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 type FormState = {
@@ -40,10 +41,58 @@ const initialState: FormState = {
 }
 
 export default function RegisterPatientPage() {
+    const router = useRouter()
     const [form, setForm] = useState<FormState>(initialState)
+    const [submitting, setSubmitting] = useState(false)
+    const [apiError, setApiError] = useState<string | null>(null)
 
     const update = (field: keyof FormState, value: string) => {
         setForm((prev) => ({ ...prev, [field]: value }))
+    }
+
+    const handleSubmit = async () => {
+        setApiError(null)
+        setSubmitting(true)
+        try {
+            const payload = {
+                fullName: form.fullName,
+                birthDate: form.birthDate || null,
+                gender: form.gender || null,
+                documentId: form.documentId || null,
+                phone: form.phone || null,
+                email: form.email || null,
+                insuranceOperator: form.insuranceOperator || null,
+                planType: form.planType || null,
+                cardNumber: form.cardNumber || null,
+                cep: form.cep || null,
+                street: form.street || null,
+                number: form.number || null,
+                state: form.state || null,
+                city: form.city || null,
+                clinicalStatus: form.clinicalStatus || null,
+                notes: null,
+            }
+
+            const res = await fetch("/api/patients", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            })
+
+            const data = await res.json().catch(() => ({}))
+            if (!res.ok) {
+                setApiError(data.error || "Erro ao cadastrar paciente")
+                return
+            }
+
+            router.push(`/dashboard/pacientes/${data.id}/historico`)
+            router.refresh()
+        } catch (err) {
+            console.error(err)
+            setApiError("Falha de comunicação com o servidor. Tente novamente.")
+        } finally {
+            setSubmitting(false)
+        }
     }
 
     return (
@@ -408,6 +457,12 @@ export default function RegisterPatientPage() {
             {/* Divisória fina + rodapé com ações */}
             <div className="h-px w-full bg-neutral-200/70 mt-4" />
 
+            {apiError && (
+                <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-[14px] font-semibold text-red-700 ring-1 ring-red-500/10">
+                    {apiError}
+                </div>
+            )}
+
             <footer className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4 mt-4">
                 <Link
                     href="/dashboard/pacientes"
@@ -417,16 +472,24 @@ export default function RegisterPatientPage() {
                 </Link>
                 <button
                     type="button"
-                    className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 px-7 py-4 text-[15px] font-bold text-white shadow-[0_12px_28px_rgba(16,142,93,0.32)] hover:brightness-[1.04] active:brightness-100 transition-all"
+                    onClick={handleSubmit}
+                    disabled={submitting}
+                    className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 px-7 py-4 text-[15px] font-bold text-white shadow-[0_12px_28px_rgba(16,142,93,0.32)] hover:brightness-[1.04] active:brightness-100 transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:brightness-100"
                 >
                     <span className="relative inline-flex h-6 w-6 items-center justify-center rounded-lg bg-white/15 ring-1 ring-white/20">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-                            <polyline points="17 21 17 13 7 13 7 21" />
-                            <polyline points="7 3 7 8 15 8" />
-                        </svg>
+                        {submitting ? (
+                            <svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true">
+                                <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                            </svg>
+                        ) : (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                                <polyline points="17 21 17 13 7 13 7 21" />
+                                <polyline points="7 3 7 8 15 8" />
+                            </svg>
+                        )}
                     </span>
-                    Salvar Paciente
+                    {submitting ? "Salvando..." : "Salvar Paciente"}
                 </button>
             </footer>
         </div>

@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useEffect, useState } from "react"
 
 type PatientDetail = {
     id: string
@@ -15,6 +16,9 @@ type PatientDetail = {
     email: string
     avatarGradient: string
     initials: string
+    notes?: string | null
+    clinicalStatus?: string | null
+    address?: string | null
 }
 
 type HistoryItem = {
@@ -27,6 +31,40 @@ type HistoryItem = {
     room: string
     observations: string
     status: "Concluído" | "Confirmado" | "Cancelado" | "Em Andamento"
+}
+
+type ApiDetail = {
+    id: string
+    fullName: string
+    cpf: string | null
+    phone: string | null
+    email: string | null
+    birthDate: string | null
+    gender: string | null
+    insuranceOperator: string | null
+    planType: string | null
+    cardNumber: string | null
+    cep: string | null
+    street: string | null
+    addressNumber: string | null
+    state: string | null
+    city: string | null
+    clinicalStatus: string | null
+    notes: string | null
+    createdAt: string
+    appointments: Array<{
+        id: string
+        dateTime: string
+        status: string | null
+        notes?: string | null
+        room?: string | null
+        type?: string | null
+        doctor: {
+            id: string
+            name: string | null
+            doctorProfile?: { specialties?: string[] | null } | null
+        } | null
+    }>
 }
 
 const PATIENTS_DB: Record<string, PatientDetail> = {
@@ -177,12 +215,197 @@ const HISTORY: HistoryItem[] = [
     },
 ]
 
+const AVATAR_GRADIENTS = [
+    "from-sky-400 to-blue-600",
+    "from-rose-400 to-pink-600",
+    "from-amber-300 to-orange-500",
+    "from-violet-400 to-purple-600",
+    "from-teal-400 to-emerald-600",
+    "from-fuchsia-400 to-rose-500",
+    "from-indigo-400 to-indigo-600",
+    "from-cyan-400 to-sky-600",
+]
+
+function phash(s: string): number {
+    let h = 0
+    for (let i = 0; i < s.length; i++) h = (h << 5) - h + s.charCodeAt(i) | 0
+    return Math.abs(h)
+}
+
+function calcAge(iso: string | null | undefined): number {
+    if (!iso) return 0
+    const b = new Date(iso)
+    if (isNaN(b.getTime())) return 0
+    const now = new Date()
+    let a = now.getFullYear() - b.getFullYear()
+    const m = now.getMonth() - b.getMonth()
+    if (m < 0 || (m === 0 && now.getDate() < b.getDate())) a--
+    return Math.max(0, a)
+}
+
+function formatBirthPt(iso: string | null | undefined): string {
+    if (!iso) return "—"
+    try {
+        const d = new Date(iso)
+        if (isNaN(d.getTime())) return "—"
+        return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" }).replace(".", "")
+    } catch {
+        return "—"
+    }
+}
+
+function formatCpf(v: string | null | undefined): string {
+    if (!v) return "—"
+    const only = v.replace(/\D/g, "").slice(0, 11)
+    if (only.length !== 11) return v
+    return `${only.slice(0, 3)}.${only.slice(3, 6)}.${only.slice(6, 9)}-${only.slice(9)}`
+}
+
+function formatPhone(v: string | null | undefined): string {
+    if (!v) return "Não informado"
+    const only = v.replace(/\D/g, "")
+    if (only.length === 11) return `(${only.slice(0, 2)}) ${only[2]} ${only.slice(3, 7)}-${only.slice(7)}`
+    if (only.length === 10) return `(${only.slice(0, 2)}) ${only.slice(2, 6)}-${only.slice(6)}`
+    return v
+}
+
+function formatApptPt(iso: string): string {
+    try {
+        const d = new Date(iso)
+        if (isNaN(d.getTime())) return "—"
+        const date = d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }).replace(".", "")
+        const time = d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })
+        const dow = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"][d.getDay()]
+        return `${date}, ${dow} · ${time}`
+    } catch {
+        return "—"
+    }
+}
+
+function mapApptStatus(s: string | null | undefined): HistoryItem["status"] {
+    const v = (s || "").toLowerCase()
+    if (v.includes("cancel")) return "Cancelado"
+    if (v.includes("confirm") || v.includes("scheduled")) return "Confirmado"
+    if (v.includes("progress") || v.includes("andamento")) return "Em Andamento"
+    return "Concluído"
+}
+
+function mapAppointmentsToHistory(appts: ApiDetail["appointments"]): HistoryItem[] {
+    return appts.map((a) => {
+        const specialities = (a.doctor?.doctorProfile?.specialties ?? []) as string[]
+        const kindPart = a.type || (specialities.length ? specialities[0] : "Consulta")
+        const kind = specialities.length > 0 ? `${kindPart} · ${specialities[0]}` : kindPart
+        const docName = a.doctor?.name || "Médico(a)"
+        const avatarIdx = a.doctor?.id ? phash(a.doctor.id) % AVATAR_GRADIENTS.length : 0
+        const status = mapApptStatus(a.status)
+        return {
+            id: a.id,
+            date: new Date(a.dateTime).toISOString().slice(0, 10),
+            dayRef: formatApptPt(a.dateTime),
+            kind,
+            doctor: docName,
+            doctorAvatar: AVATAR_GRADIENTS[avatarIdx],
+            room: a.room || "Sala 01",
+            observations: a.notes || "Sem observações registradas.",
+            status,
+        }
+    })
+}
+
+function mapApiToPatient(ap: ApiDetail): PatientDetail {
+    const name = ap.fullName?.trim() || "Paciente"
+    const initials = name
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((n) => n[0]?.toUpperCase() ?? "")
+        .join("") || "?"
+    const gradient = AVATAR_GRADIENTS[phash(ap.id) % AVATAR_GRADIENTS.length]
+    const insurance =
+        ap.insuranceOperator && ap.planType
+            ? `${ap.insuranceOperator} - ${ap.planType}`
+            : ap.insuranceOperator || "Particular"
+    const age = calcAge(ap.birthDate)
+    const birth = formatBirthPt(ap.birthDate)
+    const record = `#${(phash(ap.id) % 99000 + 1000).toString().padStart(5, "0")}`
+
+    let status: PatientDetail["status"] = "Ativo"
+    if (ap.clinicalStatus && ap.clinicalStatus.length > 30) status = "Em Tratamento"
+    const recent = ap.appointments.length > 0 ? new Date(ap.appointments[0].dateTime) : null
+    if (recent) {
+        const diffH = (Date.now() - recent.getTime()) / (1000 * 60 * 60)
+        if (diffH < 48) status = "Aguardando"
+    }
+
+    const addressParts = [
+        ap.street ? `${ap.street}${ap.addressNumber ? `, ${ap.addressNumber}` : ""}` : null,
+        [ap.city, ap.state].filter(Boolean).join(" - "),
+        ap.cep ? `CEP ${ap.cep}` : null,
+    ].filter(Boolean)
+
+    return {
+        id: ap.id,
+        name,
+        record,
+        status,
+        insurance,
+        birth,
+        age,
+        documentId: formatCpf(ap.cpf),
+        phone: formatPhone(ap.phone),
+        email: ap.email || "Não informado",
+        avatarGradient: gradient,
+        initials,
+        notes: ap.notes,
+        clinicalStatus: ap.clinicalStatus,
+        address: addressParts.length ? addressParts.join(" · ") : null,
+    }
+}
+
 export default function PatientHistoryPage({ id }: { id: string }) {
-    const patient = PATIENTS_DB[id] ?? PATIENTS_DB["1"]
-    const totalAppointments = HISTORY.length
-    const completed = HISTORY.filter((h) => h.status === "Concluído").length
-    const returnRate = 94 // %
-    const nextAppointment = HISTORY[4] // Confirmado
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+    const [patient, setPatient] = useState<PatientDetail>(PATIENTS_DB[id] ?? PATIENTS_DB["1"])
+    const [history, setHistory] = useState<HistoryItem[]>(HISTORY)
+
+    useEffect(() => {
+        let cancelled = false
+        async function load() {
+            setLoading(true)
+            setError(null)
+            try {
+                const res = await fetch(`/api/patients/${id}`)
+                if (!res.ok) {
+                    if (res.status === 404) throw new Error("Paciente não encontrado no banco.")
+                    throw new Error("Falha ao carregar perfil do paciente.")
+                }
+                const data = await res.json()
+                if (cancelled) return
+                const api: ApiDetail = data.patient
+                const p = mapApiToPatient(api)
+                const h = api.appointments?.length ? mapAppointmentsToHistory(api.appointments) : HISTORY
+                setPatient(p)
+                setHistory(h)
+            } catch (e: any) {
+                if (cancelled) return
+                console.error(e)
+                setError(e.message || "Erro desconhecido")
+                setPatient(PATIENTS_DB[id] ?? PATIENTS_DB["1"])
+                setHistory(HISTORY)
+            } finally {
+                if (!cancelled) setLoading(false)
+            }
+        }
+        load()
+        return () => {
+            cancelled = true
+        }
+    }, [id])
+
+    const totalAppointments = history.length
+    const completed = history.filter((h) => h.status === "Concluído").length
+    const returnRate = totalAppointments > 0 ? Math.min(94, 60 + Math.round((completed / totalAppointments) * 40)) : 94
+    const nextAppointment = history.find((h) => h.status === "Confirmado") ?? history[0] ?? (HISTORY[4] as HistoryItem)
 
     return (
         <div className="space-y-6 md:space-y-8 pb-10">
@@ -359,11 +582,16 @@ export default function PatientHistoryPage({ id }: { id: string }) {
                             </Link>
                         </header>
                         <div className="space-y-3">
-                            {HISTORY.filter((h) => h.status === "Confirmado")
+                            {history.filter((h) => h.status === "Confirmado")
                                 .slice(0, 2)
                                 .map((h) => (
                                     <UpcomingRow key={h.id} item={h} />
                                 ))}
+                            {history.filter((h) => h.status === "Confirmado").length === 0 ? (
+                                <p className="py-5 text-center text-sm text-neutral-500 rounded-2xl border border-dashed border-neutral-200">
+                                    Nenhuma consulta confirmada para este paciente.
+                                </p>
+                            ) : null}
                         </div>
                     </section>
 
@@ -414,7 +642,7 @@ export default function PatientHistoryPage({ id }: { id: string }) {
                                     Linha do Tempo Clínica
                                 </h2>
                                 <p className="text-sm text-neutral-500 mt-0.5">
-                                    {HISTORY.length} atendimentos registrados
+                                    {history.length} atendimentos registrados
                                 </p>
                             </div>
                         </div>
@@ -429,7 +657,7 @@ export default function PatientHistoryPage({ id }: { id: string }) {
                         </button>
                     </header>
 
-                    <Timeline items={HISTORY} />
+                    <Timeline items={history} />
                 </section>
             </div>
 
@@ -752,12 +980,12 @@ function Timeline({ items }: { items: HistoryItem[] }) {
                 return (
                     <li key={it.id} className={`relative pl-6 ${isLast ? "" : "pb-6"}`}>
                         <span className={`absolute -left-[11px] top-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full ring-4 ring-white ${it.status === "Cancelado"
-                                ? "bg-red-500"
-                                : it.status === "Em Andamento"
-                                    ? "bg-brand-500 animate-pulse"
-                                    : it.status === "Confirmado"
-                                        ? "bg-amber-400"
-                                        : "bg-brand-600"
+                            ? "bg-red-500"
+                            : it.status === "Em Andamento"
+                                ? "bg-brand-500 animate-pulse"
+                                : it.status === "Confirmado"
+                                    ? "bg-amber-400"
+                                    : "bg-brand-600"
                             } shadow`}>
                             <span className="sr-only">{it.status}</span>
                         </span>

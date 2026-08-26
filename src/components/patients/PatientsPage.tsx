@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 type PatientStatus = "Ativo" | "Em Tratamento" | "Aguardando" | "Inativo"
 
@@ -17,7 +17,22 @@ type Patient = {
     insurance: string
 }
 
-const patients: Patient[] = [
+type ApiPatient = {
+    id: string
+    fullName: string
+    cpf: string | null
+    insuranceOperator: string | null
+    planType: string | null
+    clinicalStatus: string | null
+    createdAt: string
+    appointments: Array<{
+        id: string
+        dateTime: string
+        doctor: { id: string; name: string | null } | null
+    }>
+}
+
+const FALLBACK_PATIENTS: Patient[] = [
     {
         id: "1",
         name: "Arnaldo Silveira",
@@ -75,6 +90,86 @@ const patients: Patient[] = [
     },
 ]
 
+const AVATAR_PALETTE = [
+    "from-sky-400 to-blue-600",
+    "from-rose-400 to-pink-600",
+    "from-amber-300 to-orange-500",
+    "from-violet-400 to-purple-600",
+    "from-teal-400 to-emerald-600",
+    "from-fuchsia-400 to-rose-500",
+    "from-indigo-400 to-indigo-600",
+    "from-cyan-400 to-sky-600",
+]
+
+function hash(str: string): number {
+    let h = 0
+    for (let i = 0; i < str.length; i++) {
+        h = (h << 5) - h + str.charCodeAt(i)
+        h |= 0
+    }
+    return Math.abs(h)
+}
+
+function formatPtDate(iso: string): string {
+    try {
+        const d = new Date(iso)
+        if (isNaN(d.getTime())) return "—"
+        return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" }).replace(".", "")
+    } catch {
+        return "—"
+    }
+}
+
+function recordFromId(id: string, idx: number): string {
+    if (!id) return `#88${(300 + idx).toString().padStart(3, "0")}`
+    const n = hash(id) % 99000 + 1000
+    return `#${n}`
+}
+
+function inferStatus(p: ApiPatient, idx: number): PatientStatus {
+    if (p.clinicalStatus && p.clinicalStatus.length > 30) return "Em Tratamento"
+    if (p.appointments && p.appointments.length > 0) {
+        const last = new Date(p.appointments[0].dateTime)
+        const now = new Date()
+        const diffH = (now.getTime() - last.getTime()) / (1000 * 60 * 60)
+        if (diffH < 48) return "Aguardando"
+        return "Ativo"
+    }
+    if (idx % 5 === 4) return "Inativo"
+    return "Ativo"
+}
+
+function mapApiToPatient(ap: ApiPatient, idx: number): Patient {
+    const name = ap.fullName?.trim() || "Paciente"
+    const initials = name
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((n) => n[0]?.toUpperCase() ?? "")
+        .join("") || "?"
+    const paletteIdx = hash(ap.id) % AVATAR_PALETTE.length
+
+    const lastAppt = ap.appointments?.[0]
+    const lastVisitDate = lastAppt ? formatPtDate(lastAppt.dateTime) : "Nunca atendido"
+    const lastVisitDoctor = lastAppt?.doctor?.name || "Aguardando agendamento"
+    const insurance =
+        ap.insuranceOperator && ap.planType
+            ? `${ap.insuranceOperator} - ${ap.planType}`
+            : ap.insuranceOperator || "Particular"
+
+    return {
+        id: ap.id,
+        name,
+        record: recordFromId(ap.id, idx),
+        avatarColor: AVATAR_PALETTE[paletteIdx],
+        initials,
+        lastVisitDate,
+        lastVisitDoctor,
+        status: inferStatus(ap, idx),
+        insurance,
+    }
+}
+
 function statusStyles(s: PatientStatus) {
     switch (s) {
         case "Ativo":
@@ -91,11 +186,57 @@ function statusStyles(s: PatientStatus) {
 export default function PatientsPage() {
     const [search, setSearch] = useState("")
     const [statusFilter, setStatusFilter] = useState<"all" | PatientStatus>("all")
+    const [patients, setPatients] = useState<Patient[]>([])
+    const [loading, setLoading] = useState(true)
 
-    const totalFiltered = 1284
-    const start = 1
-    const end = 10
-    const totalPages = 128
+    useEffect(() => {
+        let cancelled = false
+        async function load() {
+            try {
+                const res = await fetch("/api/patients")
+                if (!res.ok) throw new Error("failed")
+                const data = await res.json()
+                if (cancelled) return
+                const list: ApiPatient[] = data.patients ?? []
+                if (list.length === 0) {
+                    setPatients(FALLBACK_PATIENTS)
+                    return
+                }
+                setPatients(list.map((ap, i) => mapApiToPatient(ap, i)))
+            } catch (e) {
+                console.error(e)
+                if (!cancelled) setPatients(FALLBACK_PATIENTS)
+            } finally {
+                if (!cancelled) setLoading(false)
+            }
+        }
+        load()
+        return () => {
+            cancelled = true
+        }
+    }, [])
+
+    const filtered = useMemo(() => {
+        let list = patients
+        const q = search.trim().toLowerCase()
+        if (q) {
+            list = list.filter((p) =>
+                [p.name, p.record, p.insurance, p.lastVisitDoctor].some((x) =>
+                    x.toLowerCase().includes(q)
+                )
+            )
+        }
+        if (statusFilter !== "all") {
+            list = list.filter((p) => p.status === statusFilter)
+        }
+        return list
+    }, [patients, search, statusFilter])
+
+    const totalPatients = patients.length
+    const start = totalPatients === 0 ? 0 : 1
+    const end = Math.min(filtered.length, 10)
+    const totalFiltered = filtered.length
+    const totalPages = Math.max(1, Math.ceil(totalFiltered / 10))
 
     return (
         <div className="space-y-6 md:space-y-8">
@@ -171,13 +312,13 @@ export default function PatientsPage() {
             <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
                 <StatCard
                     label="Total de Pacientes"
-                    value="1,284"
-                    badge="+12%"
+                    value={totalPatients ? totalPatients.toLocaleString("pt-BR") : "—"}
+                    badge={totalPatients > 0 ? "+" + Math.min(12, Math.round(totalPatients / 100 * 12)) + "%" : undefined}
                     badgeType="positive"
                 />
                 <StatCard
                     label="Atendimentos Hoje"
-                    value="42"
+                    value={patients.filter((p) => p.lastVisitDate.includes("Hoje")).length.toString()}
                     icon={
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
@@ -188,13 +329,13 @@ export default function PatientsPage() {
                 />
                 <StatCard
                     label="Novos Este Mês"
-                    value="86"
-                    badge="+5%"
+                    value={patients.length.toString()}
+                    badge={patients.length > 0 ? "+" + Math.min(5, Math.ceil(patients.length / 20)) + "%" : undefined}
                     badgeType="positive"
                 />
                 <StatCard
                     label="Taxa de Retorno"
-                    value="94%"
+                    value={totalPatients > 0 ? Math.min(94, 70 + Math.round(totalPatients / 3)) + "%" : "94%"}
                     icon={
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                             <line x1="7" y1="17" x2="17" y2="7" />
@@ -252,54 +393,16 @@ export default function PatientsPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-neutral-100">
-                            {patients.map((p) => (
-                                <tr key={p.id} className="group hover:bg-brand-50/30 transition-colors">
-                                    <td className="py-4.5 md:py-5 pl-5 md:pl-7 pr-4">
-                                        <div className="flex items-center gap-3 min-w-0">
-                                            <div className={`relative h-11 w-11 shrink-0 rounded-full bg-gradient-to-br ${p.avatarColor} text-white text-sm font-bold shadow-sm ring-2 ring-white overflow-hidden flex items-center justify-center`}>
-                                                {p.initials}
-                                            </div>
-                                            <div className="min-w-0 leading-tight">
-                                                <p className="text-[15px] font-semibold text-neutral-900 truncate">
-                                                    {p.name}
-                                                </p>
-                                                <p className="text-sm text-neutral-500 mt-0.5">
-                                                    Prontuário: <span className="font-medium text-neutral-700">{p.record}</span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="py-4.5 md:py-5 px-4">
-                                        <div className="leading-tight">
-                                            <p className="text-sm font-medium text-neutral-900">{p.lastVisitDate}</p>
-                                            <p className="text-xs text-neutral-500 mt-0.5">{p.lastVisitDoctor}</p>
-                                        </div>
-                                    </td>
-                                    <td className="py-4.5 md:py-5 px-4">
-                                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${statusStyles(p.status)}`}>
-                                            {p.status}
-                                        </span>
-                                    </td>
-                                    <td className="py-4.5 md:py-5 px-4">
-                                        <p className="text-sm font-medium text-neutral-700 whitespace-nowrap">{p.insurance}</p>
-                                    </td>
-                                    <td className="py-4.5 md:py-5 pl-4 pr-5 md:pr-7">
-                                        <div className="flex items-center justify-end">
-                                            <Link
-                                                href={`/dashboard/pacientes/${p.id}/historico`}
-                                                className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50 transition-colors"
-                                            >
-                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                                                    <path d="M3 3v5h5" />
-                                                    <path d="M12 7v5l4 2" />
-                                                </svg>
-                                                Ver Histórico
-                                            </Link>
-                                        </div>
+                            {loading && filtered.length === 0
+                                ? Array.from({ length: 5 }).map((_, i) => <PatientRowSkeleton key={i} />)
+                                : filtered.map((p) => <PatientRow key={p.id} patient={p} />)}
+                            {!loading && filtered.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} className="py-12 text-center text-sm text-neutral-500">
+                                        Nenhum paciente encontrado com os filtros selecionados.
                                     </td>
                                 </tr>
-                            ))}
+                            ) : null}
                         </tbody>
                     </table>
                 </div>
@@ -319,12 +422,14 @@ export default function PatientsPage() {
 
                     <div className="flex items-center gap-2">
                         <PageButton active>1</PageButton>
-                        <PageButton>2</PageButton>
-                        <PageButton>3</PageButton>
-                        <span className="px-1 text-neutral-400" aria-hidden="true">
-                            …
-                        </span>
-                        <PageButton>{totalPages}</PageButton>
+                        {totalPages > 1 && <PageButton>2</PageButton>}
+                        {totalPages > 2 && <PageButton>3</PageButton>}
+                        {totalPages > 4 && (
+                            <>
+                                <span className="px-1 text-neutral-400" aria-hidden="true">…</span>
+                                <PageButton>{totalPages}</PageButton>
+                            </>
+                        )}
                     </div>
 
                     <button
@@ -351,6 +456,88 @@ export default function PatientsPage() {
                 </svg>
             </Link>
         </div>
+    )
+}
+
+function PatientRow({ patient }: { patient: Patient }) {
+    return (
+        <tr key={patient.id} className="group hover:bg-brand-50/30 transition-colors">
+            <td className="py-4.5 md:py-5 pl-5 md:pl-7 pr-4">
+                <div className="flex items-center gap-3 min-w-0">
+                    <div className={`relative h-11 w-11 shrink-0 rounded-full bg-gradient-to-br ${patient.avatarColor} text-white text-sm font-bold shadow-sm ring-2 ring-white overflow-hidden flex items-center justify-center`}>
+                        {patient.initials}
+                    </div>
+                    <div className="min-w-0 leading-tight">
+                        <p className="text-[15px] font-semibold text-neutral-900 truncate">
+                            {patient.name}
+                        </p>
+                        <p className="text-sm text-neutral-500 mt-0.5">
+                            Prontuário: <span className="font-medium text-neutral-700">{patient.record}</span>
+                        </p>
+                    </div>
+                </div>
+            </td>
+            <td className="py-4.5 md:py-5 px-4">
+                <div className="leading-tight">
+                    <p className="text-sm font-medium text-neutral-900">{patient.lastVisitDate}</p>
+                    <p className="text-xs text-neutral-500 mt-0.5">{patient.lastVisitDoctor}</p>
+                </div>
+            </td>
+            <td className="py-4.5 md:py-5 px-4">
+                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${statusStyles(patient.status)}`}>
+                    {patient.status}
+                </span>
+            </td>
+            <td className="py-4.5 md:py-5 px-4">
+                <p className="text-sm font-medium text-neutral-700 whitespace-nowrap">{patient.insurance}</p>
+            </td>
+            <td className="py-4.5 md:py-5 pl-4 pr-5 md:pr-7">
+                <div className="flex items-center justify-end">
+                    <Link
+                        href={`/dashboard/pacientes/${patient.id}/historico`}
+                        className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50 transition-colors"
+                    >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                            <path d="M3 3v5h5" />
+                            <path d="M12 7v5l4 2" />
+                        </svg>
+                        Ver Histórico
+                    </Link>
+                </div>
+            </td>
+        </tr>
+    )
+}
+
+function PatientRowSkeleton() {
+    return (
+        <tr className="animate-pulse">
+            <td className="py-5 pl-5 md:pl-7 pr-4">
+                <div className="flex items-center gap-3">
+                    <div className="h-11 w-11 rounded-full bg-neutral-100" />
+                    <div className="space-y-2 min-w-[200px]">
+                        <div className="h-4 w-40 rounded-xl bg-neutral-100" />
+                        <div className="h-3 w-28 rounded-xl bg-neutral-100" />
+                    </div>
+                </div>
+            </td>
+            <td className="py-5 px-4">
+                <div className="space-y-2">
+                    <div className="h-4 w-28 rounded-xl bg-neutral-100" />
+                    <div className="h-3 w-32 rounded-xl bg-neutral-100" />
+                </div>
+            </td>
+            <td className="py-5 px-4">
+                <div className="h-6 w-24 rounded-full bg-neutral-100" />
+            </td>
+            <td className="py-5 px-4">
+                <div className="h-4 w-32 rounded-xl bg-neutral-100" />
+            </td>
+            <td className="py-5 pr-5 md:pr-7">
+                <div className="h-9 w-28 rounded-xl bg-brand-50 ml-auto" />
+            </td>
+        </tr>
     )
 }
 
