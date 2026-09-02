@@ -28,20 +28,28 @@ const DOCTORS_OPT: DoctorOpt[] = [
 ]
 
 export default function NewAppointmentPage() {
+    const todayStart = new Date()
+    todayStart.setHours(0, 0, 0, 0)
+
     const [patientId, setPatientId] = useState<string>("6")
     const [doctorId, setDoctorId] = useState<string>("6")
-    const [date, setDate] = useState<string>("2023-10-24")
-    const [time, setTime] = useState<string>("14:30")
+    const [date, setDate] = useState<string>(toIsoDate(todayStart))
+    const [time, setTime] = useState<string>("09:00")
     const [duration, setDuration] = useState<string>("45 Minutos")
     const [observations, setObservations] = useState<string>("")
     const [urgent, setUrgent] = useState<boolean>(false)
     const [sendReminder, setSendReminder] = useState<boolean>(true)
 
+    const [viewMonth, setViewMonth] = useState<Date>(() => new Date(todayStart.getFullYear(), todayStart.getMonth(), 1))
+    const [jumpDateInput, setJumpDateInput] = useState<string>(toIsoDate(todayStart))
+
     const patient = PATIENTS_OPT.find((p) => p.id === patientId)
     const doctor = DOCTORS_OPT.find((d) => d.id === doctorId)
 
-    const formattedDate = "24 de Outubro, 2023"
-    const formattedTime = "às 14:30"
+    const selectedDate = safeParseIso(date)
+    const formattedDate = formatLongPt(selectedDate)
+    const formattedTime = `às ${time}`
+    const doctorName = doctor?.name ? doctor.name.replace(/^Dr[a]?\.\s*/i, "") : "Marcos"
 
     return (
         <div className="space-y-6 md:space-y-7 pb-10">
@@ -173,15 +181,37 @@ export default function NewAppointmentPage() {
                                     <line x1="16" y1="3" x2="16" y2="7" />
                                 </svg>
                             </span>
-                            <h2 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900">
-                                Data e Horário
-                            </h2>
+                            <div className="flex-1 min-w-0">
+                                <h2 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900">
+                                    Data e Horário
+                                </h2>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const t = new Date()
+                                    t.setHours(0, 0, 0, 0)
+                                    const iso = toIsoDate(t)
+                                    setDate(iso)
+                                    setJumpDateInput(iso)
+                                    setViewMonth(new Date(t.getFullYear(), t.getMonth(), 1))
+                                }}
+                                className="inline-flex items-center gap-1.5 rounded-xl bg-brand-50 text-brand-700 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] ring-1 ring-brand-600/10 hover:bg-brand-100 transition-colors"
+                            >
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12 6 12 12 16 14" />
+                                </svg>
+                                Hoje
+                            </button>
                         </header>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
-                            {/* Data */}
+                        {/* Barra busca rápida por data + mês/ano navegação */}
+                        <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1.7fr)] gap-5 mb-6">
                             <div>
-                                <label className="block text-sm font-bold text-neutral-700 mb-2">Data</label>
+                                <label className="block text-xs font-black uppercase tracking-[0.14em] text-neutral-500 mb-2">
+                                    Ir para data
+                                </label>
                                 <div className="relative">
                                     <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -193,22 +223,143 @@ export default function NewAppointmentPage() {
                                     </span>
                                     <input
                                         type="date"
-                                        value={date}
-                                        onChange={(e) => setDate(e.target.value)}
-                                        className="inputCls pl-12 pr-12"
+                                        value={jumpDateInput}
+                                        onChange={(e) => {
+                                            const v = e.target.value
+                                            setJumpDateInput(v)
+                                            if (v) {
+                                                setDate(v)
+                                                const d = safeParseIso(v)
+                                                setViewMonth(new Date(d.getFullYear(), d.getMonth(), 1))
+                                            }
+                                        }}
+                                        className="w-full rounded-2xl border-2 border-neutral-200/80 bg-white pl-12 pr-4 py-3 text-sm font-semibold text-neutral-800 tabular-nums focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
                                     />
-                                    <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                            <rect x="3" y="4" width="18" height="18" rx="2" />
-                                            <line x1="16" y1="2" x2="16" y2="6" />
-                                            <line x1="8" y1="2" x2="8" y2="6" />
-                                            <line x1="3" y1="10" x2="21" y2="10" />
-                                        </svg>
-                                    </span>
                                 </div>
                             </div>
 
-                            {/* Horário */}
+                            <div className="flex items-center gap-3 md:gap-4 rounded-2xl border-2 border-neutral-200/80 bg-gradient-to-br from-neutral-50 to-white px-4 py-3">
+                                <button
+                                    type="button"
+                                    aria-label="Mês anterior"
+                                    onClick={() =>
+                                        setViewMonth((v) => new Date(v.getFullYear(), v.getMonth() - 1, 1))
+                                    }
+                                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white border border-neutral-200/80 text-neutral-600 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 transition-colors"
+                                >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                        <polyline points="15 18 9 12 15 6" />
+                                    </svg>
+                                </button>
+
+                                <div className="flex-1 min-w-0 flex items-center justify-center gap-2 md:gap-3">
+                                    <select
+                                        aria-label="Mês"
+                                        value={viewMonth.getMonth()}
+                                        onChange={(e) =>
+                                            setViewMonth(
+                                                new Date(viewMonth.getFullYear(), Number(e.target.value), 1)
+                                            )
+                                        }
+                                        className="bg-transparent px-2 py-1.5 rounded-xl appearance-none text-[15px] md:text-base font-black text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand-500/30 cursor-pointer hover:bg-white"
+                                    >
+                                        {MONTHS.map((m, i) => (
+                                            <option key={m} value={i}>
+                                                {m}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <select
+                                        aria-label="Ano"
+                                        value={viewMonth.getFullYear()}
+                                        onChange={(e) =>
+                                            setViewMonth(
+                                                new Date(Number(e.target.value), viewMonth.getMonth(), 1)
+                                            )
+                                        }
+                                        className="bg-transparent px-2 py-1.5 rounded-xl appearance-none text-[15px] md:text-base font-black text-neutral-900 tabular-nums focus:outline-none focus:ring-2 focus:ring-brand-500/30 cursor-pointer hover:bg-white"
+                                    >
+                                        {Array.from({ length: 11 }, (_, i) => viewMonth.getFullYear() - 2 + i).map((y) => (
+                                            <option key={y} value={y}>
+                                                {y}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    aria-label="Próximo mês"
+                                    onClick={() =>
+                                        setViewMonth((v) => new Date(v.getFullYear(), v.getMonth() + 1, 1))
+                                    }
+                                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white border border-neutral-200/80 text-neutral-600 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 transition-colors"
+                                >
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                        <polyline points="9 18 15 12 9 6" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Grade do calendário */}
+                        <div className="mb-6">
+                            {/* Dias da semana */}
+                            <div className="grid grid-cols-7 gap-1.5 mb-1.5 px-1">
+                                {WEEK_DAYS.map((d) => (
+                                    <div
+                                        key={d}
+                                        className="text-center text-[11px] font-black uppercase tracking-[0.16em] text-neutral-500 py-2"
+                                    >
+                                        {d}
+                                    </div>
+                                ))}
+                            </div>
+                            {/* Células */}
+                            <div className="grid grid-cols-7 gap-1.5">
+                                {buildCalendarGrid(viewMonth).map((cell, idx) => {
+                                    const inMonth = cell.inMonth
+                                    const isoCell = cell.iso
+                                    const isPast = inMonth && cell.date < todayStart
+                                    const isToday = inMonth && isSameDay(cell.date, todayStart)
+                                    const isSelected = inMonth && isoCell === date
+
+                                    const clickable = inMonth && !isPast
+
+                                    return (
+                                        <button
+                                            key={`${isoCell}-${idx}`}
+                                            type="button"
+                                            disabled={!clickable}
+                                            onClick={() => {
+                                                if (!clickable) return
+                                                setDate(isoCell)
+                                                setJumpDateInput(isoCell)
+                                            }}
+                                            className={[
+                                                "relative aspect-square w-full rounded-2xl flex items-center justify-center text-sm md:text-[15px] font-bold transition-all select-none",
+                                                inMonth ? "" : "opacity-0 pointer-events-none",
+                                                !clickable
+                                                    ? "text-neutral-300 cursor-not-allowed line-through"
+                                                    : isSelected
+                                                        ? "bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 text-white shadow-[0_10px_22px_-8px_rgba(16,142,93,0.55)] ring-2 ring-brand-600/30 scale-[1.04]"
+                                                        : isToday
+                                                            ? "bg-brand-50 text-brand-800 ring-2 ring-brand-600/30 hover:bg-brand-100"
+                                                            : "text-neutral-800 hover:bg-neutral-100",
+                                            ].join(" ")}
+                                        >
+                                            {cell.day}
+                                            {isToday && isSelected && (
+                                                <span className="absolute bottom-1.5 h-1 w-1 rounded-full bg-white/90" />
+                                            )}
+                                        </button>
+                                    )
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Horário + Duração */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                             <div>
                                 <label className="block text-sm font-bold text-neutral-700 mb-2">Horário</label>
                                 <div className="relative">
@@ -224,16 +375,9 @@ export default function NewAppointmentPage() {
                                         onChange={(e) => setTime(e.target.value)}
                                         className="inputCls pl-12 pr-12 tabular-nums font-semibold"
                                     />
-                                    <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400">
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                            <circle cx="12" cy="12" r="10" />
-                                            <polyline points="12 6 12 12 16 14" />
-                                        </svg>
-                                    </span>
                                 </div>
                             </div>
 
-                            {/* Duração */}
                             <div>
                                 <label className="block text-sm font-bold text-neutral-700 mb-2">Duração Estimada</label>
                                 <div className="relative">
@@ -266,7 +410,7 @@ export default function NewAppointmentPage() {
                         {/* Sugestões de horários */}
                         <div>
                             <p className="text-sm font-semibold text-neutral-700 mb-2.5">
-                                Sugestões de Horários Disponíveis (Hoje)
+                                Sugestões de Horários Disponíveis ({formatShortPt(selectedDate)})
                             </p>
                             <div className="flex flex-wrap items-center gap-2.5">
                                 {SUGGESTED_TIMES.map((t) => {
@@ -276,11 +420,10 @@ export default function NewAppointmentPage() {
                                             key={t}
                                             type="button"
                                             onClick={() => setTime(t)}
-                                            className={`px-4 py-2 rounded-xl text-sm font-bold tabular-nums transition-all ${
-                                                active
-                                                    ? "bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 text-white shadow-[0_8px_18px_-6px_rgba(16,142,93,0.55)] ring-2 ring-brand-600/20"
-                                                    : "bg-neutral-200/70 hover:bg-neutral-300/70 text-neutral-700"
-                                            }`}
+                                            className={`px-4 py-2 rounded-xl text-sm font-bold tabular-nums transition-all ${active
+                                                ? "bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 text-white shadow-[0_8px_18px_-6px_rgba(16,142,93,0.55)] ring-2 ring-brand-600/20"
+                                                : "bg-neutral-200/70 hover:bg-neutral-300/70 text-neutral-700"
+                                                }`}
                                         >
                                             {t}
                                         </button>
@@ -393,7 +536,7 @@ export default function NewAppointmentPage() {
                                         </svg>
                                     </span>
                                     <p className="text-[13px] leading-relaxed text-neutral-700">
-                                        Este horário está disponível na agenda do Dr. Marcos. Ao confirmar, o
+                                        Este horário está disponível na agenda do Dr. {doctorName}. Ao confirmar, o
                                         paciente receberá um e-mail de confirmação automaticamente.
                                     </p>
                                 </div>
@@ -421,7 +564,7 @@ export default function NewAppointmentPage() {
                         </div>
                     </aside>
 
-                    {/* Card médico disponível agora */}
+                    {/* Card médico selecionado (disponível) */}
                     <aside className="rounded-3xl border-2 border-neutral-200/80 bg-white p-4 md:p-5 shadow-[0_4px_20px_-14px_rgba(15,23,42,0.12)]">
                         <div className="flex items-center gap-3.5">
                             <div className="relative shrink-0">
@@ -431,20 +574,29 @@ export default function NewAppointmentPage() {
                                         <circle cx="12" cy="7" r="4" />
                                     </svg>
                                     <span className="absolute inset-x-0 bottom-1 text-center text-lg md:text-xl font-black tracking-wide drop-shadow">
-                                        MO
+                                        {doctor?.name
+                                            ? doctor.name
+                                                .replace(/^Dr[a]?\.\s*/i, "")
+                                                .split(/\s+/)
+                                                .filter(Boolean)
+                                                .slice(0, 2)
+                                                .map((n) => n[0]?.toUpperCase())
+                                                .join("")
+                                                .slice(0, 2) || "??"
+                                            : "??"}
                                     </span>
                                 </div>
                             </div>
                             <div className="min-w-0 flex-1">
                                 <p className="text-[15px] md:text-base font-bold text-neutral-900 truncate">
-                                    Dr. Marcos Oliveira
+                                    {doctor?.name || "Selecione um médico"}
                                 </p>
                                 <p className="text-[12px] text-neutral-500 mt-0.5 font-semibold">
-                                    CRM: 123456 - SP
+                                    CRM: {doctor?.crm || "—"}
                                 </p>
                                 <span className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10.5px] font-black uppercase tracking-[0.16em] ring-1 ring-emerald-700/10">
                                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 shadow-[0_0_0_3px_rgba(16,185,129,0.18)] animate-pulse" />
-                                    Disponível agora
+                                    {doctor?.specialty || "Selecione"}
                                 </span>
                             </div>
                         </div>
@@ -573,9 +725,8 @@ function Check({
                     className="peer sr-only"
                 />
                 <span
-                    className={`flex h-5 w-5 items-center justify-center rounded-md border-2 transition-all ${
-                        checked ? active : "bg-white border-neutral-300 group-hover:border-neutral-400"
-                    }`}
+                    className={`flex h-5 w-5 items-center justify-center rounded-md border-2 transition-all ${checked ? active : "bg-white border-neutral-300 group-hover:border-neutral-400"
+                        }`}
                 >
                     <svg
                         width="13"
@@ -598,4 +749,116 @@ function Check({
             </span>
         </label>
     )
+}
+
+/* ---------- HELPERS DE CALENDÁRIO ---------- */
+
+const MONTHS = [
+    "Janeiro",
+    "Fevereiro",
+    "Março",
+    "Abril",
+    "Maio",
+    "Junho",
+    "Julho",
+    "Agosto",
+    "Setembro",
+    "Outubro",
+    "Novembro",
+    "Dezembro",
+]
+const WEEK_DAYS = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"]
+
+function pad(n: number): string {
+    return n.toString().padStart(2, "0")
+}
+
+function toIsoDate(d: Date): string {
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+}
+
+function safeParseIso(iso: string): Date {
+    if (!iso) {
+        const t = new Date()
+        t.setHours(0, 0, 0, 0)
+        return t
+    }
+    const [y, m, d] = iso.split("-").map((v) => Number(v))
+    if (!y || !m || !d) {
+        const t = new Date()
+        t.setHours(0, 0, 0, 0)
+        return t
+    }
+    return new Date(y, m - 1, d, 0, 0, 0, 0)
+}
+
+function isSameDay(a: Date, b: Date): boolean {
+    return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
+}
+
+function formatLongPt(d: Date): string {
+    try {
+        return d.toLocaleDateString("pt-BR", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        })
+    } catch {
+        return `${pad(d.getDate())} de ${MONTHS[d.getMonth()]}, ${d.getFullYear()}`
+    }
+}
+
+function formatShortPt(d: Date): string {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    if (isSameDay(d, today)) return "Hoje"
+    const tm = new Date(today.getTime() + 86400000)
+    if (isSameDay(d, tm)) return "Amanhã"
+    return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" }).replace(".", "")
+}
+
+type CalendarCell = {
+    day: number
+    date: Date
+    iso: string
+    inMonth: boolean
+}
+
+function buildCalendarGrid(viewMonth: Date): CalendarCell[] {
+    const year = viewMonth.getFullYear()
+    const month = viewMonth.getMonth()
+    const firstOfMonth = new Date(year, month, 1, 0, 0, 0, 0)
+    const rawDow = firstOfMonth.getDay() // 0 (dom) ... 6 (sáb)
+    const startOffset = (rawDow + 6) % 7 // começa na segunda = 0
+    const daysInMonth = new Date(year, month + 1, 0).getDate()
+
+    const cells: CalendarCell[] = []
+
+    // dias antes do mês (completar início da grade)
+    const prevMonthDays = new Date(year, month, 0).getDate()
+    for (let i = startOffset - 1; i >= 0; i--) {
+        const day = prevMonthDays - i
+        const date = new Date(year, month - 1, day, 0, 0, 0, 0)
+        cells.push({ day, date, iso: toIsoDate(date), inMonth: false })
+    }
+
+    // dias do mês
+    for (let d = 1; d <= daysInMonth; d++) {
+        const date = new Date(year, month, d, 0, 0, 0, 0)
+        cells.push({ day: d, date, iso: toIsoDate(date), inMonth: true })
+    }
+
+    // completar fim da grade até 42 células (6 semanas)
+    while (cells.length < 42) {
+        const last = cells[cells.length - 1].date
+        const next = new Date(last.getFullYear(), last.getMonth(), last.getDate() + 1, 0, 0, 0, 0)
+        cells.push({
+            day: next.getDate(),
+            date: next,
+            iso: toIsoDate(next),
+            inMonth: next.getMonth() === month,
+        })
+    }
+
+    return cells
 }
