@@ -19,12 +19,38 @@ export async function GET() {
             orderBy: [{ createdAt: "desc" }],
         })
 
-        return NextResponse.json({ patients }, { status: 200 })
+        // Normaliza campos que antes eram salvos em `user` via migrate antiga,
+        // agora em Patient.phone/email/etc. Garante retorno sem quebrar front.
+        const normalized = patients.map((p) => ({
+            id: p.id,
+            fullName: p.fullName,
+            cpf: p.cpf,
+            phone: (p as any).phone ?? null,
+            email: (p as any).email ?? null,
+            insuranceOperator: (p as any).insuranceOperator ?? null,
+            planType: (p as any).planType ?? null,
+            clinicalStatus: (p as any).clinicalStatus ?? null,
+            createdAt: p.createdAt,
+            cep: (p as any).cep ?? null,
+            city: (p as any).city ?? null,
+            state: (p as any).state ?? null,
+            appointments: p.appointments,
+            registeredBy: p.registeredBy,
+        }))
+
+        return NextResponse.json({ patients: normalized }, { status: 200 })
     } catch (error) {
         console.error("GET patients error:", error)
+        const msg = error instanceof Error ? error.message : String(error)
+        const isMissing = /P2022|does not exist|ColumnNotFound/i.test(msg)
         return NextResponse.json(
-            { error: "Erro interno ao listar pacientes" },
-            { status: 500 }
+            {
+                patients: [],
+                error: isMissing
+                    ? "Tabela patient desatualizada. Execute `npx prisma migrate dev --name update-patient-schema`."
+                    : "Erro interno ao listar pacientes",
+            },
+            { status: isMissing ? 503 : 500 }
         )
     }
 }

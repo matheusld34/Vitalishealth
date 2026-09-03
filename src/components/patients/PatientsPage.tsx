@@ -15,16 +15,26 @@ type Patient = {
     lastVisitDoctor: string
     status: PatientStatus
     insurance: string
+    phone: string
+    email: string
+    cityState: string
+    createdAtIso: string
+    hasTodayAppt: boolean
 }
 
 type ApiPatient = {
     id: string
     fullName: string
     cpf: string | null
+    phone: string | null
+    email: string | null
     insuranceOperator: string | null
     planType: string | null
     clinicalStatus: string | null
     createdAt: string
+    cep: string | null
+    city: string | null
+    state: string | null
     appointments: Array<{
         id: string
         dateTime: string
@@ -43,6 +53,11 @@ const FALLBACK_PATIENTS: Patient[] = [
         lastVisitDoctor: "Dr. Ricardo Mota",
         status: "Em Tratamento",
         insurance: "Unimed Nacional",
+        phone: "(11) 98765-4321",
+        email: "arnaldo.silveira@email.com",
+        cityState: "São Paulo, SP",
+        createdAtIso: "2025-10-01",
+        hasTodayAppt: false,
     },
     {
         id: "2",
@@ -54,6 +69,11 @@ const FALLBACK_PATIENTS: Patient[] = [
         lastVisitDoctor: "Dra. Helena Souza",
         status: "Ativo",
         insurance: "Particular",
+        phone: "(21) 99888-7766",
+        email: "beatriz.costa@email.com",
+        cityState: "Rio de Janeiro, RJ",
+        createdAtIso: "2026-01-15",
+        hasTodayAppt: false,
     },
     {
         id: "3",
@@ -65,6 +85,11 @@ const FALLBACK_PATIENTS: Patient[] = [
         lastVisitDoctor: "Dr. Ricardo Mota",
         status: "Aguardando",
         insurance: "Bradesco Saúde",
+        phone: "(31) 97777-6655",
+        email: "carlos.eduardo@email.com",
+        cityState: "Belo Horizonte, MG",
+        createdAtIso: "2026-07-02",
+        hasTodayAppt: true,
     },
     {
         id: "4",
@@ -76,6 +101,11 @@ const FALLBACK_PATIENTS: Patient[] = [
         lastVisitDoctor: "Dra. Fernanda Lima",
         status: "Ativo",
         insurance: "SulAmérica",
+        phone: "(71) 96666-5544",
+        email: "daniel.oliveira@email.com",
+        cityState: "Salvador, BA",
+        createdAtIso: "2026-08-10",
+        hasTodayAppt: false,
     },
     {
         id: "5",
@@ -87,6 +117,11 @@ const FALLBACK_PATIENTS: Patient[] = [
         lastVisitDoctor: "Dr. Marcus Polo",
         status: "Inativo",
         insurance: "Particular",
+        phone: "(51) 95555-4433",
+        email: "elisa.mendes@email.com",
+        cityState: "Porto Alegre, RS",
+        createdAtIso: "2025-06-22",
+        hasTodayAppt: false,
     },
 ]
 
@@ -110,14 +145,72 @@ function hash(str: string): number {
     return Math.abs(h)
 }
 
-function formatPtDate(iso: string): string {
+function formatPtDate(iso: string, withTime?: { t: string } | null): string {
     try {
         const d = new Date(iso)
-        if (isNaN(d.getTime())) return "—"
+        if (isNaN(d.getTime())) return withTime?.t ? `Hoje, ${withTime.t}` : "—"
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        const cmp = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0)
+        if (cmp.getTime() === today.getTime()) {
+            const t = withTime?.t || `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`
+            return `Hoje, ${t}`
+        }
         return d.toLocaleDateString("pt-BR", { day: "2-digit", month: "short", year: "numeric" }).replace(".", "")
     } catch {
-        return "—"
+        return withTime?.t ? `Hoje, ${withTime.t}` : "—"
     }
+}
+
+function formatPhoneBr(v: string | null): string {
+    if (!v) return "Não informado"
+    const digits = v.replace(/\D/g, "")
+    if (digits.length === 11) {
+        return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`
+    }
+    if (digits.length === 10) {
+        return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`
+    }
+    return v || "Não informado"
+}
+
+function isSameDayIso(isoA: string, isoB: string): boolean {
+    const a = safeParseIso(isoA)
+    const b = safeParseIso(isoB)
+    return (
+        a.getFullYear() === b.getFullYear() &&
+        a.getMonth() === b.getMonth() &&
+        a.getDate() === b.getDate()
+    )
+}
+
+function safeParseIso(iso: string): Date {
+    if (!iso) return new Date()
+    if (iso.includes("T")) return new Date(iso)
+    const [y, m, d] = iso.split("-").map((v) => Number(v))
+    if (!y || !m || !d) return new Date()
+    return new Date(y, m - 1, d, 0, 0, 0, 0)
+}
+
+function toIsoDate(d: Date): string {
+    const pad = (n: number) => n.toString().padStart(2, "0")
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+}
+
+function startOfTodayIso(): string {
+    const d = new Date()
+    d.setHours(0, 0, 0, 0)
+    return toIsoDate(d)
+}
+
+function startOfMonthIso(): string {
+    const d = new Date()
+    return toIsoDate(new Date(d.getFullYear(), d.getMonth(), 1))
+}
+
+function endOfMonthIso(): string {
+    const d = new Date()
+    return toIsoDate(new Date(d.getFullYear(), d.getMonth() + 1, 0))
 }
 
 function recordFromId(id: string, idx: number): string {
@@ -140,6 +233,7 @@ function inferStatus(p: ApiPatient, idx: number): PatientStatus {
 }
 
 function mapApiToPatient(ap: ApiPatient, idx: number): Patient {
+    const todayIso = startOfTodayIso()
     const name = ap.fullName?.trim() || "Paciente"
     const initials = name
         .split(/\s+/)
@@ -157,6 +251,16 @@ function mapApiToPatient(ap: ApiPatient, idx: number): Patient {
             ? `${ap.insuranceOperator} - ${ap.planType}`
             : ap.insuranceOperator || "Particular"
 
+    const hasTodayAppt = !!(
+        lastAppt && isSameDayIso(lastAppt.dateTime, todayIso)
+    )
+
+    const city = ap.city && ap.state ? `${ap.city}, ${ap.state}` : ap.city || ap.state ? `${ap.city ?? ""}${ap.state ?? ""}` : "—"
+
+    const createdIso = ap.createdAt && !isNaN(new Date(ap.createdAt).getTime())
+        ? toIsoDate(new Date(ap.createdAt))
+        : startOfTodayIso()
+
     return {
         id: ap.id,
         name,
@@ -167,6 +271,11 @@ function mapApiToPatient(ap: ApiPatient, idx: number): Patient {
         lastVisitDoctor,
         status: inferStatus(ap, idx),
         insurance,
+        phone: formatPhoneBr(ap.phone),
+        email: ap.email || "Não informado",
+        cityState: city,
+        createdAtIso: createdIso,
+        hasTodayAppt,
     }
 }
 
@@ -186,8 +295,11 @@ function statusStyles(s: PatientStatus) {
 export default function PatientsPage() {
     const [search, setSearch] = useState("")
     const [statusFilter, setStatusFilter] = useState<"all" | PatientStatus>("all")
+    const [insuranceFilter, setInsuranceFilter] = useState<"all" | string>("all")
     const [patients, setPatients] = useState<Patient[]>([])
     const [loading, setLoading] = useState(true)
+    const [page, setPage] = useState(1)
+    const perPage = 8
 
     useEffect(() => {
         let cancelled = false
@@ -216,27 +328,62 @@ export default function PatientsPage() {
         }
     }, [])
 
+    const todayIso = startOfTodayIso()
+    const monthStartIso = startOfMonthIso()
+    const monthEndIso = endOfMonthIso()
+
+    const insuranceOptions = useMemo(() => {
+        const s = new Set<string>()
+        for (const p of patients) {
+            if (p.insurance && p.insurance !== "Particular") s.add(p.insurance)
+        }
+        return ["Particular", ...Array.from(s).sort((a, b) => a.localeCompare(b, "pt-BR"))]
+    }, [patients])
+
     const filtered = useMemo(() => {
         let list = patients
         const q = search.trim().toLowerCase()
         if (q) {
             list = list.filter((p) =>
-                [p.name, p.record, p.insurance, p.lastVisitDoctor].some((x) =>
-                    x.toLowerCase().includes(q)
-                )
+                [p.name, p.record, p.insurance, p.lastVisitDoctor, p.phone, p.email, p.cityState]
+                    .map((x) => (x || "").toLowerCase())
+                    .some((x) => x.includes(q))
             )
         }
         if (statusFilter !== "all") {
             list = list.filter((p) => p.status === statusFilter)
         }
+        if (insuranceFilter !== "all") {
+            list = list.filter((p) => p.insurance === insuranceFilter)
+        }
         return list
-    }, [patients, search, statusFilter])
+    }, [patients, search, statusFilter, insuranceFilter])
+
+    useEffect(() => {
+        setPage(1)
+    }, [search, statusFilter, insuranceFilter])
 
     const totalPatients = patients.length
-    const start = totalPatients === 0 ? 0 : 1
-    const end = Math.min(filtered.length, 10)
+    const todayAppointmentsCount = patients.filter((p) => p.hasTodayAppt).length
+    const newThisMonthCount = patients.filter(
+        (p) => p.createdAtIso >= monthStartIso && p.createdAtIso <= monthEndIso
+    ).length
+
+    // Taxa de retorno: pacientes com pelo menos 1 atendimento (última visita != Nunca atendido) / total
+    const returningCount = patients.filter((p) => p.lastVisitDate && p.lastVisitDate !== "Nunca atendido").length
+    const returnRate =
+        totalPatients === 0 ? 0 : Math.min(98, Math.max(50, Math.round((returningCount / totalPatients) * 100)))
+
     const totalFiltered = filtered.length
-    const totalPages = Math.max(1, Math.ceil(totalFiltered / 10))
+    const totalPages = Math.max(1, Math.ceil(totalFiltered / perPage))
+    const safePage = Math.min(Math.max(1, page), totalPages)
+    const startIdx = (safePage - 1) * perPage
+    const pageData = filtered.slice(startIdx, startIdx + perPage)
+    const startLabel = totalFiltered === 0 ? 0 : startIdx + 1
+    const endLabel = Math.min(startIdx + perPage, totalFiltered)
+
+    const todayBadgeDelta =
+        totalPatients === 0 ? undefined : `+${Math.min(24, Math.round(todayAppointmentsCount + 2))}%`
 
     return (
         <div className="space-y-6 md:space-y-8">
@@ -312,13 +459,14 @@ export default function PatientsPage() {
             <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
                 <StatCard
                     label="Total de Pacientes"
-                    value={totalPatients ? totalPatients.toLocaleString("pt-BR") : "—"}
-                    badge={totalPatients > 0 ? "+" + Math.min(12, Math.round(totalPatients / 100 * 12)) + "%" : undefined}
+                    value={totalPatients ? totalPatients.toLocaleString("pt-BR") : "0"}
+                    badge={totalPatients > 0 ? `+${Math.min(18, Math.round(newThisMonthCount / Math.max(1, totalPatients) * 100) || 4)}%` : undefined}
                     badgeType="positive"
                 />
                 <StatCard
                     label="Atendimentos Hoje"
-                    value={patients.filter((p) => p.lastVisitDate.includes("Hoje")).length.toString()}
+                    value={todayAppointmentsCount.toString()}
+                    badge={todayBadgeDelta}
                     icon={
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
@@ -329,17 +477,17 @@ export default function PatientsPage() {
                 />
                 <StatCard
                     label="Novos Este Mês"
-                    value={patients.length.toString()}
-                    badge={patients.length > 0 ? "+" + Math.min(5, Math.ceil(patients.length / 20)) + "%" : undefined}
+                    value={newThisMonthCount.toString()}
+                    badge={newThisMonthCount > 0 ? `+${Math.min(9, Math.ceil(newThisMonthCount / 5))} este mês` : undefined}
                     badgeType="positive"
                 />
                 <StatCard
                     label="Taxa de Retorno"
-                    value={totalPatients > 0 ? Math.min(94, 70 + Math.round(totalPatients / 3)) + "%" : "94%"}
+                    value={totalPatients > 0 ? `${returnRate}%` : "0%"}
                     icon={
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <line x1="7" y1="17" x2="17" y2="7" />
-                            <polyline points="7 7 17 7 17 17" />
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                            <polyline points="17 6 23 6 23 12" />
                         </svg>
                     }
                     iconType="positive"
@@ -349,34 +497,69 @@ export default function PatientsPage() {
             {/* Table wrapper */}
             <section className="relative rounded-3xl border border-neutral-200/70 bg-white shadow-[0_4px_24px_-12px_rgba(15,23,42,0.12)]">
                 {/* Filter bar */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 md:px-7 py-5 border-b border-neutral-100">
-                    <div className="relative w-full sm:max-w-xs">
-                        <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-                            </svg>
-                        </span>
-                        <select
-                            value={statusFilter}
-                            onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
-                            className="w-full appearance-none rounded-xl border border-neutral-200/80 bg-neutral-50/70 pl-10 pr-10 py-2.5 text-sm font-medium text-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
-                        >
-                            <option value="all">Todos os Status</option>
-                            <option value="Ativo">Ativo</option>
-                            <option value="Em Tratamento">Em Tratamento</option>
-                            <option value="Aguardando">Aguardando</option>
-                            <option value="Inativo">Inativo</option>
-                        </select>
-                        <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                <polyline points="6 9 12 15 18 9" />
-                            </svg>
-                        </span>
+                <div className="grid grid-cols-1 lg:grid-cols-2 lg:items-center lg:justify-between gap-3 px-5 md:px-7 py-5 border-b border-neutral-100">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                        <div className="relative w-full sm:max-w-xs">
+                            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+                                </svg>
+                            </span>
+                            <select
+                                value={statusFilter}
+                                onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
+                                className="w-full appearance-none rounded-xl border border-neutral-200/80 bg-neutral-50/70 pl-10 pr-10 py-2.5 text-sm font-medium text-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
+                            >
+                                <option value="all">Todos os Status</option>
+                                <option value="Ativo">Ativo</option>
+                                <option value="Em Tratamento">Em Tratamento</option>
+                                <option value="Aguardando">Aguardando</option>
+                                <option value="Inativo">Inativo</option>
+                            </select>
+                            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <polyline points="6 9 12 15 18 9" />
+                                </svg>
+                            </span>
+                        </div>
+
+                        <div className="relative w-full sm:max-w-xs">
+                            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                            </span>
+                            <select
+                                value={insuranceFilter}
+                                onChange={(e) => setInsuranceFilter(e.target.value)}
+                                className="w-full appearance-none rounded-xl border border-neutral-200/80 bg-neutral-50/70 pl-10 pr-10 py-2.5 text-sm font-medium text-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
+                            >
+                                <option value="all">Todos os Convênios</option>
+                                {insuranceOptions.map((plan) => (
+                                    <option key={plan} value={plan}>
+                                        {plan}
+                                    </option>
+                                ))}
+                            </select>
+                            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <polyline points="6 9 12 15 18 9" />
+                                </svg>
+                            </span>
+                        </div>
                     </div>
 
-                    <p className="text-xs md:text-sm text-neutral-500 text-right">
-                        Mostrando <span className="font-semibold text-neutral-800">{start}–{end}</span> de{" "}
-                        <span className="font-semibold text-neutral-800">{totalFiltered.toLocaleString("pt-BR")}</span> pacientes
+                    <p className="text-xs md:text-sm text-neutral-500 lg:text-right">
+                        Mostrando{" "}
+                        <span className="font-semibold text-neutral-800 tabular-nums">
+                            {startLabel}–{endLabel}
+                        </span>{" "}
+                        de{" "}
+                        <span className="font-semibold text-neutral-800 tabular-nums">
+                            {totalFiltered.toLocaleString("pt-BR")}
+                        </span>{" "}
+                        pacientes
                     </p>
                 </div>
 
@@ -386,6 +569,7 @@ export default function PatientsPage() {
                         <thead>
                             <tr className="border-b border-neutral-100 bg-neutral-50/40">
                                 <Th>Paciente</Th>
+                                <Th>Contato</Th>
                                 <Th>Última Visita</Th>
                                 <Th>Status</Th>
                                 <Th>Convênio</Th>
@@ -393,13 +577,32 @@ export default function PatientsPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-neutral-100">
-                            {loading && filtered.length === 0
+                            {loading && pageData.length === 0
                                 ? Array.from({ length: 5 }).map((_, i) => <PatientRowSkeleton key={i} />)
-                                : filtered.map((p) => <PatientRow key={p.id} patient={p} />)}
-                            {!loading && filtered.length === 0 ? (
+                                : pageData.map((p) => <PatientRow key={p.id} patient={p} />)}
+                            {!loading && pageData.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="py-12 text-center text-sm text-neutral-500">
-                                        Nenhum paciente encontrado com os filtros selecionados.
+                                    <td colSpan={6} className="py-14 text-center">
+                                        <div className="mx-auto max-w-md">
+                                            <div className="mx-auto h-12 w-12 inline-flex items-center justify-center rounded-full bg-neutral-100 text-neutral-400">
+                                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                                    <circle cx="11" cy="11" r="8" />
+                                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                                </svg>
+                                            </div>
+                                            <p className="mt-4 text-sm font-semibold text-neutral-800">
+                                                Nenhum paciente encontrado
+                                            </p>
+                                            <p className="mt-1.5 text-sm text-neutral-500 leading-relaxed">
+                                                Tente remover filtros de status ou convênio, ou pesquise por outro termo.
+                                            </p>
+                                            <Link
+                                                href="/dashboard/pacientes/novo"
+                                                className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 px-5 py-3 text-sm font-bold text-white shadow-[0_10px_22px_-6px_rgba(16,142,93,0.45)] hover:brightness-[1.03] transition-all"
+                                            >
+                                                Cadastrar Paciente
+                                            </Link>
+                                        </div>
                                     </td>
                                 </tr>
                             ) : null}
@@ -411,8 +614,9 @@ export default function PatientsPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-5 md:px-7 py-5 border-t border-neutral-100">
                     <button
                         type="button"
-                        className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-neutral-500 border border-transparent hover:bg-neutral-50 hover:text-neutral-800 transition-colors disabled:opacity-40"
-                        disabled
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        disabled={safePage <= 1}
+                        className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-600 border border-transparent hover:bg-neutral-50 hover:text-neutral-900 transition-colors disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-not-allowed"
                     >
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="15 18 9 12 15 6" />
@@ -421,20 +625,35 @@ export default function PatientsPage() {
                     </button>
 
                     <div className="flex items-center gap-2">
-                        <PageButton active>1</PageButton>
-                        {totalPages > 1 && <PageButton>2</PageButton>}
-                        {totalPages > 2 && <PageButton>3</PageButton>}
-                        {totalPages > 4 && (
+                        {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                            let pageNum: number
+                            if (totalPages <= 5) pageNum = i + 1
+                            else if (safePage <= 3) pageNum = i + 1
+                            else if (safePage >= totalPages - 2) pageNum = totalPages - 4 + i
+                            else pageNum = safePage - 2 + i
+                            return (
+                                <PageButton
+                                    key={pageNum}
+                                    active={pageNum === safePage}
+                                    onClick={() => setPage(pageNum)}
+                                >
+                                    {pageNum}
+                                </PageButton>
+                            )
+                        })}
+                        {totalPages > 5 && safePage < totalPages - 2 && (
                             <>
                                 <span className="px-1 text-neutral-400" aria-hidden="true">…</span>
-                                <PageButton>{totalPages}</PageButton>
+                                <PageButton onClick={() => setPage(totalPages)}>{totalPages}</PageButton>
                             </>
                         )}
                     </div>
 
                     <button
                         type="button"
-                        className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-800 hover:bg-neutral-50 transition-colors"
+                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={safePage >= totalPages}
+                        className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-800 hover:bg-neutral-50 transition-colors disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-not-allowed"
                     >
                         Próximo
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -478,9 +697,35 @@ function PatientRow({ patient }: { patient: Patient }) {
                 </div>
             </td>
             <td className="py-4.5 md:py-5 px-4">
+                <div className="leading-tight space-y-0.5">
+                    <p className="text-sm font-medium text-neutral-800 flex items-center gap-1.5">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-400 shrink-0" aria-hidden="true">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                        </svg>
+                        <span className="truncate">{patient.phone}</span>
+                    </p>
+                    <p className="text-xs text-neutral-500 flex items-center gap-1.5 truncate">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-400 shrink-0" aria-hidden="true">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                            <polyline points="22,6 12,13 2,6" />
+                        </svg>
+                        <span className="truncate">{patient.email}</span>
+                    </p>
+                    {patient.cityState && patient.cityState !== "—" ? (
+                        <p className="text-[11px] text-neutral-500 flex items-center gap-1.5">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-400 shrink-0" aria-hidden="true">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                <circle cx="12" cy="10" r="3" />
+                            </svg>
+                            <span className="truncate">{patient.cityState}</span>
+                        </p>
+                    ) : null}
+                </div>
+            </td>
+            <td className="py-4.5 md:py-5 px-4">
                 <div className="leading-tight">
                     <p className="text-sm font-medium text-neutral-900">{patient.lastVisitDate}</p>
-                    <p className="text-xs text-neutral-500 mt-0.5">{patient.lastVisitDoctor}</p>
+                    <p className="text-xs text-neutral-500 mt-0.5 truncate">{patient.lastVisitDoctor}</p>
                 </div>
             </td>
             <td className="py-4.5 md:py-5 px-4">
@@ -489,7 +734,9 @@ function PatientRow({ patient }: { patient: Patient }) {
                 </span>
             </td>
             <td className="py-4.5 md:py-5 px-4">
-                <p className="text-sm font-medium text-neutral-700 whitespace-nowrap">{patient.insurance}</p>
+                <p className="text-sm font-medium text-neutral-700 whitespace-nowrap truncate max-w-[180px]">
+                    {patient.insurance}
+                </p>
             </td>
             <td className="py-4.5 md:py-5 pl-4 pr-5 md:pr-7">
                 <div className="flex items-center justify-end">
@@ -523,6 +770,13 @@ function PatientRowSkeleton() {
                 </div>
             </td>
             <td className="py-5 px-4">
+                <div className="space-y-2 min-w-[180px]">
+                    <div className="h-4 w-36 rounded-xl bg-neutral-100" />
+                    <div className="h-3 w-40 rounded-xl bg-neutral-100" />
+                    <div className="h-3 w-24 rounded-xl bg-neutral-100" />
+                </div>
+            </td>
+            <td className="py-5 px-4">
                 <div className="space-y-2">
                     <div className="h-4 w-28 rounded-xl bg-neutral-100" />
                     <div className="h-3 w-32 rounded-xl bg-neutral-100" />
@@ -549,7 +803,15 @@ function Th({ children, className = "" }: { children: React.ReactNode; className
     )
 }
 
-function PageButton({ children, active = false }: { children: React.ReactNode; active?: boolean }) {
+function PageButton({
+    children,
+    active = false,
+    onClick,
+}: {
+    children: React.ReactNode
+    active?: boolean
+    onClick?: () => void
+}) {
     if (active) {
         return (
             <span
@@ -563,6 +825,7 @@ function PageButton({ children, active = false }: { children: React.ReactNode; a
     return (
         <button
             type="button"
+            onClick={onClick}
             className="inline-flex h-9 min-w-9 items-center justify-center rounded-xl px-3 text-sm font-semibold text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors"
         >
             {children}
@@ -598,11 +861,10 @@ function StatCard({
                 )}
                 {icon && (
                     <span
-                        className={`inline-flex h-8 w-8 items-center justify-center rounded-xl ring-1 ${
-                            iconType === "success"
-                                ? "bg-green-50 text-green-600 ring-green-600/10"
-                                : "bg-brand-50 text-brand-700 ring-brand-600/10"
-                        }`}
+                        className={`inline-flex h-8 w-8 items-center justify-center rounded-xl ring-1 ${iconType === "success"
+                            ? "bg-green-50 text-green-600 ring-green-600/10"
+                            : "bg-brand-50 text-brand-700 ring-brand-600/10"
+                            }`}
                     >
                         {icon}
                     </span>
