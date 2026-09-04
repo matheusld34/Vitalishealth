@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation"
 import { auth } from "@/app/lib/auth"
 import DashboardLayout from "@/components/dashboard/DashboardLayout"
-import StatCard from "@/components/dashboard/StatCard"
+import StatCard, { type Metric } from "@/components/dashboard/StatCard"
 import RecentActivity from "@/components/dashboard/RecentActivity"
 import prisma from "@/app/lib/prisma"
 
@@ -46,16 +46,17 @@ export default async function DashboardPage() {
     const metricsTotal = [
         { label: "TOTAL PREVISTO", value: s.total },
         { label: "FINALIZADOS", value: s.done, valueClassName: "text-brand-600" },
-    ]
+    ] as [Metric, Metric]
     const metricsPending = [
         { label: "NA FILA", value: s.pending },
         { label: "EM ATENDIMENTO", value: s.inProgress, valueClassName: "text-brand-600" },
-    ]
+    ] as [Metric, Metric]
+    // Cast explícito necessário porque "as [Metric, Metric]" + inferência tupla
     const finalPct = s.total === 0 ? 0 : s.completedPct
     const pendingPct = s.total === 0 ? 0 : s.pendingPct
-    const totalValue = metricsTotal[1].value as number
-    const pendingValue = metricsPending[0].value as number
-    const inProgressValue = metricsPending[1].value as number
+
+    const mTotal = metricsTotal as [Metric, Metric]
+    const mPending = metricsPending as [Metric, Metric]
 
     return (
         <DashboardLayout session={session}>
@@ -72,18 +73,18 @@ export default async function DashboardPage() {
                 <StatCard
                     title="Atendimentos Realizados (Hoje)"
                     titleClassName="text-brand-700"
-                    percent={totalValue > 0 ? (finalPct >= 10 ? finalPct : 8) : 8}
+                    percent={mTotal[1].value > 0 ? (finalPct >= 10 ? finalPct : 8) : 8}
                     percentLabel={finalPct >= 10 ? `${finalPct}% CONCLUÍDO` : "CONCLUÍDO"}
                     ringColor="stroke-brand-700"
-                    metrics={metricsTotal}
+                    metrics={mTotal}
                 />
                 <StatCard
                     title="Atendimentos Pendentes (Hoje)"
                     titleClassName="text-neutral-600"
-                    percent={pendingValue + inProgressValue > 0 ? (pendingPct >= 10 ? pendingPct : 6) : 6}
+                    percent={mPending[0].value + mPending[1].value > 0 ? (pendingPct >= 10 ? pendingPct : 6) : 6}
                     percentLabel={pendingPct >= 10 ? `${pendingPct}% AGUARDANDO` : "AGUARDANDO"}
                     ringColor="stroke-neutral-600"
-                    metrics={metricsPending}
+                    metrics={mPending}
                 />
             </div>
 
