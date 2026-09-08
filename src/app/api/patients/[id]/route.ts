@@ -3,11 +3,12 @@ import prisma from "@/app/lib/prisma"
 
 export async function GET(
     _request: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const resolved = await params
         const patient = await prisma.patient.findUnique({
-            where: { id: params.id },
+            where: { id: resolved.id },
             include: {
                 registeredBy: {
                     select: { id: true, name: true },
