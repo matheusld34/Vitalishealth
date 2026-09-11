@@ -1,4 +1,4 @@
-type Metric = {
+export type Metric = {
     label: string
     value: number
     valueClassName?: string

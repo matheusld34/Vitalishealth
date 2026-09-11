@@ -13,7 +13,7 @@ type Item = {
     href: string
     label: string
     description?: string
-    icon: JSX.Element
+    icon: React.ReactNode
     roles: Role[]
 }
 
@@ -126,18 +126,16 @@ export default function Sidebar({ userRole, onNavigate }: Props) {
                             key={item.href}
                             href={item.href}
                             onClick={onNavigate}
-                            className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 ${
-                                isActive
+                            className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 ${isActive
                                     ? "bg-gradient-to-r from-brand-500/10 via-brand-500/8 to-brand-500/0 text-brand-800 shadow-[inset_2px_0_0_rgba(16,142,93,0.65)]"
                                     : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
-                            }`}
+                                }`}
                         >
                             <span
-                                className={`relative h-8 w-8 shrink-0 inline-flex items-center justify-center rounded-lg transition-all duration-200 ${
-                                    isActive
+                                className={`relative h-8 w-8 shrink-0 inline-flex items-center justify-center rounded-lg transition-all duration-200 ${isActive
                                         ? "bg-brand-500 text-white shadow-[0_4px_10px_rgba(16,142,93,0.22)]"
                                         : "bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200 group-hover:text-neutral-700"
-                                }`}
+                                    }`}
                             >
                                 {item.icon}
                             </span>
