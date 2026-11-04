@@ -3,121 +3,84 @@ import prisma from "@/app/lib/prisma"
 
 export const dynamic = "force-dynamic"
 
-type FeedItem =
-    | {
-          id: string
-          kind: "patient_new" | "doctor_new"
-          createdAt: string
-          title: string
-          description: string
-          href: string
-      }
-    | {
-          id: string
-          kind: "appointment_scheduled" | "appointment_confirmed" | "appointment_done"
-          createdAt: string
-          title: string
-          description: string
-          href: string
-          dateTime: string
-      }
+type FeedKind =
+    | "patient_new"
+    | "doctor_new"
+    | "appointment_scheduled"
+    | "appointment_confirmed"
+    | "appointment_urgent"
+    | "appointment_done"
+    | "appointment_canceled"
 
-function isoStartOfToday(): string {
-    const d = new Date()
-    d.setHours(0, 0, 0, 0)
-    return d.toISOString()
+type FeedItem = {
+    id: string
+    kind: FeedKind
+    /** Momento da atividade (usado também na ordenação e no "x atrás" da UI). */
+    createdAt: string
+    title: string
+    description: string
+    href: string
+    dateTime?: string
 }
-function isoEndOfToday(): string {
-    const d = new Date()
-    d.setHours(23, 59, 59, 999)
-    return d.toISOString()
+
+/** Como cada status do enum AppointmentStatus aparece no feed. */
+const STATUS_META: Record<string, { kind: FeedKind; label: string }> = {
+    SCHEDULED: { kind: "appointment_scheduled", label: "Agendamento criado" },
+    CONFIRMED: { kind: "appointment_confirmed", label: "Consulta confirmada" },
+    URGENTE: { kind: "appointment_urgent", label: "Atendimento urgente" },
+    COMPLETED: { kind: "appointment_done", label: "Consulta finalizada" },
+    CANCELED: { kind: "appointment_canceled", label: "Consulta cancelada" },
+    NO_SHOW: { kind: "appointment_canceled", label: "Paciente não compareceu" },
 }
-function isoStartOfMonth(): string {
-    const d = new Date()
-    return new Date(d.getFullYear(), d.getMonth(), 1, 0, 0, 0, 0).toISOString()
-}
+
+const MAX_ITEMS = 8
 
 export async function GET() {
     try {
-        const todayStart = isoStartOfToday()
-        const todayEnd = isoEndOfToday()
-        const monthStart = isoStartOfMonth()
-        const oneWeekAgo = new Date(Date.now() - 7 * 86400000).toISOString()
-
-        // Stats cards
-        const [
-            totalPatients,
-            totalDoctors,
-            allTodayAppointments,
-            totalAppointmentsMonth,
-            recentPatients,
-            recentDoctors,
-            recentAppointments,
-        ] = await Promise.all([
-            prisma.patient.count(),
-            prisma.user.count({ where: { role: "DOCTOR" } }),
-            prisma.appointment.findMany({
-                where: { dateTime: { gte: todayStart, lte: todayEnd } },
-                include: {
-                    patient: { select: { id: true, fullName: true } },
-                    doctor: { select: { id: true, name: true } },
-                },
-                orderBy: { dateTime: "asc" },
-            }),
-            prisma.appointment.count({
-                where: { dateTime: { gte: monthStart } },
-            }),
+        // Sem janela fixa de datas: o feed sempre mostra as atividades mais
+        // recentes do sistema, sejam de hoje ou de meses atrás.
+        const [recentPatients, recentDoctors, recentAppointments] = await Promise.all([
             prisma.patient.findMany({
-                where: { createdAt: { gte: oneWeekAgo } },
-                include: { registeredBy: { select: { id: true, name: true } } },
+                select: {
+                    id: true,
+                    fullName: true,
+                    createdAt: true,
+                    registeredBy: { select: { id: true, name: true } },
+                },
                 orderBy: { createdAt: "desc" },
-                take: 6,
+                take: MAX_ITEMS,
             }),
             prisma.user.findMany({
-                where: { role: "DOCTOR", createdAt: { gte: oneWeekAgo } },
-                include: { doctorProfile: true },
+                where: { role: "DOCTOR" },
+                select: {
+                    id: true,
+                    name: true,
+                    createdAt: true,
+                    doctorProfile: { select: { crm: true, crmUf: true, specialties: true } },
+                },
                 orderBy: { createdAt: "desc" },
-                take: 3,
+                take: MAX_ITEMS,
             }),
             prisma.appointment.findMany({
-                where: { createdAt: { gte: oneWeekAgo } },
-                include: {
+                select: {
+                    id: true,
+                    status: true,
+                    dateTime: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    specialties: true,
                     patient: { select: { id: true, fullName: true } },
                     doctor: { select: { id: true, name: true } },
                 },
-                orderBy: { createdAt: "desc" },
-                take: 8,
+                // updatedAt: uma mudança de status (confirmar, finalizar, cancelar)
+                // sobe o item no feed, refletindo a atualização real do sistema.
+                orderBy: { updatedAt: "desc" },
+                take: MAX_ITEMS,
             }),
         ])
 
-        // Stats
-        const todayTotal = allTodayAppointments.length
-        const doneStatuses = ["COMPLETED", "DONE", "FINISHED", "CANCELLED"]
-        const scheduledStatuses = ["CONFIRMED", "SCHEDULED", "CONFIRMADO", "PENDING", "AGENDADO"]
-        const todayDone = allTodayAppointments.filter((a) =>
-            doneStatuses.includes((a.status || "").toUpperCase())
-        ).length
-        const todayInProgress = allTodayAppointments.filter(
-            (a) => (a.status || "").toUpperCase() === "IN_PROGRESS" || (a.status || "").toUpperCase() === "EM ANDAMENTO"
-        ).length
-        const todayPending = Math.max(0, todayTotal - todayDone - todayInProgress)
-
-        const stats = {
-            todayTotal,
-            todayDone,
-            todayInProgress,
-            todayPending,
-            todayCompletedPercent: todayTotal === 0 ? 0 : Math.min(100, Math.round((todayDone / todayTotal) * 100)),
-            todayPendingPercent: todayTotal === 0 ? 0 : Math.min(100, Math.round((todayPending / todayTotal) * 100)),
-            totalPatients,
-            totalDoctors,
-            totalAppointmentsMonth,
-        }
-
-        // Feed de atividades
         const items: FeedItem[] = []
 
-        // Patients novos
         for (const p of recentPatients) {
             const name = p.fullName || "Paciente"
             items.push({
@@ -132,66 +95,46 @@ export async function GET() {
             })
         }
 
-        // Doctors novos
         for (const d of recentDoctors) {
             const name = d.name || "Médico(a)"
-            const crm = (d.doctorProfile as any)?.crm
+            const profile = d.doctorProfile
+            const specialties = profile?.specialties?.length ? profile.specialties.join(" / ") : null
+            const crm = profile?.crm ? `CRM ${profile.crm}${profile.crmUf ? `-${profile.crmUf}` : ""}` : null
             items.push({
                 id: `d-${d.id}`,
                 kind: "doctor_new",
                 createdAt: d.createdAt.toISOString(),
                 title: `${name} adicionado(a) ao corpo clínico`,
-                description: crm ? `CRM: ${crm} ${((d.doctorProfile as any)?.crmUf || "").toUpperCase()}` : "Novo profissional habilitado",
+                description: [specialties, crm].filter(Boolean).join(" · ") || "Novo profissional habilitado",
                 href: `/dashboard/medicos/${d.id}`,
             })
         }
 
-        // Agendamentos recentes
         for (const a of recentAppointments) {
             const patient = a.patient?.fullName || "Paciente"
             const doctor = a.doctor?.name || "Médico(a)"
-            const statusUp = (a.status || "SCHEDULED").toUpperCase()
-            const kind =
-                doneStatuses.includes(statusUp)
-                    ? ("appointment_done" as const)
-                    : scheduledStatuses.includes(statusUp) && statusUp !== "PENDING"
-                        ? ("appointment_confirmed" as const)
-                        : ("appointment_scheduled" as const)
-
-            let description = `Com ${doctor}`
-            if (a.type) description = `${a.type} · ${description}`
+            const meta = STATUS_META[a.status] ?? STATUS_META.SCHEDULED
+            const specialty = a.specialties?.[0]
             items.push({
                 id: `a-${a.id}`,
-                kind,
-                createdAt: a.createdAt.toISOString(),
-                dateTime: a.dateTime.toISOString(),
-                title: `${patient}`,
-                description,
+                kind: meta.kind,
+                createdAt: a.updatedAt.toISOString(),
+                title: patient,
+                description: [meta.label, specialty, `Com ${doctor}`].filter(Boolean).join(" · "),
                 href: "/dashboard/agendamento",
+                dateTime: a.dateTime.toISOString(),
             })
         }
 
-        // Ordena por createdAt DESC (mais recentes primeiro)
         items.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt))
 
-        const maxItems = 8
-        const feed = items.slice(0, maxItems)
-
-        return NextResponse.json(
-            {
-                ok: true,
-                stats,
-                feed,
-            },
-            { status: 200 }
-        )
+        return NextResponse.json({ ok: true, feed: items.slice(0, MAX_ITEMS) }, { status: 200 })
     } catch (e) {
         const msg = e instanceof Error ? e.message : String(e)
         const missing = /P2022|does not exist|ColumnNotFound/i.test(msg)
         return NextResponse.json(
             {
                 ok: false,
-                stats: null,
                 feed: [],
                 error: missing
                     ? "Tabelas Patient/Doctor/Appointment desatualizadas. Execute npx prisma migrate dev."

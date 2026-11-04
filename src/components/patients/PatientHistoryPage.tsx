@@ -57,6 +57,7 @@ type ApiDetail = {
         dateTime: string
         status: string | null
         notes?: string | null
+        observation?: string | null
         room?: string | null
         type?: string | null
         doctor: {
@@ -306,7 +307,7 @@ function mapAppointmentsToHistory(appts: ApiDetail["appointments"]): HistoryItem
             doctor: docName,
             doctorAvatar: AVATAR_GRADIENTS[avatarIdx],
             room: a.room || "Sala 01",
-            observations: a.notes || "Sem observações registradas.",
+            observations: a.observation || "Sem observações registradas.",
             status,
         }
     })

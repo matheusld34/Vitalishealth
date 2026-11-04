@@ -1,15 +1,16 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 type ActivityKind =
     | "patient_new"
     | "doctor_new"
     | "appointment_scheduled"
     | "appointment_confirmed"
+    | "appointment_urgent"
     | "appointment_done"
-    | "checkin"
+    | "appointment_canceled"
 
 type Activity = {
     id: string
@@ -23,60 +24,12 @@ type Activity = {
 
 type FeedResponse = {
     ok: boolean
-    stats: unknown | null
     feed: Activity[]
+    error?: string
 }
 
-const FALLBACK: Activity[] = [
-    {
-        id: "a1",
-        kind: "checkin",
-        createdAt: Date.now() - 1000 * 60 * 45 + "",
-        title: "João Silva",
-        description: "Check-in realizado para Clínica Geral",
-        href: "/dashboard/pacientes/1/historico",
-    },
-    {
-        id: "a2",
-        kind: "appointment_done",
-        createdAt: Date.now() - 1000 * 60 * 60 + "",
-        title: "Maria Oliveira",
-        description: "Consulta finalizada - Dr. Arnaldo",
-        href: "/dashboard/agendamento",
-    },
-    {
-        id: "a3",
-        kind: "appointment_scheduled",
-        createdAt: Date.now() - 1000 * 60 * 90 + "",
-        title: "Agendamento Web",
-        description: "Nova marcação: Exame de Sangue",
-        href: "/dashboard/agendamento/novo",
-    },
-    {
-        id: "a4",
-        kind: "patient_new",
-        createdAt: Date.now() - 1000 * 60 * 60 * 3 + "",
-        title: "Carlos Eduardo cadastrado(a)",
-        description: "Prontuário aberto por Admin",
-        href: "/dashboard/pacientes/3/historico",
-    },
-    {
-        id: "a5",
-        kind: "doctor_new",
-        createdAt: Date.now() - 1000 * 60 * 60 * 20 + "",
-        title: "Dra. Fernanda Lima adicionada",
-        description: "CRM: 98765 SP · Neurologista",
-        href: "/dashboard/medicos",
-    },
-    {
-        id: "a6",
-        kind: "appointment_confirmed",
-        createdAt: Date.now() - 1000 * 60 * 60 * 26 + "",
-        title: "Beatriz Costa",
-        description: "Cardiologia · Com Dra. Fernanda",
-        href: "/dashboard/agendamento",
-    },
-]
+/** Intervalo de atualização automática do painel. */
+const POLL_MS = 15000
 
 function pad(n: number) {
     return n.toString().padStart(2, "0")
@@ -115,8 +68,8 @@ function formatRelativeOrTime(isoOrTs: string): string {
 
 function iconFor(kind: ActivityKind) {
     const base = "text-white"
-    const stroke = { strokeWidth: kind === "appointment_done" ? 2.4 : 2 }
-    if (kind === "checkin" || kind === "patient_new") {
+    const stroke = { strokeWidth: kind === "appointment_done" || kind === "appointment_canceled" ? 2.4 : 2 }
+    if (kind === "patient_new") {
         return (
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" {...stroke} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={base}>
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -139,6 +92,22 @@ function iconFor(kind: ActivityKind) {
             </svg>
         )
     }
+    if (kind === "appointment_canceled") {
+        return (
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" {...stroke} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={base}>
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+        )
+    }
+    if (kind === "appointment_urgent") {
+        return (
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" {...stroke} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={base}>
+                <path d="M12 3v12" />
+                <circle cx="12" cy="19" r="1.4" fill="currentColor" stroke="none" />
+            </svg>
+        )
+    }
     if (kind === "appointment_confirmed") {
         return (
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" {...stroke} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={base}>
@@ -146,10 +115,11 @@ function iconFor(kind: ActivityKind) {
                 <line x1="3" y1="10" x2="21" y2="10" />
                 <line x1="8" y1="3" x2="8" y2="7" />
                 <line x1="16" y1="3" x2="16" y2="7" />
+                <polyline points="9 15 11 17 15 13" />
             </svg>
         )
     }
-    // scheduled default
+    // appointment_scheduled (default)
     return (
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" {...stroke} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={base}>
             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -160,16 +130,18 @@ function iconFor(kind: ActivityKind) {
 
 function wrapperFor(kind: ActivityKind) {
     switch (kind) {
-        case "checkin":
-            return "bg-gradient-to-br from-brand-500 to-brand-700"
         case "patient_new":
             return "bg-gradient-to-br from-emerald-500 to-emerald-700"
         case "doctor_new":
             return "bg-gradient-to-br from-sky-500 to-indigo-600"
         case "appointment_confirmed":
             return "bg-gradient-to-br from-brand-400 to-brand-600"
+        case "appointment_urgent":
+            return "bg-gradient-to-br from-rose-500 to-red-600"
         case "appointment_done":
             return "bg-gradient-to-br from-neutral-400 to-neutral-600"
+        case "appointment_canceled":
+            return "bg-gradient-to-br from-red-500 to-red-700"
         case "appointment_scheduled":
         default:
             return "bg-gradient-to-br from-amber-400 to-orange-500"
@@ -177,39 +149,58 @@ function wrapperFor(kind: ActivityKind) {
 }
 
 export default function RecentActivity() {
+    const [feed, setFeed] = useState<Activity[]>([])
     const [loading, setLoading] = useState(true)
-    const [feed, setFeed] = useState<Activity[]>(FALLBACK)
+    const [refreshing, setRefreshing] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [lastSync, setLastSync] = useState<Date | null>(null)
 
-    useEffect(() => {
-        let cancelled = false
-        async function load() {
-            try {
-                const res = await fetch("/api/activity-feed", { cache: "no-store" })
-                if (!res.ok) throw new Error("fail")
-                const data = (await res.json()) as FeedResponse
-                if (cancelled) return
-                if (data.feed && Array.isArray(data.feed) && data.feed.length > 0) {
-                    setFeed(data.feed as Activity[])
-                } else {
-                    setFeed(FALLBACK)
-                }
-            } catch (e) {
-                if (!cancelled) {
-                    setFeed(FALLBACK)
-                    setError(e instanceof Error ? e.message : String(e))
-                }
-            } finally {
-                if (!cancelled) setLoading(false)
-            }
-        }
-        load()
-        return () => {
-            cancelled = true
+    // Evita sobreposição de requisições quando o polling e o foco disparam juntos.
+    const inFlight = useRef(false)
+
+    const load = useCallback(async (first: boolean) => {
+        if (inFlight.current) return
+        inFlight.current = true
+        if (!first) setRefreshing(true)
+        try {
+            const res = await fetch("/api/activity-feed", { cache: "no-store" })
+            const data = (await res.json().catch(() => null)) as FeedResponse | null
+            if (!res.ok || !data?.ok) throw new Error(data?.error || "Falha ao carregar atividades")
+            setFeed(Array.isArray(data.feed) ? data.feed : [])
+            setLastSync(new Date())
+            setError(null)
+        } catch (e) {
+            setError(e instanceof Error ? e.message : String(e))
+        } finally {
+            inFlight.current = false
+            setLoading(false)
+            setRefreshing(false)
         }
     }, [])
 
+    useEffect(() => {
+        load(true)
+
+        const timer = setInterval(() => {
+            // Não busca nada com a aba em segundo plano.
+            if (document.visibilityState === "visible") load(false)
+        }, POLL_MS)
+
+        const onVisible = () => {
+            if (document.visibilityState === "visible") load(false)
+        }
+        document.addEventListener("visibilitychange", onVisible)
+        window.addEventListener("focus", onVisible)
+
+        return () => {
+            clearInterval(timer)
+            document.removeEventListener("visibilitychange", onVisible)
+            window.removeEventListener("focus", onVisible)
+        }
+    }, [load])
+
     const visible = useMemo(() => feed.slice(0, 6), [feed])
+    const isEmpty = !loading && visible.length === 0
 
     return (
         <section className="bg-white rounded-2xl border border-neutral-200/70 shadow-sm p-5 md:p-6">
@@ -218,10 +209,13 @@ export default function RecentActivity() {
                     <h2 className="text-base md:text-lg font-semibold text-neutral-800">
                         Atividades Recentes
                     </h2>
-                    {loading && (
-                        <span className="inline-flex h-2 w-2 rounded-full bg-brand-500 animate-pulse shadow-[0_0_0_3px_rgba(16,185,129,0.2)]" aria-hidden="true" />
+                    {refreshing && (
+                        <span
+                            className="inline-flex h-2 w-2 rounded-full bg-brand-500 animate-pulse shadow-[0_0_0_3px_rgba(16,185,129,0.2)]"
+                            aria-label="Atualizando"
+                        />
                     )}
-                    {!loading && error && (
+                    {!refreshing && error && (
                         <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase text-amber-700 bg-amber-50 ring-1 ring-amber-700/10">
                             offline
                         </span>
@@ -235,48 +229,69 @@ export default function RecentActivity() {
                 </Link>
             </header>
 
-            <ul className="space-y-1 md:space-y-2">
-                {loading && visible.length === 0
-                    ? Array.from({ length: 4 }).map((_, i) => <ActivitySkeleton key={i} />)
-                    : visible.map((activity, i) => {
-                          const last = i === visible.length - 1
-                          return (
-                              <li
-                                  key={activity.id}
-                                  className="group rounded-xl border border-transparent hover:border-neutral-100 hover:bg-neutral-50 transition-colors"
-                              >
-                                  <Link
-                                      href={activity.href}
-                                      className="block w-full"
-                                  >
-                                      <div className="flex items-center gap-4 py-3 md:py-4 px-3 md:px-4">
-                                          <span
-                                              className={`h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full inline-flex items-center justify-center shadow-sm ${wrapperFor(
-                                                  activity.kind
-                                              )}`}
-                                          >
-                                              {iconFor(activity.kind)}
-                                          </span>
-                                          <div className="min-w-0 flex-1">
-                                              <p className="text-sm md:text-[15px] font-semibold text-neutral-900 truncate">
-                                                  {activity.title}
-                                              </p>
-                                              <p className="text-xs md:text-sm text-neutral-600 truncate">
-                                                  {activity.description}
-                                              </p>
-                                          </div>
-                                          <span className="shrink-0 text-xs md:text-sm font-medium text-neutral-400 tabular-nums">
-                                              {formatRelativeOrTime(activity.createdAt)}
-                                          </span>
-                                      </div>
-                                      {!last && (
-                                          <div className="mx-4 md:mx-5 border-t border-neutral-100" />
-                                      )}
-                                  </Link>
-                              </li>
-                          )
-                      })}
-            </ul>
+            {loading ? (
+                <ul className="space-y-1 md:space-y-2">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                        <ActivitySkeleton key={i} />
+                    ))}
+                </ul>
+            ) : isEmpty ? (
+                <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
+                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-neutral-100 text-neutral-400">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9" />
+                            <path d="M12 7v5l3 2" />
+                        </svg>
+                    </span>
+                    <p className="text-sm font-semibold text-neutral-700">Nenhuma atividade registrada ainda</p>
+                    <p className="max-w-xs text-xs text-neutral-500">
+                        Agendamentos, pacientes e médicos aparecerão aqui automaticamente conforme o uso do sistema.
+                    </p>
+                    {error && <p className="max-w-xs text-xs text-amber-700">Não foi possível atualizar: {error}</p>}
+                </div>
+            ) : (
+                <ul className="space-y-1 md:space-y-2">
+                    {visible.map((activity, i) => {
+                        const last = i === visible.length - 1
+                        return (
+                            <li
+                                key={activity.id}
+                                className="group rounded-xl border border-transparent hover:border-neutral-100 hover:bg-neutral-50 transition-colors"
+                            >
+                                <Link href={activity.href} className="block w-full">
+                                    <div className="flex items-center gap-4 py-3 md:py-4 px-3 md:px-4">
+                                        <span
+                                            className={`h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full inline-flex items-center justify-center shadow-sm ${wrapperFor(
+                                                activity.kind
+                                            )}`}
+                                        >
+                                            {iconFor(activity.kind)}
+                                        </span>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-sm md:text-[15px] font-semibold text-neutral-900 truncate">
+                                                {activity.title}
+                                            </p>
+                                            <p className="text-xs md:text-sm text-neutral-600 truncate">
+                                                {activity.description}
+                                            </p>
+                                        </div>
+                                        <span className="shrink-0 text-xs md:text-sm font-medium text-neutral-400 tabular-nums">
+                                            {formatRelativeOrTime(activity.createdAt)}
+                                        </span>
+                                    </div>
+                                    {!last && <div className="mx-4 md:mx-5 border-t border-neutral-100" />}
+                                </Link>
+                            </li>
+                        )
+                    })}
+                </ul>
+            )}
+
+            {!loading && lastSync && (
+                <p className="mt-4 text-[11px] text-neutral-400">
+                    Atualizado às {pad(lastSync.getHours())}:{pad(lastSync.getMinutes())}
+                </p>
+            )}
         </section>
     )
 }

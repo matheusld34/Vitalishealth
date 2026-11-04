@@ -1,15 +1,19 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { useRouter } from "next/navigation"
 
 const SUGGESTED_TIMES = ["09:00", "10:30", "14:00", "15:15", "16:45"]
 const DURATIONS = ["30 Minutos", "45 Minutos", "60 Minutos", "90 Minutos"]
 
 type PatientOpt = { id: string; name: string; insurance: string }
 type DoctorOpt = { id: string; name: string; specialty: string; crm: string }
+type ToastState = { kind: "success" | "error"; message: string } | null
 
-const PATIENTS_OPT: PatientOpt[] = [
+// Fallback exibido apenas enquanto o banco não devolve registros,
+// mantendo o layout visível durante o desenvolvimento.
+const FALLBACK_PATIENTS: PatientOpt[] = [
     { id: "1", name: "Arnaldo Silveira", insurance: "Unimed Nacional" },
     { id: "2", name: "Beatriz Costa", insurance: "Particular" },
     { id: "3", name: "Carlos Eduardo", insurance: "Bradesco Saúde" },
@@ -18,7 +22,7 @@ const PATIENTS_OPT: PatientOpt[] = [
     { id: "6", name: "Mariana Lima Ferreira", insurance: "Amil" },
 ]
 
-const DOCTORS_OPT: DoctorOpt[] = [
+const FALLBACK_DOCTORS: DoctorOpt[] = [
     { id: "1", name: "Dr. Ricardo Mendes", specialty: "Clínica Geral", crm: "123456-SP" },
     { id: "2", name: "Dra. Julia Ramos", specialty: "Clínica Geral", crm: "234567-SP" },
     { id: "3", name: "Dra. Helena Souza", specialty: "Fisioterapia", crm: "345678-SP" },
@@ -27,12 +31,36 @@ const DOCTORS_OPT: DoctorOpt[] = [
     { id: "6", name: "Dr. Marcos Vinícius Oliveira", specialty: "Neurologia", crm: "123456-SP" },
 ]
 
+type ApiPatient = {
+    id: string
+    fullName?: string | null
+    insuranceOperator?: string | null
+    planType?: string | null
+}
+
+type ApiDoctor = {
+    id: string
+    name?: string | null
+    doctorProfile?: {
+        crm?: string | null
+        crmUf?: string | null
+        specialties?: string[] | null
+    } | null
+}
+
 export default function NewAppointmentPage() {
+    const router = useRouter()
     const todayStart = new Date()
     todayStart.setHours(0, 0, 0, 0)
 
-    const [patientId, setPatientId] = useState<string>("6")
-    const [doctorId, setDoctorId] = useState<string>("6")
+    const [patientOpts, setPatientOpts] = useState<PatientOpt[]>(FALLBACK_PATIENTS)
+    const [doctorOpts, setDoctorOpts] = useState<DoctorOpt[]>(FALLBACK_DOCTORS)
+    const [loadingOptions, setLoadingOptions] = useState<boolean>(true)
+    const [submitting, setSubmitting] = useState<boolean>(false)
+    const [toast, setToast] = useState<ToastState>(null)
+
+    const [patientId, setPatientId] = useState<string>("")
+    const [doctorId, setDoctorId] = useState<string>("")
     const [date, setDate] = useState<string>(toIsoDate(todayStart))
     const [time, setTime] = useState<string>("09:00")
     const [duration, setDuration] = useState<string>("45 Minutos")
@@ -43,8 +71,117 @@ export default function NewAppointmentPage() {
     const [viewMonth, setViewMonth] = useState<Date>(() => new Date(todayStart.getFullYear(), todayStart.getMonth(), 1))
     const [jumpDateInput, setJumpDateInput] = useState<string>(toIsoDate(todayStart))
 
-    const patient = PATIENTS_OPT.find((p) => p.id === patientId)
-    const doctor = DOCTORS_OPT.find((d) => d.id === doctorId)
+    // Busca pacientes e médicos reais do banco
+    useEffect(() => {
+        let cancelled = false
+
+        async function load() {
+            try {
+                const [pRes, dRes] = await Promise.all([
+                    fetch("/api/patients", { cache: "no-store" }),
+                    fetch("/api/doctors", { cache: "no-store" }),
+                ])
+                const pJson = await pRes.json().catch(() => null)
+                const dJson = await dRes.json().catch(() => null)
+                if (cancelled) return
+
+                const rawPatients: ApiPatient[] = Array.isArray(pJson?.patients) ? pJson.patients : []
+                const mappedPatients: PatientOpt[] = rawPatients.map((p) => ({
+                    id: p.id,
+                    name: p.fullName?.trim() || "Paciente",
+                    insurance:
+                        [p.insuranceOperator, p.planType].filter(Boolean).join(" — ") || "Particular",
+                }))
+
+                const rawDoctors: ApiDoctor[] = Array.isArray(dJson?.doctors) ? dJson.doctors : []
+                const mappedDoctors: DoctorOpt[] = rawDoctors.map((d) => {
+                    const specs = Array.isArray(d.doctorProfile?.specialties)
+                        ? (d.doctorProfile?.specialties as string[])
+                        : []
+                    const crm = d.doctorProfile?.crm
+                    const uf = d.doctorProfile?.crmUf
+                    return {
+                        id: d.id,
+                        name: d.name?.trim() || "Médico(a)",
+                        specialty: specs.length ? specs.join(" / ") : "Clínica Geral",
+                        crm: crm ? `${crm}${uf ? `-${uf}` : ""}` : "—",
+                    }
+                })
+
+                setPatientOpts(mappedPatients.length ? mappedPatients : FALLBACK_PATIENTS)
+                setDoctorOpts(mappedDoctors.length ? mappedDoctors : FALLBACK_DOCTORS)
+                setPatientId((prev) => prev || mappedPatients[0]?.id || "")
+                setDoctorId((prev) => prev || mappedDoctors[0]?.id || "")
+            } catch {
+                if (cancelled) return
+                setPatientOpts(FALLBACK_PATIENTS)
+                setDoctorOpts(FALLBACK_DOCTORS)
+            } finally {
+                if (!cancelled) setLoadingOptions(false)
+            }
+        }
+
+        load()
+        return () => {
+            cancelled = true
+        }
+    }, [])
+
+    const patient = useMemo(() => patientOpts.find((p) => p.id === patientId), [patientOpts, patientId])
+    const doctor = useMemo(() => doctorOpts.find((d) => d.id === doctorId), [doctorOpts, doctorId])
+
+    async function handleSubmit() {
+        if (submitting) return
+
+        if (!patientId || !doctorId) {
+            setToast({ kind: "error", message: "Selecione o paciente e o médico responsável." })
+            return
+        }
+        if (!date || !time) {
+            setToast({ kind: "error", message: "Informe a data e o horário do atendimento." })
+            return
+        }
+
+        setSubmitting(true)
+        try {
+            const minutes = Number(duration.split(" ")[0]) || 30
+            const res = await fetch("/api/appointments", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    patientId,
+                    doctorId,
+                    date,
+                    time,
+                    durationMinutes: minutes,
+                    observation: observations,
+                    specialties: doctor?.specialty ? doctor.specialty.split(" / ") : [],
+                    urgent,
+                    reminder: sendReminder,
+                }),
+            })
+            const json = await res.json().catch(() => null)
+
+            if (!res.ok || !json?.ok) {
+                setToast({
+                    kind: "error",
+                    message: json?.error || "Não foi possível salvar o agendamento.",
+                })
+                setSubmitting(false)
+                return
+            }
+
+            setToast({ kind: "success", message: "Agendamento salvo com sucesso! Redirecionando..." })
+            setTimeout(() => {
+                router.push("/dashboard/agendamento")
+                router.refresh()
+            }, 900)
+        } catch {
+            setToast({ kind: "error", message: "Falha de conexão ao salvar o agendamento." })
+            setSubmitting(false)
+        }
+    }
+
 
     const selectedDate = safeParseIso(date)
     const formattedDate = formatLongPt(selectedDate)
@@ -96,9 +233,18 @@ export default function NewAppointmentPage() {
                     </Link>
                     <button
                         type="button"
-                        className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 px-6 py-3 text-[14.5px] font-bold text-white shadow-[0_10px_24px_rgba(16,142,93,0.3)] hover:brightness-[1.03] active:brightness-100 transition-all"
+                        onClick={handleSubmit}
+                        disabled={submitting || loadingOptions}
+                        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 px-6 py-3 text-[14.5px] font-bold text-white shadow-[0_10px_24px_rgba(16,142,93,0.3)] hover:brightness-[1.03] active:brightness-100 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                        Confirmar Agendamento
+                        {submitting ? (
+                            <>
+                                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                                Confirmando...
+                            </>
+                        ) : (
+                            "Confirmar Agendamento"
+                        )}
                     </button>
                 </div>
             </div>
@@ -141,8 +287,9 @@ export default function NewAppointmentPage() {
                                     icon="person"
                                     value={patientId}
                                     onChange={setPatientId}
-                                    placeholder="Selecione um paciente..."
-                                    options={PATIENTS_OPT.map((p) => ({
+                                    placeholder={loadingOptions ? "Carregando pacientes..." : "Selecione um paciente..."}
+                                    disabled={loadingOptions}
+                                    options={patientOpts.map((p) => ({
                                         value: p.id,
                                         label: p.name,
                                         sub: p.insurance,
@@ -159,8 +306,9 @@ export default function NewAppointmentPage() {
                                     icon="doctor"
                                     value={doctorId}
                                     onChange={setDoctorId}
-                                    placeholder="Selecione o especialista..."
-                                    options={DOCTORS_OPT.map((d) => ({
+                                    placeholder={loadingOptions ? "Carregando médicos..." : "Selecione o especialista..."}
+                                    disabled={loadingOptions}
+                                    options={doctorOpts.map((d) => ({
                                         value: d.id,
                                         label: d.name,
                                         sub: d.specialty,
@@ -515,14 +663,9 @@ export default function NewAppointmentPage() {
                             {/* Rows informação */}
                             <dl className="divide-y divide-neutral-100">
                                 <InfoRow label="Paciente:" value={patient?.name ?? "—"} bold />
+                                <InfoRow label="Convênio:" value={patient?.insurance ?? "—"} />
                                 <InfoRow label="Especialidade:" value={doctor?.specialty ?? "—"} />
                                 <InfoRow label="Médico:" value={doctor?.name ?? "—"} />
-                                <div className="flex items-center justify-between pt-3.5 pb-1">
-                                    <dt className="text-sm font-semibold text-neutral-600">Tipo:</dt>
-                                    <span className="inline-flex items-center px-2.5 py-1 rounded-md bg-neutral-200/70 text-neutral-700 text-[10.5px] font-black uppercase tracking-[0.16em]">
-                                        Particular
-                                    </span>
-                                </div>
                             </dl>
 
                             {/* Caixa informativa */}
@@ -546,13 +689,24 @@ export default function NewAppointmentPage() {
                             <div className="pt-2 space-y-3">
                                 <button
                                     type="button"
-                                    className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 px-6 py-4 text-[15px] font-bold text-white shadow-[0_12px_28px_rgba(16,142,93,0.35)] hover:brightness-[1.03] active:brightness-100 transition-all"
+                                    onClick={handleSubmit}
+                                    disabled={submitting || loadingOptions}
+                                    className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 px-6 py-4 text-[15px] font-bold text-white shadow-[0_12px_28px_rgba(16,142,93,0.35)] hover:brightness-[1.03] active:brightness-100 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
-                                    Confirmar Agendamento
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                        <circle cx="12" cy="12" r="10" />
-                                        <polyline points="22 4 12 14.01 9 11.01" />
-                                    </svg>
+                                    {submitting ? (
+                                        <>
+                                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
+                                            Salvando...
+                                        </>
+                                    ) : (
+                                        <>
+                                            Confirmar Agendamento
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                                <circle cx="12" cy="12" r="10" />
+                                                <polyline points="22 4 12 14.01 9 11.01" />
+                                            </svg>
+                                        </>
+                                    )}
                                 </button>
                                 <Link
                                     href="/dashboard/agendamento"
@@ -604,8 +758,69 @@ export default function NewAppointmentPage() {
                 </div>
             </div>
 
+            {/* Toast de feedback do agendamento */}
+            {toast && (
+                <div
+                    className="fixed top-5 right-5 z-50 w-[min(92vw,380px)]"
+                    style={{ animation: "toastSlidein 0.28s ease-out" }}
+                    role="status"
+                >
+                    <div
+                        className={`flex items-start gap-3 rounded-2xl border bg-white p-4 shadow-[0_18px_40px_-16px_rgba(15,23,42,0.35)] ${toast.kind === "success" ? "border-brand-600/20" : "border-rose-500/20"
+                            }`}
+                    >
+                        <span
+                            className={`mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white ${toast.kind === "success"
+                                ? "bg-gradient-to-br from-brand-600 to-brand-800"
+                                : "bg-gradient-to-br from-rose-500 to-rose-700"
+                                }`}
+                        >
+                            {toast.kind === "success" ? (
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>
+                            ) : (
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <line x1="18" y1="6" x2="6" y2="18" />
+                                    <line x1="6" y1="6" x2="18" y2="18" />
+                                </svg>
+                            )}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                            <p className="text-sm font-bold text-neutral-900">
+                                {toast.kind === "success" ? "Sucesso" : "Atenção"}
+                            </p>
+                            <p className="mt-0.5 text-[13px] leading-relaxed text-neutral-600">
+                                {toast.message}
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setToast(null)}
+                            aria-label="Fechar aviso"
+                            className="shrink-0 rounded-lg p-1 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 transition-colors"
+                        >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Estilos inline: inputCls padronizado */}
             <style jsx global>{`
+                @keyframes toastSlidein {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-10px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
                 .inputCls {
                     width: 100%;
                     border-radius: 1rem;
@@ -642,12 +857,14 @@ function SelectWrapper({
     placeholder,
     options,
     icon,
+    disabled,
 }: {
     value: string
     onChange: (v: string) => void
     placeholder: string
     options: SelectOption[]
     icon: "person" | "doctor"
+    disabled?: boolean
 }) {
     return (
         <div className="relative">
@@ -668,7 +885,8 @@ function SelectWrapper({
             <select
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="inputCls pl-12 pr-10 appearance-none"
+                disabled={disabled}
+                className="inputCls pl-12 pr-10 appearance-none disabled:opacity-60 disabled:cursor-not-allowed"
             >
                 <option value="" disabled>
                     {placeholder}

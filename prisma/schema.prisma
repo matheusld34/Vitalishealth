@@ -167,6 +167,7 @@ enum AppointmentStatus {
   CANCELED
   COMPLETED
   NO_SHOW
+  URGENTE
 }
 
 model Appointment {
@@ -175,12 +176,14 @@ model Appointment {
   patient         Patient           @relation(fields: [patientId], references: [id], onDelete: Cascade)
   doctorId        String            @map("doctor_id")
   doctor          User              @relation("DoctorAppointments", fields: [doctorId], references: [id], onDelete: Cascade)
-  secretaryId     String            @map("secretary_id")
-  secretary       User              @relation("SecretaryAppointments", fields: [secretaryId], references: [id], onDelete: Cascade)
+  secretaryId     String?           @map("secretary_id")
+  secretary       User?             @relation("SecretaryAppointments", fields: [secretaryId], references: [id], onDelete: Cascade)
   dateTime        DateTime          @map("date_time")
   durationMinutes Int               @default(30) @map("duration_minutes")
   status          AppointmentStatus @default(SCHEDULED)
-  notes           String?           @db.Text
+  specialties     String[]          @default([])
+  reminder        Boolean           @default(true)
+  observation     String?           @db.Text
   createdAt       DateTime          @default(now()) @map("created_at")
   updatedAt       DateTime          @default(now()) @updatedAt @map("updated_at")
 
