@@ -3,6 +3,7 @@ import Google from "next-auth/providers/google"
 import Credentials from "next-auth/providers/credentials"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import bcrypt from "bcryptjs"
+import { redirect } from "next/navigation"
 import prisma from "./prisma"
 import type { Role } from "../../generated/prisma/client"
 
@@ -112,3 +113,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         },
     },
 })
+
+/**
+ * Garante que existe sessão; sem ela, o usuário volta para o login.
+ * Use nas páginas do dashboard que qualquer papel autenticado pode acessar.
+ */
+export async function requireSession() {
+    const session = await auth()
+    if (!session) redirect("/")
+    return session
+}
+
+/**
+ * Garante que o usuário está autenticado E possui um dos papéis permitidos.
+ * Sem permissão, volta para o painel em vez de renderizar a página.
+ *
+ * Ex.: `await requireRole("MASTER", "SECRETARY")`
+ */
+export async function requireRole(...allowed: Role[]) {
+    const session = await requireSession()
+    if (!allowed.includes(session.user.role)) redirect("/dashboard")
+    return session
+}

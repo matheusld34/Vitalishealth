@@ -1,5 +1,4 @@
-import { redirect } from "next/navigation"
-import { auth } from "@/app/lib/auth"
+import { requireSession } from "@/app/lib/auth"
 import DashboardLayout from "@/components/dashboard/DashboardLayout"
 import StatCard, { type Metric } from "@/components/dashboard/StatCard"
 import RecentActivity from "@/components/dashboard/RecentActivity"
@@ -37,8 +36,7 @@ async function buildTodayStats() {
 }
 
 export default async function DashboardPage() {
-    const session = await auth()
-    if (!session) redirect("/")
+    const session = await requireSession()
 
     const greetingName = session.user.name ?? "Administrador"
     const s = await buildTodayStats()

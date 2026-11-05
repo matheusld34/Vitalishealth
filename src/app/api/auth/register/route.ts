@@ -59,13 +59,18 @@ export async function POST(request: Request) {
 
         const passwordHash = await bcrypt.hash(password, 12)
 
+        // Bootstrap: enquanto não houver nenhum usuário no sistema, a primeira
+        // conta criada é o MASTER. A partir daí o cadastro público só cria
+        // SECRETARY — papéis maiores passam a ser concedidos pelo próprio MASTER.
+        const isFirstUser = (await prisma.user.count()) === 0
+
         const data: CreateData = {
             name: fullName,
             email,
             passwordHash,
             cpf: cpf || null,
             phone: phone || null,
-            role: "SECRETARY",
+            role: isFirstUser ? "MASTER" : "SECRETARY",
         }
 
         const user = await (prisma.user as unknown as {
