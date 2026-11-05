@@ -20,7 +20,7 @@ export async function GET(request: Request) {
             orderBy: [{ dateTime: "asc" }],
             take: limit,
             include: {
-                patient: { select: { id: true, fullName: true } },
+                patient: { select: { id: true, fullName: true, insuranceOperator: true } },
                 doctor: {
                     select: {
                         id: true,

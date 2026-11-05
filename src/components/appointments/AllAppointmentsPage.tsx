@@ -1,409 +1,344 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 
-type AptStatus = "Confirmado" | "Pendente" | "Em Andamento" | "Concluído" | "Cancelado" | "Reagendado"
+/* ---------- TIPOS ---------- */
+
+type AptStatus = "Confirmado" | "Pendente" | "Urgente" | "Concluído" | "Cancelado" | "Não Compareceu"
 
 type AppointmentRow = {
     id: string
+    patientId: string
     patientName: string
     patientInitials: string
     patientGradient: string
+    doctorId: string
     doctorName: string
     doctorInitials: string
     doctorGradient: string
+    crm: string
     specialty: string
-    kind: string
-    date: string
+    procedure: string
+    iso: string
+    dateLabel: string
     weekdayShort: string
     time: string
     duration: string
-    room: string
     insurance: string
     status: AptStatus
 }
 
-const rows: AppointmentRow[] = [
-    {
-        id: "A-0001",
-        patientName: "João Silva Pereira",
-        patientInitials: "JS",
-        patientGradient: "from-sky-400 to-blue-600",
-        doctorName: "Dr. Marcos Vinícius",
-        doctorInitials: "MV",
-        doctorGradient: "from-slate-500 to-slate-800",
-        specialty: "Neurologia",
-        kind: "Consulta Neurológica",
-        date: "12 Out, 2023",
-        weekdayShort: "Qui",
-        time: "08:30",
-        duration: "45 min",
-        room: "Neuro 01",
-        insurance: "Unimed",
-        status: "Confirmado",
-    },
-    {
-        id: "A-0002",
-        patientName: "Ana Ferreira Costa",
-        patientInitials: "AF",
-        patientGradient: "from-rose-400 to-pink-600",
-        doctorName: "Dra. Julia Ramos",
-        doctorInitials: "JR",
-        doctorGradient: "from-violet-400 to-purple-700",
-        specialty: "Clínica Geral",
-        kind: "Check-up Anual",
-        date: "12 Out, 2023",
-        weekdayShort: "Qui",
-        time: "09:15",
-        duration: "30 min",
-        room: "Sala 01",
-        insurance: "Particular",
-        status: "Pendente",
-    },
-    {
-        id: "A-0003",
-        patientName: "Mariana Lima Ferreira",
-        patientInitials: "ML",
-        patientGradient: "from-fuchsia-400 to-rose-600",
-        doctorName: "Dra. Beatriz Costa",
-        doctorInitials: "BC",
-        doctorGradient: "from-fuchsia-500 to-rose-600",
-        specialty: "Cardiologia",
-        kind: "Avaliação Cardiológica",
-        date: "12 Out, 2023",
-        weekdayShort: "Qui",
-        time: "10:00",
-        duration: "60 min",
-        room: "Cardio 01",
-        insurance: "Amil",
-        status: "Em Andamento",
-    },
-    {
-        id: "A-0004",
-        patientName: "Carlos Eduardo Lima",
-        patientInitials: "CE",
-        patientGradient: "from-amber-300 to-orange-500",
-        doctorName: "Dr. Ricardo Mendes",
-        doctorInitials: "RM",
-        doctorGradient: "from-amber-400 to-orange-600",
-        specialty: "Pediatria",
-        kind: "Consulta Pediátrica",
-        date: "12 Out, 2023",
-        weekdayShort: "Qui",
-        time: "11:00",
-        duration: "30 min",
-        room: "Pedi 02",
-        insurance: "Bradesco Saúde",
-        status: "Confirmado",
-    },
-    {
-        id: "A-0005",
-        patientName: "Rafael Monteiro",
-        patientInitials: "RM",
-        patientGradient: "from-emerald-400 to-green-600",
-        doctorName: "Dr. Arnaldo Souza",
-        doctorInitials: "AS",
-        doctorGradient: "from-sky-400 to-blue-600",
-        specialty: "Clínica Geral",
-        kind: "Retorno Clínico",
-        date: "12 Out, 2023",
-        weekdayShort: "Qui",
-        time: "12:30",
-        duration: "30 min",
-        room: "Sala 03",
-        insurance: "SulAmérica",
-        status: "Pendente",
-    },
-    {
-        id: "A-0006",
-        patientName: "Larissa Mendes",
-        patientInitials: "LM",
-        patientGradient: "from-purple-400 to-indigo-600",
-        doctorName: "Dra. Helena Souza",
-        doctorInitials: "HS",
-        doctorGradient: "from-teal-400 to-emerald-600",
-        specialty: "Fisioterapia",
-        kind: "Fisioterapia Lombar",
-        date: "12 Out, 2023",
-        weekdayShort: "Qui",
-        time: "13:45",
-        duration: "45 min",
-        room: "Fisio 02",
-        insurance: "Unimed",
-        status: "Confirmado",
-    },
-    {
-        id: "A-0007",
-        patientName: "Daniel Oliveira",
-        patientInitials: "DO",
-        patientGradient: "from-sky-400 to-cyan-600",
-        doctorName: "Dr. Marcos Vinícius",
-        doctorInitials: "MV",
-        doctorGradient: "from-slate-500 to-slate-800",
-        specialty: "Neurologia",
-        kind: "Sessão de Acompanhamento",
-        date: "12 Out, 2023",
-        weekdayShort: "Qui",
-        time: "14:30",
-        duration: "45 min",
-        room: "Neuro 02",
-        insurance: "SulAmérica",
-        status: "Confirmado",
-    },
-    {
-        id: "A-0008",
-        patientName: "Beatriz Costa",
-        patientInitials: "BC",
-        patientGradient: "from-rose-400 to-fuchsia-600",
-        doctorName: "Dra. Beatriz Costa",
-        doctorInitials: "BC",
-        doctorGradient: "from-fuchsia-500 to-rose-600",
-        specialty: "Cardiologia",
-        kind: "Retorno Cardiológico",
-        date: "12 Out, 2023",
-        weekdayShort: "Qui",
-        time: "15:30",
-        duration: "45 min",
-        room: "Cardio 01",
-        insurance: "Particular",
-        status: "Pendente",
-    },
-    {
-        id: "A-0009",
-        patientName: "Gabriel Rocha",
-        patientInitials: "GR",
-        patientGradient: "from-indigo-400 to-sky-600",
-        doctorName: "Dra. Julia Ramos",
-        doctorInitials: "JR",
-        doctorGradient: "from-violet-400 to-purple-700",
-        specialty: "Clínica Geral",
-        kind: "Consulta Geral",
-        date: "12 Out, 2023",
-        weekdayShort: "Qui",
-        time: "16:15",
-        duration: "30 min",
-        room: "Sala 02",
-        insurance: "Bradesco Saúde",
-        status: "Confirmado",
-    },
-    {
-        id: "A-0010",
-        patientName: "Isabela Nogueira",
-        patientInitials: "IN",
-        patientGradient: "from-pink-400 to-rose-500",
-        doctorName: "Dr. Ricardo Mendes",
-        doctorInitials: "RM",
-        doctorGradient: "from-amber-400 to-orange-600",
-        specialty: "Pediatria",
-        kind: "Consulta Pediátrica",
-        date: "12 Out, 2023",
-        weekdayShort: "Qui",
-        time: "17:00",
-        duration: "30 min",
-        room: "Pedi 01",
-        insurance: "Amil",
-        status: "Pendente",
-    },
-    {
-        id: "A-0011",
-        patientName: "Felipe Andrade",
-        patientInitials: "FA",
-        patientGradient: "from-lime-400 to-emerald-600",
-        doctorName: "Dr. Arnaldo Souza",
-        doctorInitials: "AS",
-        doctorGradient: "from-sky-400 to-blue-600",
-        specialty: "Clínica Geral",
-        kind: "Urgência Leve",
-        date: "13 Out, 2023",
-        weekdayShort: "Sex",
-        time: "08:00",
-        duration: "45 min",
-        room: "Sala 03",
-        insurance: "Unimed",
-        status: "Confirmado",
-    },
-    {
-        id: "A-0012",
-        patientName: "Juliana Vieira",
-        patientInitials: "JV",
-        patientGradient: "from-red-400 to-rose-600",
-        doctorName: "Dra. Helena Souza",
-        doctorInitials: "HS",
-        doctorGradient: "from-teal-400 to-emerald-600",
-        specialty: "Fisioterapia",
-        kind: "Fisioterapia Cervical",
-        date: "13 Out, 2023",
-        weekdayShort: "Sex",
-        time: "09:30",
-        duration: "45 min",
-        room: "Fisio 01",
-        insurance: "Particular",
-        status: "Reagendado",
-    },
-    {
-        id: "A-0013",
-        patientName: "Rodrigo Prado",
-        patientInitials: "RP",
-        patientGradient: "from-blue-400 to-indigo-700",
-        doctorName: "Dra. Beatriz Costa",
-        doctorInitials: "BC",
-        doctorGradient: "from-fuchsia-500 to-rose-600",
-        specialty: "Cardiologia",
-        kind: "Consulta Cardiológica",
-        date: "13 Out, 2023",
-        weekdayShort: "Sex",
-        time: "11:00",
-        duration: "45 min",
-        room: "Cardio 02",
-        insurance: "SulAmérica",
-        status: "Confirmado",
-    },
-    {
-        id: "A-0014",
-        patientName: "Fernanda Teixeira",
-        patientInitials: "FT",
-        patientGradient: "from-violet-400 to-fuchsia-600",
-        doctorName: "Dra. Julia Ramos",
-        doctorInitials: "JR",
-        doctorGradient: "from-violet-400 to-purple-700",
-        specialty: "Clínica Geral",
-        kind: "Retorno Hipertensão",
-        date: "13 Out, 2023",
-        weekdayShort: "Sex",
-        time: "13:00",
-        duration: "30 min",
-        room: "Sala 01",
-        insurance: "Unimed",
-        status: "Pendente",
-    },
-    {
-        id: "A-0015",
-        patientName: "Henrique Barros",
-        patientInitials: "HB",
-        patientGradient: "from-amber-500 to-red-600",
-        doctorName: "Dr. Marcos Vinícius",
-        doctorInitials: "MV",
-        doctorGradient: "from-slate-500 to-slate-800",
-        specialty: "Neurologia",
-        kind: "Primeira Consulta",
-        date: "13 Out, 2023",
-        weekdayShort: "Sex",
-        time: "14:45",
-        duration: "60 min",
-        room: "Neuro 01",
-        insurance: "Bradesco Saúde",
-        status: "Confirmado",
-    },
-    {
-        id: "A-0016",
-        patientName: "Camila Duarte",
-        patientInitials: "CD",
-        patientGradient: "from-teal-400 to-cyan-600",
-        doctorName: "Dr. Ricardo Mendes",
-        doctorInitials: "RM",
-        doctorGradient: "from-amber-400 to-orange-600",
-        specialty: "Pediatria",
-        kind: "Acompanhamento Pediátrico",
-        date: "13 Out, 2023",
-        weekdayShort: "Sex",
-        time: "16:00",
-        duration: "30 min",
-        room: "Pedi 02",
-        insurance: "Amil",
-        status: "Confirmado",
-    },
-    {
-        id: "A-0017",
-        patientName: "Thiago Correia",
-        patientInitials: "TC",
-        patientGradient: "from-slate-400 to-slate-700",
-        doctorName: "Dr. Arnaldo Souza",
-        doctorInitials: "AS",
-        doctorGradient: "from-sky-400 to-blue-600",
-        specialty: "Clínica Geral",
-        kind: "Consulta Geral",
-        date: "11 Out, 2023",
-        weekdayShort: "Qua",
-        time: "09:00",
-        duration: "30 min",
-        room: "Sala 01",
-        insurance: "Particular",
-        status: "Concluído",
-    },
-    {
-        id: "A-0018",
-        patientName: "Elisa Mendes",
-        patientInitials: "EM",
-        patientGradient: "from-teal-400 to-emerald-600",
-        doctorName: "Dra. Beatriz Costa",
-        doctorInitials: "BC",
-        doctorGradient: "from-fuchsia-500 to-rose-600",
-        specialty: "Cardiologia",
-        kind: "Retorno",
-        date: "11 Out, 2023",
-        weekdayShort: "Qua",
-        time: "10:30",
-        duration: "45 min",
-        room: "Cardio 01",
-        insurance: "Particular",
-        status: "Concluído",
-    },
-    {
-        id: "A-0019",
-        patientName: "André Nascimento",
-        patientInitials: "AN",
-        patientGradient: "from-orange-400 to-red-500",
-        doctorName: "Dra. Julia Ramos",
-        doctorInitials: "JR",
-        doctorGradient: "from-violet-400 to-purple-700",
-        specialty: "Clínica Geral",
-        kind: "Check-up",
-        date: "11 Out, 2023",
-        weekdayShort: "Qua",
-        time: "14:00",
-        duration: "60 min",
-        room: "Sala 02",
-        insurance: "SulAmérica",
-        status: "Cancelado",
-    },
-    {
-        id: "A-0020",
-        patientName: "Paula Ribeiro",
-        patientInitials: "PR",
-        patientGradient: "from-rose-300 to-pink-500",
-        doctorName: "Dr. Ricardo Mendes",
-        doctorInitials: "RM",
-        doctorGradient: "from-amber-400 to-orange-600",
-        specialty: "Pediatria",
-        kind: "Vacinação",
-        date: "11 Out, 2023",
-        weekdayShort: "Qua",
-        time: "16:30",
-        duration: "30 min",
-        room: "Pedi 01",
-        insurance: "Unimed",
-        status: "Concluído",
-    },
+type ApiAppointment = {
+    id: string
+    dateTime: string
+    durationMinutes?: number | null
+    status?: string | null
+    specialties?: string[] | null
+    observation?: string | null
+    patient?: { id: string; fullName: string | null; insuranceOperator?: string | null } | null
+    doctor?: {
+        id: string
+        name: string | null
+        doctorProfile?: {
+            specialties?: string[] | null
+            crm?: string | null
+            crmUf?: string | null
+        } | null
+    } | null
+}
+
+const STATUS_CHIPS = [
+    "Todos",
+    "Confirmado",
+    "Pendente",
+    "Urgente",
+    "Concluído",
+    "Cancelado",
+    "Não Compareceu",
+] as const
+
+type StatusChipValue = (typeof STATUS_CHIPS)[number]
+
+const POLL_MS = 15000
+const PAGE_SIZE = 8
+
+const API_STATUS: Record<string, AptStatus> = {
+    SCHEDULED: "Pendente",
+    CONFIRMED: "Confirmado",
+    URGENTE: "Urgente",
+    COMPLETED: "Concluído",
+    CANCELED: "Cancelado",
+    NO_SHOW: "Não Compareceu",
+}
+
+const AVATAR_PALETTE = [
+    "from-emerald-400 to-green-600",
+    "from-rose-400 to-rose-600",
+    "from-slate-400 to-slate-600",
+    "from-sky-400 to-blue-600",
+    "from-amber-300 to-orange-500",
+    "from-violet-400 to-purple-600",
+    "from-teal-400 to-emerald-600",
+    "from-fuchsia-400 to-rose-500",
 ]
 
-const SPECIALTY_CHIPS = ["Todas", "Cardiologia", "Neurologia", "Pediatria", "Fisioterapia", "Clínica Geral"]
-const STATUS_CHIPS = ["Todos", "Confirmado", "Pendente", "Em Andamento", "Concluído", "Cancelado", "Reagendado"] as const
+const MONTHS_SHORT = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]
+const WEEKDAYS_SHORT = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
+
+/* ---------- HELPERS ---------- */
+
+function pad(n: number): string {
+    return String(n).padStart(2, "0")
+}
+
+function startOfToday(): Date {
+    const d = new Date()
+    d.setHours(0, 0, 0, 0)
+    return d
+}
+
+function toIso(d: Date): string {
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+}
+
+function hash(s: string): number {
+    let h = 0
+    for (let i = 0; i < s.length; i++) h = (h << 5) - h + s.charCodeAt(i) | 0
+    return Math.abs(h)
+}
+
+function initialsFromName(name: string): string {
+    const parts = name.trim().split(/\s+/).filter(Boolean)
+    if (parts.length === 0) return "?"
+    return (parts[0][0] + (parts[1]?.[0] ?? "")).toUpperCase()
+}
+
+function paletteFor(seed: string): string {
+    return AVATAR_PALETTE[hash(seed) % AVATAR_PALETTE.length]
+}
+
+function mapRow(a: ApiAppointment): AppointmentRow {
+    const patientName = a.patient?.fullName?.trim() || "Paciente não identificado"
+    const doctorName = a.doctor?.name?.trim() || "Médico(a) não atribuído(a)"
+    const dt = new Date(a.dateTime)
+    const valid = !isNaN(dt.getTime())
+
+    const doctorSpecialties = a.doctor?.doctorProfile?.specialties ?? []
+    const appointmentSpecialties = a.specialties ?? []
+    const specialty =
+        appointmentSpecialties[0]?.trim() ||
+        doctorSpecialties[0]?.trim() ||
+        "Clínica Geral"
+
+    const procedure =
+        appointmentSpecialties.length > 1
+            ? appointmentSpecialties.join(" · ")
+            : a.observation?.trim() || appointmentSpecialties[0]?.trim() || "Consulta"
+
+    const durationMin =
+        typeof a.durationMinutes === "number" && a.durationMinutes > 0 ? a.durationMinutes : 30
+
+    const crmDigits = a.doctor?.doctorProfile?.crm?.trim()
+    const crmUf = a.doctor?.doctorProfile?.crmUf?.trim()
+    const crm = crmDigits ? `CRM ${crmDigits}${crmUf ? `/${crmUf}` : ""}` : ""
+
+    return {
+        id: a.id,
+        patientId: a.patient?.id ?? "",
+        patientName,
+        patientInitials: initialsFromName(patientName),
+        patientGradient: paletteFor(a.patient?.id || patientName),
+        doctorId: a.doctor?.id ?? "",
+        doctorName,
+        doctorInitials: initialsFromName(doctorName),
+        doctorGradient: paletteFor(a.doctor?.id || doctorName),
+        crm,
+        specialty,
+        procedure,
+        iso: valid ? toIso(dt) : "",
+        dateLabel: valid ? `${pad(dt.getDate())} ${MONTHS_SHORT[dt.getMonth()]}, ${dt.getFullYear()}` : "—",
+        weekdayShort: valid ? WEEKDAYS_SHORT[dt.getDay()] : "—",
+        time: valid ? `${pad(dt.getHours())}:${pad(dt.getMinutes())}` : "—",
+        duration: `${durationMin} min`,
+        insurance: a.patient?.insuranceOperator?.trim() || "Particular",
+        status: API_STATUS[String(a.status ?? "").toUpperCase()] ?? "Pendente",
+    }
+}
+
+function inDateRange(iso: string, range: string): boolean {
+    if (!iso) return range === "todos"
+    if (range === "todos") return true
+    const [y, m, d] = iso.split("-").map(Number)
+    const target = new Date(y, m - 1, d, 0, 0, 0, 0)
+    const today = startOfToday()
+
+    if (range === "hoje") return iso === toIso(today)
+    if (range === "este-mes") {
+        return target.getMonth() === today.getMonth() && target.getFullYear() === today.getFullYear()
+    }
+    if (range === "proximo-mes") {
+        const next = new Date(today.getFullYear(), today.getMonth() + 1, 1)
+        return target.getMonth() === next.getMonth() && target.getFullYear() === next.getFullYear()
+    }
+    if (range === "esta-semana") {
+        const dow = (today.getDay() + 6) % 7 // 0 = segunda
+        const monday = new Date(today)
+        monday.setDate(today.getDate() - dow)
+        const sunday = new Date(monday)
+        sunday.setDate(monday.getDate() + 6)
+        sunday.setHours(23, 59, 59, 999)
+        return target >= monday && target <= sunday
+    }
+    return true
+}
+
+function pageNumbers(current: number, total: number): (number | "…")[] {
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
+    const out: (number | "…")[] = [1]
+    const from = Math.max(2, current - 1)
+    const to = Math.min(total - 1, current + 1)
+    if (from > 2) out.push("…")
+    for (let p = from; p <= to; p++) out.push(p)
+    if (to < total - 1) out.push("…")
+    out.push(total)
+    return out
+}
+
+/* ---------- COMPONENTE ---------- */
 
 export default function AllAppointmentsPage() {
+    const [all, setAll] = useState<AppointmentRow[]>([])
+    const [loading, setLoading] = useState(true)
+    const [refreshing, setRefreshing] = useState(false)
+    const [offline, setOffline] = useState(false)
+    const [lastSync, setLastSync] = useState<Date | null>(null)
+
     const [search, setSearch] = useState("")
     const [specialty, setSpecialty] = useState("Todas")
-    const [status, setStatus] = useState<(typeof STATUS_CHIPS)[number]>("Todos")
-    const [dateRange, setDateRange] = useState("este-mes")
+    const [status, setStatus] = useState<StatusChipValue>("Todos")
+    const [doctorFilter, setDoctorFilter] = useState("todos")
+    const [dateRange, setDateRange] = useState("todos")
+    const [page, setPage] = useState(1)
 
-    const total = 147
-    const confirmed = 62
-    const pending = 41
-    const concluded = 38
-    const page = 1
-    const pages = 15
-    const start = 1
-    const end = rows.length
+    const inFlight = useRef(false)
+
+    const load = useCallback(async (first = false) => {
+        if (inFlight.current) return
+        inFlight.current = true
+        if (first) setLoading(true)
+        else setRefreshing(true)
+        try {
+            const res = await fetch("/api/appointments", { cache: "no-store" })
+            if (!res.ok) throw new Error("network")
+            const data = await res.json()
+            const list: ApiAppointment[] = Array.isArray(data.appointments) ? data.appointments : []
+            setAll(list.map(mapRow))
+            setOffline(false)
+            setLastSync(new Date())
+        } catch {
+            setOffline(true)
+        } finally {
+            inFlight.current = false
+            setLoading(false)
+            setRefreshing(false)
+        }
+    }, [])
+
+    useEffect(() => {
+        load(true)
+        const id = setInterval(() => load(), POLL_MS)
+        const onWake = () => {
+            if (document.visibilityState === "visible") load()
+        }
+        window.addEventListener("focus", onWake)
+        document.addEventListener("visibilitychange", onWake)
+        return () => {
+            clearInterval(id)
+            window.removeEventListener("focus", onWake)
+            document.removeEventListener("visibilitychange", onWake)
+        }
+    }, [load])
+
+    // Sempre que um filtro muda, volta para a primeira página
+    useEffect(() => {
+        setPage(1)
+    }, [search, specialty, status, doctorFilter, dateRange])
+
+    const specialtyOptions = useMemo(() => {
+        const set = new Set<string>()
+        for (const r of all) if (r.specialty) set.add(r.specialty)
+        return ["Todas", ...Array.from(set).sort((a, b) => a.localeCompare(b, "pt-BR"))]
+    }, [all])
+
+    const doctorOptions = useMemo(() => {
+        const map = new Map<string, string>()
+        for (const r of all) if (r.doctorId) map.set(r.doctorId, r.doctorName)
+        return Array.from(map.entries()).sort((a, b) => a[1].localeCompare(b[1], "pt-BR"))
+    }, [all])
+
+    const filtered = useMemo(() => {
+        const q = search.trim().toLowerCase()
+        return all.filter((r) => {
+            if (specialty !== "Todas" && r.specialty !== specialty) return false
+            if (status !== "Todos" && r.status !== status) return false
+            if (doctorFilter !== "todos" && r.doctorId !== doctorFilter) return false
+            if (!inDateRange(r.iso, dateRange)) return false
+            if (q) {
+                const haystack = `${r.patientName} ${r.doctorName} ${r.specialty} ${r.procedure} ${r.insurance}`.toLowerCase()
+                if (!haystack.includes(q)) return false
+            }
+            return true
+        })
+    }, [all, search, specialty, status, doctorFilter, dateRange])
+
+    const stats = useMemo(() => {
+        let confirmed = 0
+        let pending = 0
+        let concluded = 0
+        for (const r of filtered) {
+            if (r.status === "Confirmado") confirmed += 1
+            else if (r.status === "Pendente") pending += 1
+            else if (r.status === "Concluído") concluded += 1
+        }
+        return { total: filtered.length, confirmed, pending, concluded }
+    }, [filtered])
+
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+    const currentPage = Math.min(page, totalPages)
+    const startIdx = (currentPage - 1) * PAGE_SIZE
+    const visible = filtered.slice(startIdx, startIdx + PAGE_SIZE)
+    const start = filtered.length === 0 ? 0 : startIdx + 1
+    const end = startIdx + visible.length
+
+    const currentMonthLabel = `${MONTHS_SHORT[new Date().getMonth()]} ${new Date().getFullYear()}`
+
+    function exportCsv() {
+        const header = ["Paciente", "Médico", "Especialidade", "Data", "Dia", "Horário", "Duração", "Convênio", "Status"]
+        const lines = filtered.map((r) => [
+            r.patientName,
+            r.doctorName,
+            r.specialty,
+            r.dateLabel,
+            r.weekdayShort,
+            r.time,
+            r.duration,
+            r.insurance,
+            r.status,
+        ])
+        const csv = [header, ...lines]
+            .map((cols) => cols.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))
+            .join("\r\n")
+        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement("a")
+        a.href = url
+        a.download = `agendamentos-${toIso(new Date())}.csv`
+        a.click()
+        URL.revokeObjectURL(url)
+    }
+
+    const showEmpty = !loading && filtered.length === 0
 
     return (
         <div className="space-y-6 md:space-y-8 pb-10">
@@ -420,7 +355,7 @@ export default function AllAppointmentsPage() {
                         type="search"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        placeholder="Buscar por paciente, médico ou sala..."
+                        placeholder="Buscar por paciente, médico ou especialidade..."
                         className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-3 pl-11 pr-4 text-sm placeholder:text-neutral-400 shadow-[0_2px_10px_rgba(15,23,42,0.05)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
                     />
                 </div>
@@ -430,7 +365,7 @@ export default function AllAppointmentsPage() {
             <div className="space-y-4">
                 <nav className="flex items-center gap-2 text-sm text-neutral-500">
                     <Link href="/dashboard/agendamento" className="hover:text-neutral-800 transition-colors">
-                        Appointments
+                        Agendamento
                     </Link>
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300" aria-hidden="true">
                         <polyline points="9 18 15 12 9 6" />
@@ -464,8 +399,8 @@ export default function AllAppointmentsPage() {
             <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
                 <StatCard
                     label="Total Geral"
-                    value={total.toLocaleString("pt-BR")}
-                    badge="Out 2023"
+                    value={stats.total.toLocaleString("pt-BR")}
+                    badge={currentMonthLabel}
                     icon={
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <rect x="3" y="4" width="18" height="18" rx="2" />
@@ -478,8 +413,7 @@ export default function AllAppointmentsPage() {
                 />
                 <StatCard
                     label="Confirmados"
-                    value={String(confirmed)}
-                    badge="+4 hoje"
+                    value={String(stats.confirmed)}
                     icon={
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
@@ -490,7 +424,7 @@ export default function AllAppointmentsPage() {
                 />
                 <StatCard
                     label="Pendentes"
-                    value={String(pending)}
+                    value={String(stats.pending)}
                     icon={
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <circle cx="12" cy="12" r="10" />
@@ -501,8 +435,7 @@ export default function AllAppointmentsPage() {
                 />
                 <StatCard
                     label="Concluídos"
-                    value={String(concluded)}
-                    badge="98% satisfação"
+                    value={String(stats.concluded)}
                     icon={
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <path d="M20 6 9 17l-5-5" />
@@ -533,7 +466,7 @@ export default function AllAppointmentsPage() {
                             >
                                 <option value="hoje">Hoje</option>
                                 <option value="esta-semana">Esta Semana</option>
-                                <option value="este-mes">Este Mês (Out 2023)</option>
+                                <option value="este-mes">Este Mês</option>
                                 <option value="proximo-mes">Próximo Mês</option>
                                 <option value="todos">Todos os Períodos</option>
                             </select>
@@ -555,16 +488,16 @@ export default function AllAppointmentsPage() {
                                 </svg>
                             </span>
                             <select
-                                defaultValue="todos"
+                                value={doctorFilter}
+                                onChange={(e) => setDoctorFilter(e.target.value)}
                                 className="w-full appearance-none rounded-xl border border-neutral-200/80 bg-neutral-50/70 pl-10 pr-10 py-2.5 text-sm font-semibold text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
                             >
                                 <option value="todos">Todos os Especialistas</option>
-                                <option value="marcos">Dr. Marcos Vinícius</option>
-                                <option value="julia">Dra. Julia Ramos</option>
-                                <option value="beatriz">Dra. Beatriz Costa</option>
-                                <option value="ricardo">Dr. Ricardo Mendes</option>
-                                <option value="arnaldo">Dr. Arnaldo Souza</option>
-                                <option value="helena">Dra. Helena Souza</option>
+                                {doctorOptions.map(([id, name]) => (
+                                    <option key={id} value={id}>
+                                        {name}
+                                    </option>
+                                ))}
                             </select>
                             <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400">
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -574,11 +507,11 @@ export default function AllAppointmentsPage() {
                         </div>
                     </FilterField>
 
-                    {/* Especialidade chips + status */}
+                    {/* Especialidade chips */}
                     <div className="space-y-3">
                         <FilterField label="Especialidade">
                             <div className="flex flex-wrap gap-2">
-                                {SPECIALTY_CHIPS.map((s) => (
+                                {specialtyOptions.map((s) => (
                                     <Chip key={s} active={specialty === s} onClick={() => setSpecialty(s)}>
                                         {s}
                                     </Chip>
@@ -606,23 +539,33 @@ export default function AllAppointmentsPage() {
                 <div className="flex items-center justify-between gap-3 px-5 md:px-7 py-5 border-b border-neutral-100 bg-neutral-50/40">
                     <p className="text-xs md:text-sm text-neutral-500">
                         Mostrando <span className="font-semibold text-neutral-800">{start}–{end}</span> de{" "}
-                        <span className="font-semibold text-neutral-800">{total.toLocaleString("pt-BR")}</span>{" "}
+                        <span className="font-semibold text-neutral-800">{filtered.length.toLocaleString("pt-BR")}</span>{" "}
                         agendamentos
                     </p>
                     <div className="flex items-center gap-2">
+                        {refreshing && (
+                            <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-brand-700">
+                                <span className="h-1.5 w-1.5 rounded-full bg-brand-600 animate-pulse" />
+                                Sincronizando
+                            </span>
+                        )}
+                        {offline && (
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wider text-red-700 ring-1 ring-red-600/15">
+                                offline
+                            </span>
+                        )}
                         <button
                             type="button"
-                            className="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-neutral-200/80 hover:bg-neutral-50 text-xs font-bold text-neutral-600 transition-colors"
+                            onClick={() => load()}
+                            aria-label="Atualizar lista"
+                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-neutral-200/80 hover:bg-neutral-50 text-xs font-bold text-neutral-600 transition-colors"
                         >
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                <line x1="8" y1="6" x2="21" y2="6" />
-                                <line x1="8" y1="12" x2="21" y2="12" />
-                                <line x1="8" y1="18" x2="21" y2="18" />
-                                <line x1="3" y1="6" x2="3.01" y2="6" />
-                                <line x1="3" y1="12" x2="3.01" y2="12" />
-                                <line x1="3" y1="18" x2="3.01" y2="18" />
+                                <polyline points="23 4 23 10 17 10" />
+                                <polyline points="1 20 1 14 7 14" />
+                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
                             </svg>
-                            Colunas
+                            Atualizar
                         </button>
                     </div>
                 </div>
@@ -642,154 +585,191 @@ export default function AllAppointmentsPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-neutral-100">
-                            {rows.map((r) => (
-                                <tr key={r.id} className="group hover:bg-brand-50/30 transition-colors">
-                                    <td className="py-4 md:py-5 pl-5 md:pl-7 pr-4">
-                                        <div className="flex items-center gap-3 min-w-0">
-                                            <div className={`relative h-11 w-11 shrink-0 rounded-full bg-gradient-to-br ${r.patientGradient} text-white text-sm font-bold shadow-sm ring-2 ring-white overflow-hidden flex items-center justify-center`}>
-                                                {r.patientInitials}
-                                            </div>
-                                            <div className="min-w-0 leading-tight">
-                                                <p className="text-[15px] font-semibold text-neutral-900 truncate">
-                                                    {r.patientName}
-                                                </p>
-                                                <p className="text-xs text-neutral-500 mt-0.5 truncate">
-                                                    {r.kind} · {r.room}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="py-4 md:py-5 px-4">
-                                        <div className="flex items-center gap-2.5 min-w-0">
-                                            <div className={`relative h-9 w-9 shrink-0 rounded-full bg-gradient-to-br ${r.doctorGradient} text-white text-[11px] font-bold shadow-sm ring-2 ring-white overflow-hidden flex items-center justify-center`}>
-                                                {r.doctorInitials}
-                                            </div>
-                                            <div className="min-w-0 leading-tight">
-                                                <p className="text-sm font-semibold text-neutral-900 truncate">
-                                                    {r.doctorName}
-                                                </p>
-                                                <p className="text-[11px] text-neutral-500 truncate">
-                                                    CRM · {r.specialty}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="py-4 md:py-5 px-4">
-                                        <div className="leading-tight">
-                                            <p className="text-sm font-bold text-neutral-900">{r.date}</p>
-                                            <p className="text-[11.5px] uppercase tracking-wider font-bold text-neutral-500">
-                                                {r.weekdayShort}
-                                            </p>
-                                        </div>
-                                    </td>
-                                    <td className="py-4 md:py-5 px-4">
-                                        <div className="leading-tight">
-                                            <p className="text-sm font-black text-neutral-900 tabular-nums">{r.time}</p>
-                                            <p className="text-[11.5px] font-semibold text-neutral-500 tabular-nums">
-                                                {r.duration}
-                                            </p>
-                                        </div>
-                                    </td>
-                                    <td className="py-4 md:py-5 px-4">
-                                        <span className="inline-flex items-center px-3 py-1 rounded-full bg-neutral-100 text-neutral-700 text-xs font-semibold ring-1 ring-neutral-200/80 whitespace-nowrap">
-                                            {r.specialty}
-                                        </span>
-                                    </td>
-                                    <td className="py-4 md:py-5 px-4">
-                                        <p className="text-sm font-medium text-neutral-700 whitespace-nowrap">
-                                            {r.insurance}
-                                        </p>
-                                    </td>
-                                    <td className="py-4 md:py-5 px-4">
-                                        <StatusBadge status={r.status} />
-                                    </td>
-                                    <td className="py-4 md:py-5 pl-4 pr-5 md:pr-7">
-                                        <div className="flex items-center justify-end gap-1.5">
-                                            <Link
-                                                href="/dashboard/agendamento"
-                                                aria-label="Ver detalhes do agendamento"
-                                                className="inline-flex items-center justify-center h-9 w-9 rounded-xl text-brand-700 bg-brand-50 ring-1 ring-brand-600/10 hover:bg-brand-100 transition-colors"
-                                            >
-                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                                    <circle cx="12" cy="12" r="3" />
-                                                </svg>
-                                            </Link>
-                                            <Link
-                                                href="/dashboard/agendamento/novo"
-                                                aria-label="Reagendar consulta"
-                                                className="inline-flex items-center justify-center h-9 w-9 rounded-xl text-amber-700 bg-amber-50 ring-1 ring-amber-600/10 hover:bg-amber-100 transition-colors"
-                                            >
-                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                                    <polyline points="23 4 23 10 17 10" />
-                                                    <polyline points="1 20 1 14 7 14" />
-                                                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-                                                </svg>
-                                            </Link>
-                                            <button
-                                                type="button"
-                                                aria-label="Cancelar agendamento"
-                                                className="inline-flex items-center justify-center h-9 w-9 rounded-xl text-red-600 bg-red-50 ring-1 ring-red-600/10 hover:bg-red-100 transition-colors"
-                                            >
-                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                                    <polyline points="3 6 5 6 21 6" />
-                                                    <path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6" />
-                                                    <path d="M10 11v6M14 11v6" />
-                                                    <path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+                            {loading && all.length === 0
+                                ? Array.from({ length: 6 }).map((_, i) => <SkeletonRow key={i} />)
+                                : visible.map((r) => (
+                                      <tr key={r.id} className="group hover:bg-brand-50/30 transition-colors">
+                                          <td className="py-4 md:py-5 pl-5 md:pl-7 pr-4">
+                                              <div className="flex items-center gap-3 min-w-0">
+                                                  <div className={`relative h-11 w-11 shrink-0 rounded-full bg-gradient-to-br ${r.patientGradient} text-white text-sm font-bold shadow-sm ring-2 ring-white overflow-hidden flex items-center justify-center`}>
+                                                      {r.patientInitials}
+                                                  </div>
+                                                  <div className="min-w-0 leading-tight">
+                                                      <p className="text-[15px] font-semibold text-neutral-900 truncate">
+                                                          {r.patientName}
+                                                      </p>
+                                                      <p className="text-xs text-neutral-500 mt-0.5 truncate">
+                                                          {r.procedure}
+                                                      </p>
+                                                  </div>
+                                              </div>
+                                          </td>
+                                          <td className="py-4 md:py-5 px-4">
+                                              <div className="flex items-center gap-2.5 min-w-0">
+                                                  <div className={`relative h-9 w-9 shrink-0 rounded-full bg-gradient-to-br ${r.doctorGradient} text-white text-[11px] font-bold shadow-sm ring-2 ring-white overflow-hidden flex items-center justify-center`}>
+                                                      {r.doctorInitials}
+                                                  </div>
+                                                  <div className="min-w-0 leading-tight">
+                                                      <p className="text-sm font-semibold text-neutral-900 truncate">
+                                                          {r.doctorName}
+                                                      </p>
+                                                      <p className="text-[11px] text-neutral-500 truncate">
+                                                          {r.crm || r.specialty}
+                                                      </p>
+                                                  </div>
+                                              </div>
+                                          </td>
+                                          <td className="py-4 md:py-5 px-4">
+                                              <div className="leading-tight">
+                                                  <p className="text-sm font-bold text-neutral-900 whitespace-nowrap">{r.dateLabel}</p>
+                                                  <p className="text-[11.5px] uppercase tracking-wider font-bold text-neutral-500">
+                                                      {r.weekdayShort}
+                                                  </p>
+                                              </div>
+                                          </td>
+                                          <td className="py-4 md:py-5 px-4">
+                                              <div className="leading-tight">
+                                                  <p className="text-sm font-black text-neutral-900 tabular-nums">{r.time}</p>
+                                                  <p className="text-[11.5px] font-semibold text-neutral-500 tabular-nums">
+                                                      {r.duration}
+                                                  </p>
+                                              </div>
+                                          </td>
+                                          <td className="py-4 md:py-5 px-4">
+                                              <span className="inline-flex items-center px-3 py-1 rounded-full bg-neutral-100 text-neutral-700 text-xs font-semibold ring-1 ring-neutral-200/80 whitespace-nowrap">
+                                                  {r.specialty}
+                                              </span>
+                                          </td>
+                                          <td className="py-4 md:py-5 px-4">
+                                              <p className="text-sm font-medium text-neutral-700 whitespace-nowrap">
+                                                  {r.insurance}
+                                              </p>
+                                          </td>
+                                          <td className="py-4 md:py-5 px-4">
+                                              <StatusBadge status={r.status} />
+                                          </td>
+                                          <td className="py-4 md:py-5 pl-4 pr-5 md:pr-7">
+                                              <div className="flex items-center justify-end gap-1.5">
+                                                  {r.patientId ? (
+                                                      <Link
+                                                          href={`/dashboard/pacientes/${r.patientId}/historico`}
+                                                          aria-label={`Ver histórico de ${r.patientName}`}
+                                                          className="inline-flex items-center justify-center h-9 w-9 rounded-xl text-brand-700 bg-brand-50 ring-1 ring-brand-600/10 hover:bg-brand-100 transition-colors"
+                                                      >
+                                                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                                              <circle cx="12" cy="12" r="3" />
+                                                          </svg>
+                                                      </Link>
+                                                  ) : (
+                                                      <span className="inline-flex items-center justify-center h-9 w-9 rounded-xl text-neutral-300 bg-neutral-50 cursor-not-allowed">
+                                                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                                              <circle cx="12" cy="12" r="3" />
+                                                          </svg>
+                                                      </span>
+                                                  )}
+                                              </div>
+                                          </td>
+                                      </tr>
+                                  ))}
                         </tbody>
                     </table>
                 </div>
 
-                {/* Paginação */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-5 md:px-7 py-5 border-t border-neutral-100 bg-white">
-                    <button
-                        type="button"
-                        className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-500 border border-transparent hover:bg-neutral-50 hover:text-neutral-800 transition-colors disabled:opacity-40"
-                        disabled={page === 1}
-                    >
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <polyline points="15 18 9 12 15 6" />
-                        </svg>
-                        Anterior
-                    </button>
-                    <div className="flex items-center gap-1.5">
-                        <PageButton active>1</PageButton>
-                        <PageButton>2</PageButton>
-                        <PageButton>3</PageButton>
-                        <PageButton>4</PageButton>
-                        <span className="px-1 text-neutral-400" aria-hidden="true">
-                            …
-                        </span>
-                        <PageButton>{pages}</PageButton>
+                {showEmpty && (
+                    <div className="px-6 py-14 text-center">
+                        <div className="mx-auto h-14 w-14 inline-flex items-center justify-center rounded-full bg-neutral-100 text-neutral-400">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <rect x="3" y="4" width="18" height="18" rx="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                        </div>
+                        <p className="mt-4 text-sm font-semibold text-neutral-700">
+                            Nenhum agendamento encontrado
+                        </p>
+                        <p className="mt-1 text-xs text-neutral-500 max-w-sm mx-auto leading-relaxed">
+                            Ajuste os filtros ou crie um novo agendamento para começar.
+                        </p>
+                        <Link
+                            href="/dashboard/agendamento/novo"
+                            className="mt-5 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 px-5 py-3 text-sm font-bold text-white shadow-[0_10px_22px_-6px_rgba(16,142,93,0.45)] hover:brightness-[1.03] transition-all"
+                        >
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            Novo Atendimento
+                        </Link>
                     </div>
-                    <button
-                        type="button"
-                        className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-800 hover:bg-neutral-50 transition-colors"
-                    >
-                        Próximo
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <polyline points="9 18 15 12 9 6" />
-                        </svg>
-                    </button>
-                </div>
+                )}
+
+                {/* Paginação */}
+                {totalPages > 1 && (
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-5 md:px-7 py-5 border-t border-neutral-100 bg-white">
+                        <button
+                            type="button"
+                            onClick={() => setPage((p) => Math.max(1, p - 1))}
+                            className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-500 border border-transparent hover:bg-neutral-50 hover:text-neutral-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            disabled={currentPage === 1}
+                        >
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <polyline points="15 18 9 12 15 6" />
+                            </svg>
+                            Anterior
+                        </button>
+                        <div className="flex items-center gap-1.5">
+                            {pageNumbers(currentPage, totalPages).map((p, i) =>
+                                p === "…" ? (
+                                    <span key={`ellipsis-${i}`} className="px-1 text-neutral-400" aria-hidden="true">
+                                        …
+                                    </span>
+                                ) : (
+                                    <PageButton key={p} active={p === currentPage} onClick={() => setPage(p)}>
+                                        {p}
+                                    </PageButton>
+                                )
+                            )}
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                            className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-800 hover:bg-neutral-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            disabled={currentPage === totalPages}
+                        >
+                            Próximo
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <polyline points="9 18 15 12 9 6" />
+                            </svg>
+                        </button>
+                    </div>
+                )}
             </section>
 
             {/* Rodapé ações */}
             <div className="h-px w-full bg-neutral-200/70" />
             <footer className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4">
                 <p className="text-sm text-neutral-500 px-1">
-                    Dados atualizados em <span className="font-semibold text-neutral-800">12 Out, 08:42</span>
+                    {lastSync ? (
+                        <>
+                            Dados atualizados em{" "}
+                            <span className="font-semibold text-neutral-800">
+                                {lastSync.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })},{" "}
+                                {pad(lastSync.getHours())}:{pad(lastSync.getMinutes())}
+                            </span>
+                        </>
+                    ) : (
+                        "Aguardando dados do sistema..."
+                    )}
                 </p>
                 <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3">
                     <button
                         type="button"
-                        className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-neutral-200 px-5 py-3.5 text-[14.5px] font-bold text-neutral-700 hover:bg-neutral-50 transition-colors"
+                        onClick={exportCsv}
+                        disabled={filtered.length === 0}
+                        className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-neutral-200 px-5 py-3.5 text-[14.5px] font-bold text-neutral-700 hover:bg-neutral-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -821,6 +801,51 @@ function Th({ children, className = "" }: { children: React.ReactNode; className
         <th scope="col" className={`px-4 py-4 text-left text-[11px] font-semibold tracking-[0.16em] text-neutral-500 uppercase whitespace-nowrap ${className}`}>
             {children}
         </th>
+    )
+}
+
+function SkeletonRow() {
+    return (
+        <tr className="animate-pulse">
+            <td className="py-4 md:py-5 pl-5 md:pl-7 pr-4">
+                <div className="flex items-center gap-3">
+                    <div className="h-11 w-11 shrink-0 rounded-full bg-neutral-200" />
+                    <div className="space-y-2">
+                        <div className="h-4 w-36 rounded-lg bg-neutral-200" />
+                        <div className="h-3 w-24 rounded-lg bg-neutral-200" />
+                    </div>
+                </div>
+            </td>
+            <td className="py-4 md:py-5 px-4">
+                <div className="flex items-center gap-2.5">
+                    <div className="h-9 w-9 shrink-0 rounded-full bg-neutral-200" />
+                    <div className="space-y-2">
+                        <div className="h-3.5 w-28 rounded-lg bg-neutral-200" />
+                        <div className="h-2.5 w-20 rounded-lg bg-neutral-200" />
+                    </div>
+                </div>
+            </td>
+            <td className="py-4 md:py-5 px-4">
+                <div className="h-4 w-24 rounded-lg bg-neutral-200" />
+            </td>
+            <td className="py-4 md:py-5 px-4">
+                <div className="h-4 w-14 rounded-lg bg-neutral-200" />
+            </td>
+            <td className="py-4 md:py-5 px-4">
+                <div className="h-6 w-24 rounded-full bg-neutral-200" />
+            </td>
+            <td className="py-4 md:py-5 px-4">
+                <div className="h-4 w-20 rounded-lg bg-neutral-200" />
+            </td>
+            <td className="py-4 md:py-5 px-4">
+                <div className="h-6 w-24 rounded-full bg-neutral-200" />
+            </td>
+            <td className="py-4 md:py-5 pl-4 pr-5 md:pr-7">
+                <div className="flex justify-end">
+                    <div className="h-9 w-9 rounded-xl bg-neutral-200" />
+                </div>
+            </td>
+        </tr>
     )
 }
 
@@ -901,7 +926,7 @@ function StatusChip({
     active,
     onClick,
 }: {
-    label: (typeof STATUS_CHIPS)[number]
+    label: StatusChipValue
     active: boolean
     onClick: () => void
 }) {
@@ -923,33 +948,41 @@ function StatusChip({
 function StatusBadge({ status }: { status: AptStatus }) {
     const [cls] = statusStyles(status)
     return (
-        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11.5px] font-black uppercase tracking-[0.14em] ring-1 ${cls}`}>
+        <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11.5px] font-black uppercase tracking-[0.14em] ring-1 whitespace-nowrap ${cls}`}>
             <span className="h-1.5 w-1.5 rounded-full bg-current opacity-80" />
             {status}
         </span>
     )
 }
 
-function statusStyles(s: (typeof STATUS_CHIPS)[number] | AptStatus) {
+function statusStyles(s: string): [string] {
     switch (s) {
         case "Confirmado":
             return ["bg-green-100 text-green-700 ring-green-700/15"]
         case "Pendente":
             return ["bg-amber-100 text-amber-700 ring-amber-600/15"]
-        case "Em Andamento":
-            return ["bg-brand-50 text-brand-700 ring-brand-600/15"]
+        case "Urgente":
+            return ["bg-orange-100 text-orange-700 ring-orange-600/15"]
         case "Concluído":
             return ["bg-sky-100 text-sky-700 ring-sky-700/15"]
         case "Cancelado":
             return ["bg-red-100 text-red-700 ring-red-700/15"]
-        case "Reagendado":
+        case "Não Compareceu":
             return ["bg-violet-100 text-violet-700 ring-violet-700/15"]
         default:
             return ["bg-neutral-100 text-neutral-700 ring-neutral-200/80"]
     }
 }
 
-function PageButton({ children, active = false }: { children: React.ReactNode; active?: boolean }) {
+function PageButton({
+    children,
+    active = false,
+    onClick,
+}: {
+    children: React.ReactNode
+    active?: boolean
+    onClick?: () => void
+}) {
     if (active) {
         return (
             <span
@@ -963,6 +996,7 @@ function PageButton({ children, active = false }: { children: React.ReactNode; a
     return (
         <button
             type="button"
+            onClick={onClick}
             className="inline-flex h-9 min-w-9 items-center justify-center rounded-xl px-3 text-sm font-semibold text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors"
         >
             {children}
