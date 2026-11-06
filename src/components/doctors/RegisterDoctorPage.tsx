@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 type FormState = {
     fullName: string
@@ -54,11 +54,101 @@ const DAYS: Array<{ key: string; label: string }> = [
     { key: "dom", label: "Dom" },
 ]
 
-export default function RegisterDoctorPage() {
+type ApiDoctor = {
+    id: string
+    name: string | null
+    email: string | null
+    phone: string | null
+    birthDate: string | null
+    gender: string | null
+    cpf: string | null
+    doctorProfile: {
+        crm: string
+        crmUf: string
+        specialties: string[]
+        bio: string | null
+        workDays: string[]
+        startMorning: string | null
+        endMorning: string | null
+        startAfternoon: string | null
+        endAfternoon: string | null
+        notes: string | null
+    } | null
+}
+
+function mapDoctorToForm(doctor: ApiDoctor): FormState {
+    const profile = doctor.doctorProfile
+    const days: Record<string, boolean> = {}
+    for (const { key } of DAYS) {
+        days[key] = (profile?.workDays ?? []).includes(key)
+    }
+    return {
+        fullName: doctor.name ?? "",
+        crm: profile?.crm ?? "",
+        crmUf: profile?.crmUf ?? "SP",
+        email: doctor.email ?? "",
+        phone: doctor.phone ?? "",
+        birthDate: doctor.birthDate ? doctor.birthDate.slice(0, 10) : "",
+        gender: doctor.gender ?? "",
+        documentId: doctor.cpf ?? "",
+        specialties: profile?.specialties ?? [],
+        newSpecialty: "",
+        days,
+        startMorning: profile?.startMorning ?? "",
+        endMorning: profile?.endMorning ?? "",
+        startAfternoon: profile?.startAfternoon ?? "",
+        endAfternoon: profile?.endAfternoon ?? "",
+        bio: profile?.bio ?? "",
+        notes: profile?.notes ?? "",
+    }
+}
+
+export default function RegisterDoctorPage({
+    doctorId = null,
+    stayOnSave = false,
+}: {
+    doctorId?: string | null
+    stayOnSave?: boolean
+}) {
     const router = useRouter()
+    const isEditing = Boolean(doctorId)
     const [form, setForm] = useState<FormState>(initialState)
+    const [loading, setLoading] = useState(isEditing)
     const [submitting, setSubmitting] = useState(false)
     const [apiError, setApiError] = useState<string | null>(null)
+    const [success, setSuccess] = useState<string | null>(null)
+
+    useEffect(() => {
+        if (!doctorId) {
+            setForm(initialState)
+            setLoading(false)
+            return
+        }
+
+        let cancelled = false
+        setLoading(true)
+        setApiError(null)
+
+        async function load() {
+            try {
+                const res = await fetch(`/api/doctors/${doctorId}`, { cache: "no-store" })
+                const data = await res.json().catch(() => ({}))
+                if (!res.ok) throw new Error(data.error || "Erro ao carregar dados do médico")
+                if (cancelled) return
+                setForm(mapDoctorToForm(data.doctor as ApiDoctor))
+            } catch (err: any) {
+                console.error(err)
+                if (!cancelled) setApiError(err?.message || "Erro ao carregar dados do médico")
+            } finally {
+                if (!cancelled) setLoading(false)
+            }
+        }
+
+        load()
+        return () => {
+            cancelled = true
+        }
+    }, [doctorId])
 
     const update = (field: keyof FormState, value: string | string[] | Record<string, boolean>) => {
         setForm((prev) => ({ ...prev, [field]: value as never }))
@@ -82,6 +172,7 @@ export default function RegisterDoctorPage() {
 
     const handleSubmit = async () => {
         setApiError(null)
+        setSuccess(null)
         setSubmitting(true)
         try {
             const payload = {
@@ -103,19 +194,29 @@ export default function RegisterDoctorPage() {
                 notes: form.notes || null,
             }
 
-            const res = await fetch("/api/doctors", {
-                method: "POST",
+            const res = await fetch(isEditing ? `/api/doctors/${doctorId}` : "/api/doctors", {
+                method: isEditing ? "PATCH" : "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
             })
 
             const data = await res.json().catch(() => ({}))
             if (!res.ok) {
-                setApiError(data.error || "Erro ao cadastrar médico")
+                setApiError(data.error || (isEditing ? "Erro ao atualizar médico" : "Erro ao cadastrar médico"))
                 return
             }
 
-            router.push(`/dashboard/medicos/${data.id}`)
+            if (stayOnSave) {
+                setSuccess(
+                    isEditing
+                        ? "Informações do médico atualizadas com sucesso."
+                        : "Médico cadastrado com sucesso."
+                )
+                router.refresh()
+                return
+            }
+
+            router.push(`/dashboard/medicos/${data.id || doctorId}`)
             router.refresh()
         } catch (err) {
             console.error(err)
@@ -123,6 +224,21 @@ export default function RegisterDoctorPage() {
         } finally {
             setSubmitting(false)
         }
+    }
+
+    if (loading) {
+        return (
+            <div className="space-y-6 md:space-y-8 pb-10">
+                <div className="mx-auto max-w-md h-12 rounded-full bg-white shadow animate-pulse" />
+                <div className="h-8 w-56 rounded-xl bg-neutral-100 animate-pulse" />
+                <div className="h-40 rounded-3xl bg-white shadow animate-pulse" />
+                <div className="h-72 rounded-3xl bg-white shadow animate-pulse" />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-7">
+                    <div className="h-96 rounded-3xl bg-white shadow animate-pulse" />
+                    <div className="h-96 rounded-3xl bg-white shadow animate-pulse" />
+                </div>
+            </div>
+        )
     }
 
     return (
@@ -152,7 +268,9 @@ export default function RegisterDoctorPage() {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300" aria-hidden="true">
                     <polyline points="9 18 15 12 9 6" />
                 </svg>
-                <span className="font-semibold text-brand-700">Novo Médico</span>
+                <span className="font-semibold text-brand-700">
+                    {isEditing ? "Editar Médico" : "Novo Médico"}
+                </span>
             </nav>
 
             {/* Header */}
@@ -163,13 +281,15 @@ export default function RegisterDoctorPage() {
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                             <polyline points="22 4 12 14.01 9 11.01" />
                         </svg>
-                        Cadastro Autorizado
+                        {isEditing ? "Atualização de Cadastro" : "Cadastro Autorizado"}
                     </div>
                     <h1 className="text-4xl md:text-5xl font-serif font-semibold tracking-tight text-neutral-900">
-                        Cadastrar Novo Médico
+                        {isEditing ? "Editar Médico" : "Cadastrar Novo Médico"}
                     </h1>
                     <p className="text-[15px] md:text-base text-neutral-600 leading-relaxed">
-                        Preencha as informações do profissional para integrá-lo ao corpo clínico. Os campos de CRM, especialidades e horários de atendimento serão exibidos publicamente no perfil do médico dentro do sistema.
+                        {isEditing
+                            ? "Atualize as informações do profissional já cadastrado no corpo clínico. Os dados carregados incluem tudo o que foi informado na tela de cadastro e podem ser complementados abaixo (CRM, especialidades, horários, biografia e observações)."
+                            : "Preencha as informações do profissional para integrá-lo ao corpo clínico. Os campos de CRM, especialidades e horários de atendimento serão exibidos publicamente no perfil do médico dentro do sistema."}
                     </p>
                 </div>
 
@@ -190,7 +310,9 @@ export default function RegisterDoctorPage() {
                                     Corpo Clínico Vitalis
                                 </h3>
                                 <p className="text-[13px] md:text-sm text-white/80 leading-relaxed mt-1.5">
-                                    Assim que salvo, o médico aparece na listagem e pode ser selecionado para agendamento de consultas.
+                                    {isEditing
+                                        ? "As alterações substituem os dados atuais do médico e são refletidas imediatamente no perfil e na listagem."
+                                        : "Assim que salvo, o médico aparece na listagem e pode ser selecionado para agendamento de consultas."}
                                 </p>
                             </div>
                         </div>
@@ -537,6 +659,17 @@ export default function RegisterDoctorPage() {
             {/* Divisória e botões */}
             <div className="h-px w-full bg-neutral-200/70" />
 
+            {success && (
+                <div className="flex items-center gap-3 rounded-2xl border border-brand-600/20 bg-brand-50 px-4 py-3 text-[14px] font-semibold text-brand-800 ring-1 ring-brand-600/10">
+                    <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand-600 text-white">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                    </span>
+                    {success}
+                </div>
+            )}
+
             {apiError && (
                 <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-[14px] font-semibold text-red-700 ring-1 ring-red-500/10">
                     {apiError}
@@ -545,19 +678,21 @@ export default function RegisterDoctorPage() {
 
             <footer className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4">
                 <Link
-                    href="/dashboard/medicos"
+                    href={isEditing && doctorId ? `/dashboard/medicos/${doctorId}` : "/dashboard/medicos"}
                     className="inline-flex items-center justify-center sm:justify-start text-sm font-semibold text-neutral-600 hover:text-neutral-900 transition-colors px-3 py-2.5 -mx-3"
                 >
-                    Cancelar e voltar para listagem
+                    {isEditing ? "Cancelar e voltar para o perfil" : "Cancelar e voltar para listagem"}
                 </Link>
                 <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3">
-                    <button
-                        type="button"
-                        disabled={submitting}
-                        className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-neutral-200 px-5 py-3.5 text-[14px] font-bold text-neutral-600 hover:bg-neutral-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-                    >
-                        Salvar como Rascunho
-                    </button>
+                    {!isEditing && (
+                        <button
+                            type="button"
+                            disabled={submitting}
+                            className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-neutral-200 px-5 py-3.5 text-[14px] font-bold text-neutral-600 hover:bg-neutral-50 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                        >
+                            Salvar como Rascunho
+                        </button>
+                    )}
                     <button
                         type="button"
                         onClick={handleSubmit}
@@ -577,7 +712,11 @@ export default function RegisterDoctorPage() {
                                 </svg>
                             )}
                         </span>
-                        {submitting ? "Salvando..." : "Salvar e Ativar Médico"}
+                        {submitting
+                            ? "Salvando..."
+                            : isEditing
+                                ? "Salvar Alterações"
+                                : "Salvar e Ativar Médico"}
                     </button>
                 </div>
             </footer>

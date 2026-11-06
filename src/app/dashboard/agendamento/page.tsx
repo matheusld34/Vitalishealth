@@ -6,6 +6,7 @@ import AppointmentsPage from "@/components/appointments/AppointmentsPage"
 export default async function AgendamentoRoute() {
     const session = await auth()
     if (!session) redirect("/")
+    if (session.user.role === "DOCTOR") redirect("/dashboard")
 
     return (
         <DashboardLayout session={session}>

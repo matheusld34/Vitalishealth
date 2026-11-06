@@ -2,19 +2,22 @@ import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import prisma from "@/app/lib/prisma"
 
-type CreateData = {
-  name: string
-  email: string
-  passwordHash: string
-  cpf?: string | null
-  phone?: string | null
-  role?: "MASTER" | "SECRETARY" | "DOCTOR"
-}
+type AccountType = "SECRETARY" | "DOCTOR"
 
 export async function POST(request: Request) {
     try {
         const body = await request.json()
-        const { fullName, cpf, phone, email, password } = body
+        const {
+            fullName,
+            cpf,
+            phone,
+            email,
+            password,
+            role,
+            crm,
+            crmUf,
+            specialties,
+        } = body
 
         if (!fullName || !email || !password) {
             return NextResponse.json(
@@ -30,6 +33,37 @@ export async function POST(request: Request) {
             )
         }
 
+        const accountType: AccountType = role === "DOCTOR" ? "DOCTOR" : "SECRETARY"
+
+        const specialtyList: string[] = Array.isArray(specialties)
+            ? specialties
+                .filter((s: unknown): s is string => typeof s === "string")
+                .map((s) => s.trim())
+                .filter(Boolean)
+            : []
+
+        const cleanCrm = typeof crm === "string" ? crm.trim() : ""
+        const cleanCrmUf = typeof crmUf === "string" ? crmUf.trim().toUpperCase() : ""
+
+        if (accountType === "DOCTOR") {
+            if (!cleanCrm || !cleanCrmUf || specialtyList.length === 0) {
+                return NextResponse.json(
+                    { error: "CRM, UF do CRM e pelo menos 1 especialidade são obrigatórios para médicos" },
+                    { status: 400 }
+                )
+            }
+
+            const existingCrm = await prisma.doctorProfile.findFirst({
+                where: { crm: cleanCrm },
+            })
+            if (existingCrm) {
+                return NextResponse.json(
+                    { error: "Já existe um médico cadastrado com este CRM" },
+                    { status: 409 }
+                )
+            }
+        }
+
         const existingUser = await prisma.user.findUnique({
             where: { email },
         })
@@ -42,11 +76,7 @@ export async function POST(request: Request) {
         }
 
         if (cpf) {
-            // Busca por CPF só é possível se o campo existe no schema; usamos findFirst como fallback seguro
-            const existingCpf = await (prisma.user as unknown as {
-                findUnique: (args: unknown) => Promise<unknown>
-                findFirst: (args: unknown) => Promise<unknown>
-            }).findFirst({
+            const existingCpf = await prisma.user.findFirst({
                 where: { cpf },
             })
             if (existingCpf) {
@@ -59,33 +89,48 @@ export async function POST(request: Request) {
 
         const passwordHash = await bcrypt.hash(password, 12)
 
-        const data: CreateData = {
-            name: fullName,
-            email,
-            passwordHash,
-            cpf: cpf || null,
-            phone: phone || null,
-            role: "SECRETARY",
+        if (accountType === "DOCTOR") {
+            const user = await prisma.$transaction(async (tx) => {
+                const created = await tx.user.create({
+                    data: {
+                        name: fullName,
+                        email,
+                        passwordHash,
+                        cpf: cpf || null,
+                        phone: phone || null,
+                        role: "DOCTOR",
+                    },
+                    select: { id: true, name: true, email: true, role: true },
+                })
+
+                await tx.doctorProfile.create({
+                    data: {
+                        userId: created.id,
+                        crm: cleanCrm,
+                        crmUf: cleanCrmUf,
+                        specialties: specialtyList,
+                    },
+                })
+
+                return created
+            })
+
+            return NextResponse.json(
+                { message: "Conta médica criada com sucesso", user },
+                { status: 201 }
+            )
         }
 
-        const user = await (prisma.user as unknown as {
-            create: (args: {
-                data: CreateData
-                select: Record<string, boolean>
-            }) => Promise<{
-                id: string
-                name: string | null
-                email: string | null
-                role?: unknown
-            }>
-        }).create({
-            data,
-            select: {
-                id: true,
-                name: true,
-                email: true,
-                role: true,
+        const user = await prisma.user.create({
+            data: {
+                name: fullName,
+                email,
+                passwordHash,
+                cpf: cpf || null,
+                phone: phone || null,
+                role: "SECRETARY",
             },
+            select: { id: true, name: true, email: true, role: true },
         })
 
         return NextResponse.json(

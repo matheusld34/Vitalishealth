@@ -88,7 +88,9 @@ export default async function DashboardPage() {
                 />
             </div>
 
-            <RecentActivity />
+            <RecentActivity
+                moreHref={session.user.role === "DOCTOR" ? "/dashboard/agenda" : "/dashboard/agendamento"}
+            />
         </DashboardLayout>
     )
 }

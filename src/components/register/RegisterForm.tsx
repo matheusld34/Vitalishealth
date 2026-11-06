@@ -10,14 +10,33 @@ type FieldErrors = {
   email?: string;
   password?: string;
   confirmPassword?: string;
+  crm?: string;
+  crmUf?: string;
+  specialties?: string;
   general?: string;
 };
 
+const ACCOUNT_TYPES = [
+  { value: "SECRETARY", label: "Secretária", description: "Recepção e agendamentos" },
+  { value: "DOCTOR", label: "Médico", description: "Agenda clínica" },
+] as const;
+
+const UF_LIST = [
+  "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS",
+  "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC",
+  "SP", "SE", "TO",
+];
+
 const RegisterForm = () => {
   const router = useRouter();
+  const [accountType, setAccountType] = useState<"SECRETARY" | "DOCTOR">("SECRETARY");
   const [fullName, setFullName] = useState("");
   const [cpf, setCpf] = useState("");
   const [phone, setPhone] = useState("");
+  const [crm, setCrm] = useState("");
+  const [crmUf, setCrmUf] = useState("");
+  const [specialties, setSpecialties] = useState<string[]>([]);
+  const [newSpecialty, setNewSpecialty] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -26,6 +45,23 @@ const RegisterForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
+
+  const isDoctor = accountType === "DOCTOR";
+
+  const addSpecialty = () => {
+    const value = newSpecialty.trim();
+    if (!value) return;
+    if (specialties.some((s) => s.localeCompare(value, "pt-BR", { sensitivity: "base" }) === 0)) {
+      setNewSpecialty("");
+      return;
+    }
+    setSpecialties([...specialties, value]);
+    setNewSpecialty("");
+  };
+
+  const removeSpecialty = (value: string) => {
+    setSpecialties(specialties.filter((s) => s !== value));
+  };
 
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
@@ -42,6 +78,12 @@ const RegisterForm = () => {
     if (password.length < 8) newErrors.password = "Senha deve ter no mínimo 8 caracteres";
     if (password !== confirmPassword) newErrors.confirmPassword = "Senhas não conferem";
 
+    if (isDoctor) {
+      if (!crm.trim()) newErrors.crm = "CRM é obrigatório";
+      if (!crmUf.trim()) newErrors.crmUf = "UF do CRM é obrigatória";
+      if (specialties.length === 0) newErrors.specialties = "Informe ao menos 1 especialidade";
+    }
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -52,7 +94,17 @@ const RegisterForm = () => {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ fullName, cpf, phone, email, password }),
+        body: JSON.stringify({
+          fullName,
+          cpf,
+          phone,
+          email,
+          password,
+          role: accountType,
+          crm,
+          crmUf,
+          specialties,
+        }),
       });
 
       const data = await res.json();
@@ -60,6 +112,8 @@ const RegisterForm = () => {
       if (!res.ok) {
         if (data.error?.includes("e-mail") || data.error?.includes("E-mail")) {
           setErrors({ email: data.error });
+        } else if (data.error?.includes("CRM")) {
+          setErrors({ crm: data.error });
         } else if (data.error?.includes("CPF")) {
           setErrors({ general: data.error });
         } else {
@@ -109,6 +163,36 @@ const RegisterForm = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <span className="block text-sm font-semibold text-gray-700">
+                Tipo de usuário
+              </span>
+              <div className="grid grid-cols-2 gap-3">
+                {ACCOUNT_TYPES.map((type) => {
+                  const isActive = accountType === type.value;
+                  return (
+                    <button
+                      key={type.value}
+                      type="button"
+                      onClick={() => setAccountType(type.value)}
+                      aria-pressed={isActive}
+                      className={`flex flex-col items-start gap-0.5 rounded-xl border px-4 py-3 text-left transition-all duration-200 cursor-pointer ${isActive
+                        ? "border-brand-500 bg-brand-50 ring-2 ring-brand-500/20"
+                        : "border-gray-200 bg-gray-50 hover:border-gray-300"
+                        }`}
+                    >
+                      <span className={`text-sm font-semibold ${isActive ? "text-brand-800" : "text-gray-900"}`}>
+                        {type.label}
+                      </span>
+                      <span className="text-xs text-gray-500">
+                        {type.description}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className="space-y-2">
               <label
                 htmlFor="fullName"
@@ -221,6 +305,156 @@ const RegisterForm = () => {
                 </div>
               </div>
             </div>
+
+            {isDoctor && (
+              <div className="space-y-5 rounded-2xl border border-brand-100 bg-brand-50/40 p-4 sm:p-5">
+                <div className="flex items-center gap-2.5">
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-brand-700 text-white">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="w-4 h-4"
+                    >
+                      <path d="M8 2v4" />
+                      <path d="M16 2v4" />
+                      <rect x="3" y="4" width="18" height="18" rx="2" />
+                      <path d="M12 11v6" />
+                      <path d="M9 14h6" />
+                    </svg>
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">
+                      Dados profissionais
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Necessários para exibir o perfil clínico do médico
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="space-y-2 sm:col-span-2">
+                    <label
+                      htmlFor="crm"
+                      className="block text-sm font-semibold text-gray-700"
+                    >
+                      CRM
+                    </label>
+                    <input
+                      id="crm"
+                      type="text"
+                      value={crm}
+                      onChange={(e) => setCrm(e.target.value)}
+                      placeholder="Ex.: 123456"
+                      autoComplete="off"
+                      className={`w-full px-4 py-4 bg-white border rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all duration-200 text-base ${errors.crm ? "border-red-300 focus:ring-red-500/30 focus:border-red-500" : "border-gray-200"
+                        }`}
+                    />
+                    {errors.crm && (
+                      <p className="text-sm text-red-500">{errors.crm}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <label
+                      htmlFor="crmUf"
+                      className="block text-sm font-semibold text-gray-700"
+                    >
+                      UF do CRM
+                    </label>
+                    <select
+                      id="crmUf"
+                      value={crmUf}
+                      onChange={(e) => setCrmUf(e.target.value)}
+                      className={`w-full px-4 py-4 bg-white border rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all duration-200 text-base cursor-pointer ${errors.crmUf ? "border-red-300 focus:ring-red-500/30 focus:border-red-500" : "border-gray-200"
+                        }`}
+                    >
+                      <option value="">UF</option>
+                      {UF_LIST.map((uf) => (
+                        <option key={uf} value={uf}>
+                          {uf}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.crmUf && (
+                      <p className="text-sm text-red-500">{errors.crmUf}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label
+                    htmlFor="specialty"
+                    className="block text-sm font-semibold text-gray-700"
+                  >
+                    Especialidades
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      id="specialty"
+                      type="text"
+                      value={newSpecialty}
+                      onChange={(e) => setNewSpecialty(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          addSpecialty();
+                        }
+                      }}
+                      placeholder="Ex.: Cardiologia"
+                      autoComplete="off"
+                      className="flex-1 px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 transition-all duration-200 text-base"
+                    />
+                    <button
+                      type="button"
+                      onClick={addSpecialty}
+                      className="px-4 py-3.5 rounded-xl bg-brand-700 text-white text-sm font-semibold hover:bg-brand-800 transition-colors cursor-pointer"
+                    >
+                      Adicionar
+                    </button>
+                  </div>
+                  {specialties.length > 0 && (
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      {specialties.map((item) => (
+                        <span
+                          key={item}
+                          className="inline-flex items-center gap-1.5 rounded-full bg-white border border-brand-200 px-3 py-1.5 text-xs font-semibold text-brand-800"
+                        >
+                          {item}
+                          <button
+                            type="button"
+                            onClick={() => removeSpecialty(item)}
+                            aria-label={`Remover ${item}`}
+                            className="text-brand-500 hover:text-brand-800 transition-colors cursor-pointer"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                              className="w-3.5 h-3.5"
+                            >
+                              <line x1="18" y1="6" x2="6" y2="18" />
+                              <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {errors.specialties && (
+                    <p className="text-sm text-red-500">{errors.specialties}</p>
+                  )}
+                </div>
+              </div>
+            )}
 
             <div className="space-y-2">
               <label

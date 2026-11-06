@@ -6,6 +6,7 @@ import RegisterPatientPage from "@/components/patients/RegisterPatientPage"
 export default async function NovoPacienteRoute() {
     const session = await auth()
     if (!session) redirect("/")
+    if (session.user.role === "DOCTOR") redirect("/dashboard")
 
     return (
         <DashboardLayout session={session}>

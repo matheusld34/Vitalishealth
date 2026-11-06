@@ -148,7 +148,11 @@ function wrapperFor(kind: ActivityKind) {
     }
 }
 
-export default function RecentActivity() {
+export default function RecentActivity({
+    moreHref = "/dashboard/agendamento",
+}: {
+    moreHref?: string
+}) {
     const [feed, setFeed] = useState<Activity[]>([])
     const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false)
@@ -222,7 +226,7 @@ export default function RecentActivity() {
                     )}
                 </div>
                 <Link
-                    href="/dashboard/agendamento"
+                    href={moreHref}
                     className="text-sm font-semibold text-brand-700 hover:text-brand-800 hover:underline"
                 >
                     Ver tudo

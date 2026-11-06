@@ -722,6 +722,18 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                             {/* Botões de ação */}
                             <div className="flex flex-col sm:items-end gap-3 shrink-0 w-full sm:w-auto">
                                 <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                                    {!FALLBACK_DB[doctor.id] && (
+                                        <Link
+                                            href={`/dashboard/medicos/novo?id=${doctor.id}`}
+                                            className="inline-flex items-center justify-center gap-2 rounded-2xl px-4 md:px-5 py-2.5 md:py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-50 transition-colors"
+                                        >
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                                <path d="M12 20h9" />
+                                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                            </svg>
+                                            Editar Informações
+                                        </Link>
+                                    )}
                                     <Link
                                         href="/dashboard/agendamento/novo"
                                         className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-brand-700 px-4 md:px-5 py-2.5 md:py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-700 hover:text-white hover:shadow-[0_10px_22px_-6px_rgba(16,142,93,0.35)] transition-all"

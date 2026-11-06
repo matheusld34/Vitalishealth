@@ -6,6 +6,7 @@ import PatientHistoryPage from "@/components/patients/PatientHistoryPage"
 export default async function HistoricoPacienteRoute({ params }: { params: Promise<{ id: string }> }) {
     const [session, resolvedParams] = await Promise.all([auth(), params])
     if (!session) redirect("/")
+    if (session.user.role === "DOCTOR") redirect("/dashboard")
 
     return (
         <DashboardLayout session={session}>

@@ -422,16 +422,29 @@ function DoctorCard({ doctor }: { doctor: Doctor }) {
             </div>
 
             {/* Action */}
-            <Link
-                href={`/dashboard/medicos/${doctor.id}`}
-                className="mt-6 group/btn inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-brand-700 bg-white px-4 py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-700 hover:text-white hover:shadow-[0_8px_18px_rgba(16,142,93,0.22)] transition-all duration-200"
-            >
-                Ver Perfil
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="transition-transform group-hover/btn:translate-x-1">
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                    <polyline points="12 5 19 12 12 19" />
-                </svg>
-            </Link>
+            <div className="mt-6 grid grid-cols-[minmax(0,1fr)_auto] gap-2.5">
+                <Link
+                    href={`/dashboard/medicos/${doctor.id}`}
+                    className="group/btn inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-brand-700 bg-white px-4 py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-700 hover:text-white hover:shadow-[0_8px_18px_rgba(16,142,93,0.22)] transition-all duration-200"
+                >
+                    Ver Perfil
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="transition-transform group-hover/btn:translate-x-1">
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                        <polyline points="12 5 19 12 12 19" />
+                    </svg>
+                </Link>
+                <Link
+                    href={`/dashboard/medicos/novo?id=${doctor.id}`}
+                    title="Editar informações"
+                    aria-label={`Editar informações de ${doctor.name}`}
+                    className="inline-flex items-center justify-center rounded-2xl border-2 border-neutral-200 bg-white px-4 text-brand-700 hover:border-brand-700 hover:bg-brand-50 transition-colors"
+                >
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M12 20h9" />
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                    </svg>
+                </Link>
+            </div>
         </article>
     )
 }
