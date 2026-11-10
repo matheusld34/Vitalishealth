@@ -91,6 +91,15 @@ export async function POST(request: Request) {
         }
         const dateTime = new Date(y, m - 1, d, hh, mm, 0, 0)
 
+        const startOfToday = new Date()
+        startOfToday.setHours(0, 0, 0, 0)
+        if (dateTime < startOfToday) {
+            return NextResponse.json(
+                { ok: false, error: "Não é possível agendar em datas que já passaram." },
+                { status: 400 }
+            )
+        }
+
         const [patient, doctor] = await Promise.all([
             prisma.patient.findUnique({ where: { id: patientId }, select: { id: true } }),
             prisma.user.findUnique({ where: { id: doctorId }, select: { id: true } }),

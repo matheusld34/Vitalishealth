@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
+import type { Role } from "@/generated/prisma/client"
 
 type DoctorDetail = {
     id: string
@@ -425,7 +426,8 @@ function activityTime(date: Date): string {
     return formatShortDatePt(date)
 }
 
-export default function DoctorProfilePage({ id }: { id: string }) {
+export default function DoctorProfilePage({ id, userRole }: { id: string; userRole: Role }) {
+    const canManage = userRole === "MASTER"
     const [doctor, setDoctor] = useState<DoctorDetail | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -722,7 +724,7 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                             {/* Botões de ação */}
                             <div className="flex flex-col sm:items-end gap-3 shrink-0 w-full sm:w-auto">
                                 <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-                                    {!FALLBACK_DB[doctor.id] && (
+                                    {canManage && !FALLBACK_DB[doctor.id] && (
                                         <Link
                                             href={`/dashboard/medicos/novo?id=${doctor.id}`}
                                             className="inline-flex items-center justify-center gap-2 rounded-2xl px-4 md:px-5 py-2.5 md:py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-50 transition-colors"
@@ -744,16 +746,18 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                                         </svg>
                                         Novo Atendimento
                                     </Link>
-                                    <button
-                                        type="button"
-                                        className="inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-2.5 md:py-3 text-[14px] font-bold text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
-                                    >
-                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                            <rect x="3" y="3" width="18" height="18" rx="2" />
-                                            <path d="M8 12h8" />
-                                        </svg>
-                                        Excluir Méd
-                                    </button>
+                                    {canManage && (
+                                        <button
+                                            type="button"
+                                            className="inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-2.5 md:py-3 text-[14px] font-bold text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+                                        >
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" />
+                                                <path d="M8 12h8" />
+                                            </svg>
+                                            Excluir Méd
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -798,8 +802,8 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                                             <span
                                                 key={w.key}
                                                 className={`inline-flex h-9 w-9 items-center justify-center rounded-full text-[12px] font-bold ${active
-                                                        ? "bg-brand-600 text-white shadow-[0_4px_10px_-2px_rgba(16,142,93,0.3)] ring-2 ring-white"
-                                                        : "bg-neutral-100 text-neutral-500 ring-1 ring-neutral-200/70"
+                                                    ? "bg-brand-600 text-white shadow-[0_4px_10px_-2px_rgba(16,142,93,0.3)] ring-2 ring-white"
+                                                    : "bg-neutral-100 text-neutral-500 ring-1 ring-neutral-200/70"
                                                     }`}
                                                 title={w.label}
                                             >
@@ -929,12 +933,12 @@ export default function DoctorProfilePage({ id }: { id: string }) {
                                         <li key={a.id} className="flex items-start gap-3">
                                             <span
                                                 className={`mt-1 inline-flex h-6 w-6 items-center justify-center rounded-full ring-1 ${a.tone === "emerald"
-                                                        ? "bg-emerald-50 text-emerald-600 ring-emerald-500/15"
-                                                        : a.tone === "amber"
-                                                            ? "bg-amber-50 text-amber-600 ring-amber-500/15"
-                                                            : a.tone === "neutral"
-                                                                ? "bg-neutral-100 text-neutral-500 ring-neutral-400/15"
-                                                                : "bg-brand-50 text-brand-700 ring-brand-600/15"
+                                                    ? "bg-emerald-50 text-emerald-600 ring-emerald-500/15"
+                                                    : a.tone === "amber"
+                                                        ? "bg-amber-50 text-amber-600 ring-amber-500/15"
+                                                        : a.tone === "neutral"
+                                                            ? "bg-neutral-100 text-neutral-500 ring-neutral-400/15"
+                                                            : "bg-brand-50 text-brand-700 ring-brand-600/15"
                                                     }`}
                                             >
                                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

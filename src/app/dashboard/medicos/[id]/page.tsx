@@ -9,7 +9,7 @@ export default async function MedicoDetalheRoute({ params }: { params: Promise<{
 
     return (
         <DashboardLayout session={session}>
-            <DoctorProfilePage id={resolvedParams.id} />
+            <DoctorProfilePage id={resolvedParams.id} userRole={session.user.role} />
         </DashboardLayout>
     )
 }

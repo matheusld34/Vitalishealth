@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
+import type { Role } from "@/generated/prisma/client"
 
 type DoctorStatus = "DISPONÍVEL" | "EM CONSULTA" | "INDISPONÍVEL"
 
@@ -176,9 +177,9 @@ function mapApiToDoctor(ad: ApiDoctor, idx: number): Doctor {
         workingDaysArr.length === 0
             ? "Agenda a definir"
             : workingDaysArr
-                  .map((k) => DAY_LABELS[k] ?? k)
-                  .filter(Boolean)
-                  .join(", ")
+                .map((k) => DAY_LABELS[k] ?? k)
+                .filter(Boolean)
+                .join(", ")
 
     const specialty = (ad.doctorProfile?.specialties ?? []).slice(0, 2).join(" / ") || "Especialidade"
 
@@ -208,7 +209,8 @@ function statusStyle(s: DoctorStatus) {
     }
 }
 
-export default function DoctorsPage() {
+export default function DoctorsPage({ userRole }: { userRole: Role }) {
+    const canManage = userRole === "MASTER"
     const [search, setSearch] = useState("")
     const [doctors, setDoctors] = useState<Doctor[]>([])
     const [loading, setLoading] = useState(true)
@@ -294,44 +296,48 @@ export default function DoctorsPage() {
                     </p>
                 </div>
 
-                <Link
-                    href="/dashboard/medicos/novo"
-                    className="inline-flex w-full md:w-auto items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 px-6 py-3.5 text-[15px] font-semibold text-white shadow-[0_10px_24px_rgba(16,142,93,0.28)] hover:shadow-[0_14px_32px_rgba(16,142,93,0.36)] hover:brightness-[1.03] active:brightness-100 transition-all duration-200"
-                >
-                    <span className="relative inline-flex h-6 w-6 items-center justify-center rounded-lg bg-white/15 ring-1 ring-white/20">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <line x1="12" y1="5" x2="12" y2="19" />
-                            <line x1="5" y1="12" x2="19" y2="12" />
-                        </svg>
-                    </span>
-                    Novo Médico
-                </Link>
+                {canManage && (
+                    <Link
+                        href="/dashboard/medicos/novo"
+                        className="inline-flex w-full md:w-auto items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 px-6 py-3.5 text-[15px] font-semibold text-white shadow-[0_10px_24px_rgba(16,142,93,0.28)] hover:shadow-[0_14px_32px_rgba(16,142,93,0.36)] hover:brightness-[1.03] active:brightness-100 transition-all duration-200"
+                    >
+                        <span className="relative inline-flex h-6 w-6 items-center justify-center rounded-lg bg-white/15 ring-1 ring-white/20">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                        </span>
+                        Novo Médico
+                    </Link>
+                )}
             </div>
 
             {/* Doctors grid */}
             <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-6">
                 {loading && doctors.length === 0
                     ? Array.from({ length: 4 }).map((_, i) => <DoctorCardSkeleton key={i} />)
-                    : filtered.map((d) => <DoctorCard key={d.id} doctor={d} />)}
+                    : filtered.map((d) => <DoctorCard key={d.id} doctor={d} canManage={canManage} />)}
 
                 {/* Add new card */}
-                <Link
-                    href="/dashboard/medicos/novo"
-                    className="group relative min-h-[420px] rounded-3xl border-2 border-dashed border-neutral-300/90 bg-white/40 p-6 flex flex-col items-center justify-center text-center hover:border-brand-400/70 hover:bg-brand-50/40 transition-all duration-200"
-                >
-                    <span className="relative inline-flex h-16 w-16 items-center justify-center rounded-full bg-neutral-100 text-neutral-500 group-hover:bg-brand-100 group-hover:text-brand-700 transition-colors">
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                            <circle cx="9" cy="7" r="4" />
-                            <line x1="19" y1="8" x2="19" y2="14" />
-                            <line x1="22" y1="11" x2="16" y2="11" />
-                        </svg>
-                    </span>
-                    <p className="mt-5 text-[15px] font-semibold text-neutral-600 group-hover:text-brand-800 leading-snug max-w-[200px] transition-colors">
-                        Registrar novo profissional
-                        <br /> no sistema
-                    </p>
-                </Link>
+                {canManage && (
+                    <Link
+                        href="/dashboard/medicos/novo"
+                        className="group relative min-h-[420px] rounded-3xl border-2 border-dashed border-neutral-300/90 bg-white/40 p-6 flex flex-col items-center justify-center text-center hover:border-brand-400/70 hover:bg-brand-50/40 transition-all duration-200"
+                    >
+                        <span className="relative inline-flex h-16 w-16 items-center justify-center rounded-full bg-neutral-100 text-neutral-500 group-hover:bg-brand-100 group-hover:text-brand-700 transition-colors">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <line x1="19" y1="8" x2="19" y2="14" />
+                                <line x1="22" y1="11" x2="16" y2="11" />
+                            </svg>
+                        </span>
+                        <p className="mt-5 text-[15px] font-semibold text-neutral-600 group-hover:text-brand-800 leading-snug max-w-[200px] transition-colors">
+                            Registrar novo profissional
+                            <br /> no sistema
+                        </p>
+                    </Link>
+                )}
             </section>
 
             {/* FABs */}
@@ -345,22 +351,24 @@ export default function DoctorsPage() {
                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                     </svg>
                 </button>
-                <Link
-                    href="/dashboard/medicos/novo"
-                    aria-label="Adicionar médico"
-                    className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 text-white shadow-[0_10px_26px_rgba(16,142,93,0.5)] ring-4 ring-white/70 hover:scale-105 transition-all"
-                >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                        <polyline points="22 4 12 14.01 9 11.01" />
-                    </svg>
-                </Link>
+                {canManage && (
+                    <Link
+                        href="/dashboard/medicos/novo"
+                        aria-label="Adicionar médico"
+                        className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 via-brand-600 to-brand-700 text-white shadow-[0_10px_26px_rgba(16,142,93,0.5)] ring-4 ring-white/70 hover:scale-105 transition-all"
+                    >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                    </Link>
+                )}
             </div>
         </div>
     )
 }
 
-function DoctorCard({ doctor }: { doctor: Doctor }) {
+function DoctorCard({ doctor, canManage }: { doctor: Doctor; canManage: boolean }) {
     return (
         <article className="group relative rounded-3xl border border-neutral-200/80 bg-white p-5 md:p-6 shadow-[0_4px_20px_-14px_rgba(15,23,42,0.15)] hover:shadow-[0_18px_40px_-18px_rgba(16,142,93,0.25)] hover:-translate-y-0.5 transition-all duration-200">
             {/* Avatar */}
@@ -422,7 +430,7 @@ function DoctorCard({ doctor }: { doctor: Doctor }) {
             </div>
 
             {/* Action */}
-            <div className="mt-6 grid grid-cols-[minmax(0,1fr)_auto] gap-2.5">
+            <div className={`mt-6 grid gap-2.5 ${canManage ? "grid-cols-[minmax(0,1fr)_auto]" : "grid-cols-1"}`}>
                 <Link
                     href={`/dashboard/medicos/${doctor.id}`}
                     className="group/btn inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-brand-700 bg-white px-4 py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-700 hover:text-white hover:shadow-[0_8px_18px_rgba(16,142,93,0.22)] transition-all duration-200"
@@ -433,17 +441,19 @@ function DoctorCard({ doctor }: { doctor: Doctor }) {
                         <polyline points="12 5 19 12 12 19" />
                     </svg>
                 </Link>
-                <Link
-                    href={`/dashboard/medicos/novo?id=${doctor.id}`}
-                    title="Editar informações"
-                    aria-label={`Editar informações de ${doctor.name}`}
-                    className="inline-flex items-center justify-center rounded-2xl border-2 border-neutral-200 bg-white px-4 text-brand-700 hover:border-brand-700 hover:bg-brand-50 transition-colors"
-                >
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                        <path d="M12 20h9" />
-                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                    </svg>
-                </Link>
+                {canManage && (
+                    <Link
+                        href={`/dashboard/medicos/novo?id=${doctor.id}`}
+                        title="Editar informações"
+                        aria-label={`Editar informações de ${doctor.name}`}
+                        className="inline-flex items-center justify-center rounded-2xl border-2 border-neutral-200 bg-white px-4 text-brand-700 hover:border-brand-700 hover:bg-brand-50 transition-colors"
+                    >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M12 20h9" />
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                        </svg>
+                    </Link>
+                )}
             </div>
         </article>
     )

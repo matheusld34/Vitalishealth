@@ -4,32 +4,39 @@ import Link from "next/link"
 import { useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 
-const SUGGESTED_TIMES = ["09:00", "10:30", "14:00", "15:15", "16:45"]
 const DURATIONS = ["30 Minutos", "45 Minutos", "60 Minutos", "90 Minutos"]
+const SLOT_STEP_MINUTES = 30
+
+type Window = { start: string; end: string }
+
+// Janelas usadas quando o médico ainda não cadastrou horários próprios
+const DEFAULT_WINDOWS: Window[] = [
+    { start: "08:00", end: "12:00" },
+    { start: "13:30", end: "18:00" },
+]
+
+// Chaves gravadas em doctorProfile.workDays (na ordem de Date.getDay())
+const DAY_KEYS = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"]
+const DAY_LABELS: Record<string, string> = {
+    dom: "Dom",
+    seg: "Seg",
+    ter: "Ter",
+    qua: "Qua",
+    qui: "Qui",
+    sex: "Sex",
+    "sáb": "Sáb",
+}
 
 type PatientOpt = { id: string; name: string; insurance: string }
-type DoctorOpt = { id: string; name: string; specialty: string; crm: string }
+type DoctorOpt = {
+    id: string
+    name: string
+    specialty: string
+    crm: string
+    workDays: string[]
+    windows: Window[]
+}
 type ToastState = { kind: "success" | "error"; message: string } | null
-
-// Fallback exibido apenas enquanto o banco não devolve registros,
-// mantendo o layout visível durante o desenvolvimento.
-const FALLBACK_PATIENTS: PatientOpt[] = [
-    { id: "1", name: "Arnaldo Silveira", insurance: "Unimed Nacional" },
-    { id: "2", name: "Beatriz Costa", insurance: "Particular" },
-    { id: "3", name: "Carlos Eduardo", insurance: "Bradesco Saúde" },
-    { id: "4", name: "Daniel Oliveira", insurance: "SulAmérica" },
-    { id: "5", name: "Elisa Mendes", insurance: "Particular" },
-    { id: "6", name: "Mariana Lima Ferreira", insurance: "Amil" },
-]
-
-const FALLBACK_DOCTORS: DoctorOpt[] = [
-    { id: "1", name: "Dr. Ricardo Mendes", specialty: "Clínica Geral", crm: "123456-SP" },
-    { id: "2", name: "Dra. Julia Ramos", specialty: "Clínica Geral", crm: "234567-SP" },
-    { id: "3", name: "Dra. Helena Souza", specialty: "Fisioterapia", crm: "345678-SP" },
-    { id: "4", name: "Dr. Arnaldo Souza", specialty: "Clínica Geral", crm: "456789-SP" },
-    { id: "5", name: "Dra. Beatriz Costa", specialty: "Cardiologia", crm: "567890-SP" },
-    { id: "6", name: "Dr. Marcos Vinícius Oliveira", specialty: "Neurologia", crm: "123456-SP" },
-]
 
 type ApiPatient = {
     id: string
@@ -45,6 +52,11 @@ type ApiDoctor = {
         crm?: string | null
         crmUf?: string | null
         specialties?: string[] | null
+        workDays?: string[] | null
+        startMorning?: string | null
+        endMorning?: string | null
+        startAfternoon?: string | null
+        endAfternoon?: string | null
     } | null
 }
 
@@ -53,8 +65,8 @@ export default function NewAppointmentPage() {
     const todayStart = new Date()
     todayStart.setHours(0, 0, 0, 0)
 
-    const [patientOpts, setPatientOpts] = useState<PatientOpt[]>(FALLBACK_PATIENTS)
-    const [doctorOpts, setDoctorOpts] = useState<DoctorOpt[]>(FALLBACK_DOCTORS)
+    const [patientOpts, setPatientOpts] = useState<PatientOpt[]>([])
+    const [doctorOpts, setDoctorOpts] = useState<DoctorOpt[]>([])
     const [loadingOptions, setLoadingOptions] = useState<boolean>(true)
     const [submitting, setSubmitting] = useState<boolean>(false)
     const [toast, setToast] = useState<ToastState>(null)
@@ -100,22 +112,27 @@ export default function NewAppointmentPage() {
                         : []
                     const crm = d.doctorProfile?.crm
                     const uf = d.doctorProfile?.crmUf
+                    const days = Array.isArray(d.doctorProfile?.workDays)
+                        ? (d.doctorProfile?.workDays as string[]).filter((k) => DAY_KEYS.includes(k))
+                        : []
                     return {
                         id: d.id,
                         name: d.name?.trim() || "Médico(a)",
                         specialty: specs.length ? specs.join(" / ") : "Clínica Geral",
                         crm: crm ? `${crm}${uf ? `-${uf}` : ""}` : "—",
+                        workDays: days,
+                        windows: windowsOf(d.doctorProfile),
                     }
                 })
 
-                setPatientOpts(mappedPatients.length ? mappedPatients : FALLBACK_PATIENTS)
-                setDoctorOpts(mappedDoctors.length ? mappedDoctors : FALLBACK_DOCTORS)
-                setPatientId((prev) => prev || mappedPatients[0]?.id || "")
-                setDoctorId((prev) => prev || mappedDoctors[0]?.id || "")
+                setPatientOpts(mappedPatients)
+                setDoctorOpts(mappedDoctors)
+                setPatientId((prev) => (mappedPatients.some((p) => p.id === prev) ? prev : mappedPatients[0]?.id || ""))
+                setDoctorId((prev) => (mappedDoctors.some((d) => d.id === prev) ? prev : mappedDoctors[0]?.id || ""))
             } catch {
                 if (cancelled) return
-                setPatientOpts(FALLBACK_PATIENTS)
-                setDoctorOpts(FALLBACK_DOCTORS)
+                setPatientOpts([])
+                setDoctorOpts([])
             } finally {
                 if (!cancelled) setLoadingOptions(false)
             }
@@ -130,6 +147,50 @@ export default function NewAppointmentPage() {
     const patient = useMemo(() => patientOpts.find((p) => p.id === patientId), [patientOpts, patientId])
     const doctor = useMemo(() => doctorOpts.find((d) => d.id === doctorId), [doctorOpts, doctorId])
 
+    const durationMinutes = Number(duration.split(" ")[0]) || 30
+
+    // Disponibilidade do médico selecionado (dias de plantão + janelas de horário)
+    const availability = useMemo(() => {
+        const days = doctor?.workDays ?? []
+        const windows = doctor?.windows ?? []
+        return {
+            // Só restringe quando o médico tem dias E horários cadastrados
+            configured: days.length > 0 && windows.length > 0,
+            days,
+            windows: windows.length ? windows : DEFAULT_WINDOWS,
+        }
+    }, [doctor])
+
+    const dayKey = DAY_KEYS[safeParseIso(date).getDay()]
+    const dayIsAvailable = !availability.configured || availability.days.includes(dayKey)
+    const timeFitsAvailability = fitsWindows(time, availability.windows, durationMinutes)
+
+    const dayLabel = availability.days.map((d) => DAY_LABELS[d] ?? d).join(", ")
+    const windowLabel = availability.windows.map((w) => `${w.start} às ${w.end}`).join(" · ")
+    const availableSlots = useMemo(
+        () => slotsFor(availability.windows, durationMinutes),
+        [availability, durationMinutes]
+    )
+
+    // Mantém data e horário dentro da disponibilidade sempre que ela muda
+    useEffect(() => {
+        if (!availability.configured) return
+
+        if (!availability.days.includes(dayKey)) {
+            const next = nextAvailableDate(date, availability.days)
+            if (next && next !== date) {
+                setDate(next)
+                setJumpDateInput(next)
+                setViewMonth(monthOf(next))
+            }
+            return
+        }
+
+        if (!timeFitsAvailability) {
+            setTime(nearestSlot(time, availableSlots))
+        }
+    }, [availability, dayKey, date, time, timeFitsAvailability, availableSlots])
+
     async function handleSubmit() {
         if (submitting) return
 
@@ -141,10 +202,27 @@ export default function NewAppointmentPage() {
             setToast({ kind: "error", message: "Informe a data e o horário do atendimento." })
             return
         }
+        if (safeParseIso(date) < todayStart) {
+            setToast({ kind: "error", message: "Não é possível agendar em datas que já passaram." })
+            return
+        }
+        if (availability.configured && !availability.days.includes(dayKey)) {
+            setToast({
+                kind: "error",
+                message: `${doctor?.name ?? "O médico"} não atende ${DAY_LABELS[dayKey]}. Dias de atendimento: ${dayLabel}.`,
+            })
+            return
+        }
+        if (availability.configured && !timeFitsAvailability) {
+            setToast({
+                kind: "error",
+                message: `${doctor?.name ?? "O médico"} atende ${windowLabel}. Escolha um horário que caiba nesse intervalo (${durationMinutes} min).`,
+            })
+            return
+        }
 
         setSubmitting(true)
         try {
-            const minutes = Number(duration.split(" ")[0]) || 30
             const res = await fetch("/api/appointments", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -153,7 +231,7 @@ export default function NewAppointmentPage() {
                     doctorId,
                     date,
                     time,
-                    durationMinutes: minutes,
+                    durationMinutes,
                     observation: observations,
                     specialties: doctor?.specialty ? doctor.specialty.split(" / ") : [],
                     urgent,
@@ -186,7 +264,7 @@ export default function NewAppointmentPage() {
     const selectedDate = safeParseIso(date)
     const formattedDate = formatLongPt(selectedDate)
     const formattedTime = `às ${time}`
-    const doctorName = doctor?.name ? doctor.name.replace(/^Dr[a]?\.\s*/i, "") : "Marcos"
+    const doctorName = doctor?.name ? doctor.name.replace(/^Dr[a]?\.\s*/i, "") : "o médico"
 
     return (
         <div className="space-y-6 md:space-y-7 pb-10">
@@ -287,14 +365,29 @@ export default function NewAppointmentPage() {
                                     icon="person"
                                     value={patientId}
                                     onChange={setPatientId}
-                                    placeholder={loadingOptions ? "Carregando pacientes..." : "Selecione um paciente..."}
-                                    disabled={loadingOptions}
+                                    placeholder={
+                                        loadingOptions
+                                            ? "Carregando pacientes..."
+                                            : patientOpts.length
+                                                ? "Selecione um paciente..."
+                                                : "Nenhum paciente cadastrado"
+                                    }
+                                    disabled={loadingOptions || !patientOpts.length}
                                     options={patientOpts.map((p) => ({
                                         value: p.id,
                                         label: p.name,
                                         sub: p.insurance,
                                     }))}
                                 />
+                                {!loadingOptions && !patientOpts.length && (
+                                    <p className="mt-2 text-[12.5px] font-semibold text-amber-700">
+                                        Cadastre o paciente em{" "}
+                                        <Link href="/dashboard/pacientes/novo" className="underline">
+                                            Pacientes → Novo
+                                        </Link>{" "}
+                                        antes de agendar.
+                                    </p>
+                                )}
                             </div>
 
                             {/* Médico */}
@@ -306,14 +399,29 @@ export default function NewAppointmentPage() {
                                     icon="doctor"
                                     value={doctorId}
                                     onChange={setDoctorId}
-                                    placeholder={loadingOptions ? "Carregando médicos..." : "Selecione o especialista..."}
-                                    disabled={loadingOptions}
+                                    placeholder={
+                                        loadingOptions
+                                            ? "Carregando médicos..."
+                                            : doctorOpts.length
+                                                ? "Selecione o especialista..."
+                                                : "Nenhum médico cadastrado"
+                                    }
+                                    disabled={loadingOptions || !doctorOpts.length}
                                     options={doctorOpts.map((d) => ({
                                         value: d.id,
                                         label: d.name,
                                         sub: d.specialty,
                                     }))}
                                 />
+                                {!loadingOptions && !doctorOpts.length && (
+                                    <p className="mt-2 text-[12.5px] font-semibold text-amber-700">
+                                        Cadastre o profissional em{" "}
+                                        <Link href="/dashboard/medicos" className="underline">
+                                            Médicos
+                                        </Link>{" "}
+                                        antes de agendar.
+                                    </p>
+                                )}
                             </div>
                         </div>
                     </section>
@@ -372,14 +480,25 @@ export default function NewAppointmentPage() {
                                     <input
                                         type="date"
                                         value={jumpDateInput}
+                                        min={toIsoDate(todayStart)}
                                         onChange={(e) => {
                                             const v = e.target.value
-                                            setJumpDateInput(v)
-                                            if (v) {
-                                                setDate(v)
-                                                const d = safeParseIso(v)
-                                                setViewMonth(new Date(d.getFullYear(), d.getMonth(), 1))
+                                            if (!v) {
+                                                setJumpDateInput(v)
+                                                return
                                             }
+                                            if (safeParseIso(v) < todayStart) {
+                                                setJumpDateInput(toIsoDate(todayStart))
+                                                setToast({
+                                                    kind: "error",
+                                                    message: "Não é possível agendar em datas que já passaram.",
+                                                })
+                                                return
+                                            }
+                                            setJumpDateInput(v)
+                                            setDate(v)
+                                            const d = safeParseIso(v)
+                                            setViewMonth(new Date(d.getFullYear(), d.getMonth(), 1))
                                         }}
                                         className="w-full rounded-2xl border-2 border-neutral-200/80 bg-white pl-12 pr-4 py-3 text-sm font-semibold text-neutral-800 tabular-nums focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
                                     />
@@ -471,14 +590,25 @@ export default function NewAppointmentPage() {
                                     const isPast = inMonth && cell.date < todayStart
                                     const isToday = inMonth && isSameDay(cell.date, todayStart)
                                     const isSelected = inMonth && isoCell === date
+                                    const cellDayKey = DAY_KEYS[cell.date.getDay()]
+                                    const doctorWorks = availability.days.includes(cellDayKey)
 
-                                    const clickable = inMonth && !isPast
+                                    const clickable = inMonth && !isPast && (!availability.configured || doctorWorks)
 
                                     return (
                                         <button
                                             key={`${isoCell}-${idx}`}
                                             type="button"
                                             disabled={!clickable}
+                                            title={
+                                                !inMonth
+                                                    ? undefined
+                                                    : isPast
+                                                        ? "Data passada"
+                                                        : availability.configured && !doctorWorks
+                                                            ? `${doctor?.name ?? "O médico"} não atende ${DAY_LABELS[cellDayKey]}`
+                                                            : "Disponível"
+                                            }
                                             onClick={() => {
                                                 if (!clickable) return
                                                 setDate(isoCell)
@@ -488,12 +618,16 @@ export default function NewAppointmentPage() {
                                                 "relative aspect-square w-full rounded-2xl flex items-center justify-center text-sm md:text-[15px] font-bold transition-all select-none",
                                                 inMonth ? "" : "opacity-0 pointer-events-none",
                                                 !clickable
-                                                    ? "text-neutral-300 cursor-not-allowed line-through"
+                                                    ? availability.configured && !doctorWorks && !isPast
+                                                        ? "bg-neutral-100/70 text-neutral-300 cursor-not-allowed"
+                                                        : "text-neutral-300 cursor-not-allowed line-through"
                                                     : isSelected
                                                         ? "bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 text-white shadow-[0_10px_22px_-8px_rgba(16,142,93,0.55)] ring-2 ring-brand-600/30 scale-[1.04]"
                                                         : isToday
                                                             ? "bg-brand-50 text-brand-800 ring-2 ring-brand-600/30 hover:bg-brand-100"
-                                                            : "text-neutral-800 hover:bg-neutral-100",
+                                                            : doctorWorks
+                                                                ? "text-neutral-800 bg-brand-50/40 hover:bg-neutral-100"
+                                                                : "text-neutral-800 hover:bg-neutral-100",
                                             ].join(" ")}
                                         >
                                             {cell.day}
@@ -503,6 +637,28 @@ export default function NewAppointmentPage() {
                                         </button>
                                     )
                                 })}
+                            </div>
+
+                            {/* Legenda de disponibilidade do médico */}
+                            <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 text-[12.5px]">
+                                {availability.configured ? (
+                                    <p className="text-neutral-600">
+                                        <span className="font-bold text-brand-800">
+                                            {DAY_LABELS[dayKey] ?? dayKey} selecionado.
+                                        </span>{" "}
+                                        Dias de atendimento de {doctor?.name ?? "médico"}:{" "}
+                                        <span className="font-semibold text-neutral-800">{dayLabel || "—"}</span>
+                                    </p>
+                                ) : (
+                                    <p className="text-amber-700">
+                                        Sem disponibilidade cadastrada — qualquer dia e horário podem ser escolhidos.
+                                        Defina a grade em{" "}
+                                        <Link href="/dashboard/medicos" className="font-semibold underline">
+                                            Médicos
+                                        </Link>
+                                        .
+                                    </p>
+                                )}
                             </div>
                         </div>
 
@@ -524,6 +680,11 @@ export default function NewAppointmentPage() {
                                         className="inputCls pl-12 pr-12 tabular-nums font-semibold"
                                     />
                                 </div>
+                                {availability.configured && !timeFitsAvailability && (
+                                    <p className="mt-2 text-[12.5px] font-semibold text-rose-600">
+                                        Fora da disponibilidade. Atendimento: {windowLabel}.
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -557,27 +718,39 @@ export default function NewAppointmentPage() {
 
                         {/* Sugestões de horários */}
                         <div>
-                            <p className="text-sm font-semibold text-neutral-700 mb-2.5">
-                                Sugestões de Horários Disponíveis ({formatShortPt(selectedDate)})
-                            </p>
-                            <div className="flex flex-wrap items-center gap-2.5">
-                                {SUGGESTED_TIMES.map((t) => {
-                                    const active = time === t
-                                    return (
-                                        <button
-                                            key={t}
-                                            type="button"
-                                            onClick={() => setTime(t)}
-                                            className={`px-4 py-2 rounded-xl text-sm font-bold tabular-nums transition-all ${active
-                                                ? "bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 text-white shadow-[0_8px_18px_-6px_rgba(16,142,93,0.55)] ring-2 ring-brand-600/20"
-                                                : "bg-neutral-200/70 hover:bg-neutral-300/70 text-neutral-700"
-                                                }`}
-                                        >
-                                            {t}
-                                        </button>
-                                    )
-                                })}
+                            <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                                <p className="text-sm font-semibold text-neutral-700">
+                                    Horários Disponíveis ({formatShortPt(selectedDate)})
+                                </p>
+                                <span className="text-[11.5px] font-bold uppercase tracking-[0.14em] text-neutral-500">
+                                    {duration} · {windowLabel}
+                                </span>
                             </div>
+                            {availableSlots.length ? (
+                                <div className="flex flex-wrap items-center gap-2.5">
+                                    {availableSlots.map((t) => {
+                                        const active = time === t
+                                        return (
+                                            <button
+                                                key={t}
+                                                type="button"
+                                                onClick={() => setTime(t)}
+                                                className={`px-4 py-2 rounded-xl text-sm font-bold tabular-nums transition-all ${active
+                                                    ? "bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 text-white shadow-[0_8px_18px_-6px_rgba(16,142,93,0.55)] ring-2 ring-brand-600/20"
+                                                    : "bg-neutral-200/70 hover:bg-neutral-300/70 text-neutral-700"
+                                                    }`}
+                                            >
+                                                {t}
+                                            </button>
+                                        )
+                                    })}
+                                </div>
+                            ) : (
+                                <p className="rounded-2xl bg-amber-50 ring-1 ring-amber-500/20 px-4 py-3 text-[13px] font-semibold text-amber-800">
+                                    Nenhum horário comporta {duration} dentro da disponibilidade deste médico.
+                                    Reduza a duração ou escolha outro profissional.
+                                </p>
+                            )}
                         </div>
                     </section>
 
@@ -669,28 +842,49 @@ export default function NewAppointmentPage() {
                             </dl>
 
                             {/* Caixa informativa */}
-                            <div className="rounded-2xl bg-brand-50/80 ring-1 ring-brand-600/10 p-4">
-                                <div className="flex items-start gap-3">
-                                    <span className="mt-0.5 shrink-0 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-700 text-white">
-                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                            <circle cx="12" cy="12" r="10" />
-                                            <line x1="12" y1="16" x2="12" y2="12" />
-                                            <line x1="12" y1="8" x2="12.01" y2="8" />
-                                        </svg>
-                                    </span>
-                                    <p className="text-[13px] leading-relaxed text-neutral-700">
-                                        Este horário está disponível na agenda do Dr. {doctorName}. Ao confirmar, o
-                                        paciente receberá um e-mail de confirmação automaticamente.
-                                    </p>
+                            {availability.configured && (!dayIsAvailable || !timeFitsAvailability) ? (
+                                <div className="rounded-2xl bg-amber-50 ring-1 ring-amber-500/20 p-4">
+                                    <div className="flex items-start gap-3">
+                                        <span className="mt-0.5 shrink-0 inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-600 text-white">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                                <path d="M12 9v4" />
+                                                <path d="M12 17h.01" />
+                                                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                            </svg>
+                                        </span>
+                                        <p className="text-[13px] leading-relaxed text-amber-900">
+                                            {doctor?.name ?? "Este médico"} atende{" "}
+                                            <span className="font-bold">{dayLabel || "—"}</span>, das{" "}
+                                            <span className="font-bold">{windowLabel}</span>. Escolha um dia e um
+                                            horário dentro dessa grade.
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <div className="rounded-2xl bg-brand-50/80 ring-1 ring-brand-600/10 p-4">
+                                    <div className="flex items-start gap-3">
+                                        <span className="mt-0.5 shrink-0 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-700 text-white">
+                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                                <circle cx="12" cy="12" r="10" />
+                                                <line x1="12" y1="16" x2="12" y2="12" />
+                                                <line x1="12" y1="8" x2="12.01" y2="8" />
+                                            </svg>
+                                        </span>
+                                        <p className="text-[13px] leading-relaxed text-neutral-700">
+                                            {availability.configured
+                                                ? `Horário dentro da grade de ${doctorName} (${dayLabel}, ${windowLabel}). Ao confirmar, o paciente receberá um e-mail de confirmação automaticamente.`
+                                                : `${doctorName} ainda não cadastrou uma grade de atendimento, então o horário é livre. Ao confirmar, o paciente receberá um e-mail de confirmação automaticamente.`}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
 
                             {/* Botões rodapé resumo */}
                             <div className="pt-2 space-y-3">
                                 <button
                                     type="button"
                                     onClick={handleSubmit}
-                                    disabled={submitting || loadingOptions}
+                                    disabled={submitting || loadingOptions || !patientId || !doctorId}
                                     className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 px-6 py-4 text-[15px] font-bold text-white shadow-[0_12px_28px_rgba(16,142,93,0.35)] hover:brightness-[1.03] active:brightness-100 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
                                     {submitting ? (
@@ -753,6 +947,37 @@ export default function NewAppointmentPage() {
                                     {doctor?.specialty || "Selecione"}
                                 </span>
                             </div>
+                        </div>
+
+                        {/* Disponibilidade cadastrada do médico */}
+                        <div className="mt-4 rounded-2xl border border-neutral-200/80 bg-neutral-50/70 p-3.5">
+                            <p className="text-[10.5px] font-black uppercase tracking-[0.16em] text-neutral-500 mb-2">
+                                Disponibilidade
+                            </p>
+                            {availability.configured ? (
+                                <div className="space-y-1.5">
+                                    <div className="flex items-start gap-2">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="mt-0.5 shrink-0 text-brand-700">
+                                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                                            <line x1="16" y1="2" x2="16" y2="6" />
+                                            <line x1="8" y1="2" x2="8" y2="6" />
+                                            <line x1="3" y1="10" x2="21" y2="10" />
+                                        </svg>
+                                        <span className="text-[12.5px] font-semibold text-neutral-800">{dayLabel || "—"}</span>
+                                    </div>
+                                    <div className="flex items-start gap-2">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="mt-0.5 shrink-0 text-brand-700">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <polyline points="12 6 12 12 16 14" />
+                                        </svg>
+                                        <span className="text-[12.5px] font-semibold text-neutral-800">{windowLabel}</span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <p className="text-[12.5px] font-semibold text-amber-700">
+                                    Sem grade cadastrada — horários livres.
+                                </p>
+                            )}
                         </div>
                     </aside>
                 </div>
@@ -1079,4 +1304,92 @@ function buildCalendarGrid(viewMonth: Date): CalendarCell[] {
     }
 
     return cells
+}
+
+/* ---------- HELPERS DE DISPONIBILIDADE ---------- */
+
+function timeToMinutes(time: string): number {
+    const [h, m] = time.split(":").map((v) => Number(v))
+    if (Number.isNaN(h) || Number.isNaN(m)) return NaN
+    return h * 60 + m
+}
+
+function minutesToTime(total: number): string {
+    const clamped = Math.max(0, Math.min(total, 24 * 60))
+    return `${pad(Math.floor(clamped / 60))}:${pad(clamped % 60)}`
+}
+
+// Monta as janelas de atendimento a partir dos horários cadastrados do médico
+function windowsOf(profile?: ApiDoctor["doctorProfile"] | null): Window[] {
+    if (!profile) return []
+    const windows: Window[] = []
+
+    const morningStart = profile.startMorning
+    const morningEnd = profile.endMorning
+    if (morningStart && morningEnd && timeToMinutes(morningStart) < timeToMinutes(morningEnd)) {
+        windows.push({ start: morningStart, end: morningEnd })
+    }
+
+    const afternoonStart = profile.startAfternoon
+    const afternoonEnd = profile.endAfternoon
+    if (afternoonStart && afternoonEnd && timeToMinutes(afternoonStart) < timeToMinutes(afternoonEnd)) {
+        windows.push({ start: afternoonStart, end: afternoonEnd })
+    }
+
+    return windows
+}
+
+// O horário + duração cabem inteiramente em uma das janelas?
+function fitsWindows(time: string, windows: Window[], durationMinutes: number): boolean {
+    if (!windows.length) return true
+    const start = timeToMinutes(time)
+    if (Number.isNaN(start)) return false
+    const end = start + durationMinutes
+    return windows.some((w) => {
+        const ws = timeToMinutes(w.start)
+        const we = timeToMinutes(w.end)
+        return !Number.isNaN(ws) && !Number.isNaN(we) && start >= ws && end <= we
+    })
+}
+
+// Gera os horários válidos (passos fixos) que cabem nas janelas informadas
+function slotsFor(windows: Window[], durationMinutes: number): string[] {
+    const result: string[] = []
+    for (const w of windows) {
+        const start = timeToMinutes(w.start)
+        const end = timeToMinutes(w.end)
+        if (Number.isNaN(start) || Number.isNaN(end)) continue
+        for (let t = start; t + durationMinutes <= end; t += SLOT_STEP_MINUTES) {
+            result.push(minutesToTime(t))
+        }
+    }
+    return Array.from(new Set(result)).sort((a, b) => timeToMinutes(a) - timeToMinutes(b))
+}
+
+// Próxima data (ISO) cujo dia da semana esteja na grade do médico
+function nextAvailableDate(iso: string, days: string[]): string {
+    if (!days.length) return iso
+    const cursor = safeParseIso(iso)
+    for (let i = 0; i < 14; i++) {
+        const key = DAY_KEYS[cursor.getDay()]
+        if (days.includes(key)) return toIsoDate(cursor)
+        cursor.setDate(cursor.getDate() + 1)
+    }
+    return iso
+}
+
+// Primeiro dia do mês da data informada
+function monthOf(iso: string): Date {
+    const d = safeParseIso(iso)
+    return new Date(d.getFullYear(), d.getMonth(), 1)
+}
+
+// Slot mais próximo do horário desejado (para quando o horário atual não cabe)
+function nearestSlot(time: string, slots: string[]): string {
+    if (!slots.length) return time
+    const target = timeToMinutes(time)
+    if (Number.isNaN(target)) return slots[0]
+    return slots.reduce((best, slot) => {
+        return Math.abs(timeToMinutes(slot) - target) < Math.abs(timeToMinutes(best) - target) ? slot : best
+    }, slots[0])
 }

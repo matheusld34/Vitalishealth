@@ -9,7 +9,7 @@ export default async function MedicosRoute() {
 
     return (
         <DashboardLayout session={session}>
-            <DoctorsPage />
+            <DoctorsPage userRole={session.user.role} />
         </DashboardLayout>
     )
 }
