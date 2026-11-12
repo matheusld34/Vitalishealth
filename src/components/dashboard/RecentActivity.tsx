@@ -207,10 +207,10 @@ export default function RecentActivity({
     const isEmpty = !loading && visible.length === 0
 
     return (
-        <section className="bg-white rounded-2xl border border-neutral-200/70 shadow-sm p-5 md:p-6">
+        <section className="bg-white rounded-2xl border border-neutral-200/70 shadow-sm p-5 md:p-6 dark:bg-neutral-900 dark:border-neutral-800/80">
             <header className="flex items-center justify-between mb-5 md:mb-6">
                 <div className="flex items-center gap-2">
-                    <h2 className="text-base md:text-lg font-semibold text-neutral-800">
+                    <h2 className="text-base md:text-lg font-semibold text-neutral-800 dark:text-neutral-100">
                         Atividades Recentes
                     </h2>
                     {refreshing && (
@@ -220,14 +220,14 @@ export default function RecentActivity({
                         />
                     )}
                     {!refreshing && error && (
-                        <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase text-amber-700 bg-amber-50 ring-1 ring-amber-700/10">
+                        <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold tracking-wider uppercase text-amber-700 bg-amber-50 ring-1 ring-amber-700/10 dark:bg-amber-500/10 dark:text-amber-300 dark:ring-amber-400/20">
                             offline
                         </span>
                     )}
                 </div>
                 <Link
                     href={moreHref}
-                    className="text-sm font-semibold text-brand-700 hover:text-brand-800 hover:underline"
+                    className="text-sm font-semibold text-brand-700 dark:text-brand-300 hover:text-brand-800 dark:hover:text-brand-200 hover:underline"
                 >
                     Ver tudo
                 </Link>
@@ -241,17 +241,17 @@ export default function RecentActivity({
                 </ul>
             ) : isEmpty ? (
                 <div className="flex flex-col items-center justify-center gap-2 py-10 text-center">
-                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-neutral-100 text-neutral-400">
+                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-500">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <circle cx="12" cy="12" r="9" />
                             <path d="M12 7v5l3 2" />
                         </svg>
                     </span>
-                    <p className="text-sm font-semibold text-neutral-700">Nenhuma atividade registrada ainda</p>
-                    <p className="max-w-xs text-xs text-neutral-500">
+                    <p className="text-sm font-semibold text-neutral-700 dark:text-neutral-200">Nenhuma atividade registrada ainda</p>
+                    <p className="max-w-xs text-xs text-neutral-500 dark:text-neutral-400">
                         Agendamentos, pacientes e médicos aparecerão aqui automaticamente conforme o uso do sistema.
                     </p>
-                    {error && <p className="max-w-xs text-xs text-amber-700">Não foi possível atualizar: {error}</p>}
+                    {error && <p className="max-w-xs text-xs text-amber-700 dark:text-amber-300">Não foi possível atualizar: {error}</p>}
                 </div>
             ) : (
                 <ul className="space-y-1 md:space-y-2">
@@ -260,7 +260,7 @@ export default function RecentActivity({
                         return (
                             <li
                                 key={activity.id}
-                                className="group rounded-xl border border-transparent hover:border-neutral-100 hover:bg-neutral-50 transition-colors"
+                                className="group rounded-xl border border-transparent hover:border-neutral-100 dark:hover:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-800/60 transition-colors"
                             >
                                 <Link href={activity.href} className="block w-full">
                                     <div className="flex items-center gap-4 py-3 md:py-4 px-3 md:px-4">
@@ -272,18 +272,18 @@ export default function RecentActivity({
                                             {iconFor(activity.kind)}
                                         </span>
                                         <div className="min-w-0 flex-1">
-                                            <p className="text-sm md:text-[15px] font-semibold text-neutral-900 truncate">
+                                            <p className="text-sm md:text-[15px] font-semibold text-neutral-900 dark:text-neutral-100 truncate">
                                                 {activity.title}
                                             </p>
-                                            <p className="text-xs md:text-sm text-neutral-600 truncate">
+                                            <p className="text-xs md:text-sm text-neutral-600 dark:text-neutral-400 truncate">
                                                 {activity.description}
                                             </p>
                                         </div>
-                                        <span className="shrink-0 text-xs md:text-sm font-medium text-neutral-400 tabular-nums">
+                                        <span className="shrink-0 text-xs md:text-sm font-medium text-neutral-400 dark:text-neutral-500 tabular-nums">
                                             {formatRelativeOrTime(activity.createdAt)}
                                         </span>
                                     </div>
-                                    {!last && <div className="mx-4 md:mx-5 border-t border-neutral-100" />}
+                                    {!last && <div className="mx-4 md:mx-5 border-t border-neutral-100 dark:border-neutral-800" />}
                                 </Link>
                             </li>
                         )
@@ -292,7 +292,7 @@ export default function RecentActivity({
             )}
 
             {!loading && lastSync && (
-                <p className="mt-4 text-[11px] text-neutral-400">
+                <p className="mt-4 text-[11px] text-neutral-400 dark:text-neutral-500">
                     Atualizado às {pad(lastSync.getHours())}:{pad(lastSync.getMinutes())}
                 </p>
             )}
@@ -304,14 +304,14 @@ function ActivitySkeleton() {
     return (
         <li className="rounded-xl animate-pulse">
             <div className="flex items-center gap-4 py-3 md:py-4 px-3 md:px-4">
-                <div className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-neutral-100" />
+                <div className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-neutral-100 dark:bg-neutral-800" />
                 <div className="min-w-0 flex-1 space-y-2">
-                    <div className="h-4 w-40 rounded-lg bg-neutral-100" />
-                    <div className="h-3 w-56 rounded-lg bg-neutral-100" />
+                    <div className="h-4 w-40 rounded-lg bg-neutral-100 dark:bg-neutral-800" />
+                    <div className="h-3 w-56 rounded-lg bg-neutral-100 dark:bg-neutral-800" />
                 </div>
-                <div className="h-3.5 w-20 rounded-lg bg-neutral-100 shrink-0" />
+                <div className="h-3.5 w-20 rounded-lg bg-neutral-100 dark:bg-neutral-800 shrink-0" />
             </div>
-            <div className="mx-4 md:mx-5 border-t border-neutral-100" />
+            <div className="mx-4 md:mx-5 border-t border-neutral-100 dark:border-neutral-800" />
         </li>
     )
 }

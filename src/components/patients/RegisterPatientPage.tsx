@@ -100,7 +100,7 @@ export default function RegisterPatientPage() {
             {/* Search bar */}
             <div className="mx-auto max-w-md w-full">
                 <div className="relative">
-                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">
+                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <circle cx="11" cy="11" r="8" />
                             <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -109,28 +109,28 @@ export default function RegisterPatientPage() {
                     <input
                         type="search"
                         placeholder="Buscar paciente ou prontuário..."
-                        className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-3 pl-11 pr-4 text-sm placeholder:text-neutral-400 shadow-[0_2px_10px_rgba(15,23,42,0.05)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
+                        className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-3 pl-11 pr-4 text-sm placeholder:text-neutral-400 shadow-[0_2px_10px_rgba(15,23,42,0.05)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition dark:border-neutral-800/80 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500"
                     />
                 </div>
             </div>
 
             {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 text-sm text-neutral-500">
-                <Link href="/dashboard/pacientes" className="hover:text-neutral-800 transition-colors">
+            <nav className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+                <Link href="/dashboard/pacientes" className="hover:text-neutral-800 transition-colors dark:hover:text-neutral-100">
                     Pacientes
                 </Link>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300 dark:text-neutral-600" aria-hidden="true">
                     <polyline points="9 18 15 12 9 6" />
                 </svg>
-                <span className="font-semibold text-brand-700">Registro de Paciente</span>
+                <span className="font-semibold text-brand-700 dark:text-brand-300">Registro de Paciente</span>
             </nav>
 
             {/* Header */}
             <div className="space-y-2 md:space-y-3 max-w-3xl">
-                <h1 className="text-4xl md:text-5xl font-serif font-semibold tracking-tight text-neutral-900">
+                <h1 className="text-4xl md:text-5xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                     Registro de Paciente
                 </h1>
-                <p className="text-[15px] md:text-base text-neutral-600 leading-relaxed">
+                <p className="text-[15px] md:text-base text-neutral-600 leading-relaxed dark:text-neutral-400">
                     Insira as informações detalhadas para cadastrar um novo paciente no sistema da Vitalis Health. Certifique-se de validar os documentos e o convênio.
                 </p>
             </div>
@@ -138,15 +138,15 @@ export default function RegisterPatientPage() {
             {/* Bloco 1: Info Pessoais + Convênio (grid 2 + 1 sidebar) */}
             <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-5 md:gap-7">
                 {/* Informações Pessoais */}
-                <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)]">
+                <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] dark:border-neutral-800/80 dark:bg-neutral-900">
                     <header className="flex items-center gap-2.5 mb-6">
-                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-brand-600/10">
+                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-brand-600/10 dark:bg-brand-500/10 dark:text-brand-300">
                             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                 <circle cx="12" cy="7" r="4" />
                             </svg>
                         </span>
-                        <h2 className="text-xl md:text-[22px] font-serif font-semibold tracking-tight text-neutral-900">
+                        <h2 className="text-xl md:text-[22px] font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                             Informações Pessoais
                         </h2>
                     </header>
@@ -222,17 +222,17 @@ export default function RegisterPatientPage() {
                 </section>
 
                 {/* Convênio Médico - card VERDE destaque */}
-                <aside className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-100/90 via-brand-50 to-emerald-50 border border-brand-300/60 p-5 md:p-6 shadow-[0_10px_32px_-18px_rgba(16,142,93,0.35)]">
-                    <div aria-hidden="true" className="absolute -right-16 -top-20 h-52 w-52 rounded-full bg-emerald-200/40 blur-3xl" />
+                <aside className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-100/90 via-brand-50 to-emerald-50 border border-brand-300/60 p-5 md:p-6 shadow-[0_10px_32px_-18px_rgba(16,142,93,0.35)] dark:from-brand-500/10 dark:via-neutral-900 dark:to-emerald-500/10 dark:border-brand-500/30">
+                    <div aria-hidden="true" className="absolute -right-16 -top-20 h-52 w-52 rounded-full bg-emerald-200/40 blur-3xl dark:bg-emerald-500/10" />
 
                     <header className="flex items-start gap-2.5 relative">
-                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white text-brand-700 ring-1 ring-brand-600/15 shadow-sm">
+                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white text-brand-700 ring-1 ring-brand-600/15 shadow-sm dark:bg-neutral-900 dark:text-brand-300">
                             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                 <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.51 4.04 3 5.5l7 7Z" />
                                 <path d="M9 12h.01M15 12h.01M12 14v-1" />
                             </svg>
                         </span>
-                        <h2 className="text-xl md:text-[22px] font-serif font-semibold tracking-tight text-brand-800">
+                        <h2 className="text-xl md:text-[22px] font-serif font-semibold tracking-tight text-brand-800 dark:text-brand-200">
                             Convênio
                             <br /> Médico
                         </h2>
@@ -245,7 +245,7 @@ export default function RegisterPatientPage() {
                                 value={form.insuranceOperator}
                                 onChange={(e) => update("insuranceOperator", e.target.value)}
                                 placeholder="Ex.: Unimed, Bradesco"
-                                className={`${inputCls} !bg-white`}
+                                className={`${inputCls} !bg-white dark:!bg-neutral-900`}
                             />
                         </Field>
 
@@ -255,7 +255,7 @@ export default function RegisterPatientPage() {
                                 value={form.planType}
                                 onChange={(e) => update("planType", e.target.value)}
                                 placeholder="Ex.: Ouro Nacional"
-                                className={`${inputCls} !bg-white`}
+                                className={`${inputCls} !bg-white dark:!bg-neutral-900`}
                             />
                         </Field>
 
@@ -265,13 +265,13 @@ export default function RegisterPatientPage() {
                                 value={form.cardNumber}
                                 onChange={(e) => update("cardNumber", e.target.value)}
                                 placeholder="0000 0000 0000"
-                                className={`${inputCls} !bg-white`}
+                                className={`${inputCls} !bg-white dark:!bg-neutral-900`}
                             />
                         </Field>
                     </div>
 
-                    <blockquote className="relative mt-6 rounded-2xl bg-white/70 ring-1 ring-brand-600/10 px-4 py-3.5">
-                        <p className="text-[12.5px] leading-relaxed text-brand-900/85 italic">
+                    <blockquote className="relative mt-6 rounded-2xl bg-white/70 ring-1 ring-brand-600/10 px-4 py-3.5 dark:bg-neutral-900/60 dark:ring-brand-500/20">
+                        <p className="text-[12.5px] leading-relaxed text-brand-900/85 italic dark:text-brand-200/90">
                             “Sempre verifique a validade do plano antes do atendimento presencial.”
                         </p>
                     </blockquote>
@@ -281,15 +281,15 @@ export default function RegisterPatientPage() {
             {/* Bloco 2: Endereço + Status Clínico (grid 1fr 1fr) */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 md:gap-7">
                 {/* Endereço */}
-                <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)]">
+                <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] dark:border-neutral-800/80 dark:bg-neutral-900">
                     <header className="flex items-center gap-2.5 mb-6">
-                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/10">
+                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/10 dark:bg-emerald-500/10 dark:text-emerald-300">
                             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                                 <circle cx="12" cy="10" r="3" />
                             </svg>
                         </span>
-                        <h2 className="text-xl md:text-[22px] font-serif font-semibold tracking-tight text-neutral-900">
+                        <h2 className="text-xl md:text-[22px] font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                             Endereço
                         </h2>
                     </header>
@@ -308,7 +308,7 @@ export default function RegisterPatientPage() {
                             <div className="h-[50px] md:h-[50px]">
                                 <button
                                     type="button"
-                                    className="h-full inline-flex items-center justify-center rounded-xl bg-brand-100 hover:bg-brand-200/80 text-brand-800 font-semibold px-5 py-3 ring-1 ring-brand-600/10 transition-colors"
+                                    className="h-full inline-flex items-center justify-center rounded-xl bg-brand-100 hover:bg-brand-200/80 text-brand-800 font-semibold px-5 py-3 ring-1 ring-brand-600/10 transition-colors dark:bg-brand-500/10 dark:hover:bg-brand-500/20 dark:text-brand-300"
                                 >
                                     Buscar
                                 </button>
@@ -363,9 +363,9 @@ export default function RegisterPatientPage() {
                 </section>
 
                 {/* Status Clínico */}
-                <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)]">
+                <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] dark:border-neutral-800/80 dark:bg-neutral-900">
                     <header className="flex items-center gap-2.5 mb-6">
-                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-green-50 text-green-700 ring-1 ring-green-600/10">
+                        <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-green-50 text-green-700 ring-1 ring-green-600/10 dark:bg-green-500/10 dark:text-green-300">
                             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                                 <polyline points="14 2 14 8 20 8" />
@@ -374,13 +374,13 @@ export default function RegisterPatientPage() {
                                 <polyline points="10 9 9 9 8 9" />
                             </svg>
                         </span>
-                        <h2 className="text-xl md:text-[22px] font-serif font-semibold tracking-tight text-neutral-900">
+                        <h2 className="text-xl md:text-[22px] font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                             Status Clínico
                         </h2>
                     </header>
 
                     <div>
-                        <label className="block text-sm font-semibold text-neutral-700 mb-2">
+                        <label className="block text-sm font-semibold text-neutral-700 mb-2 dark:text-neutral-200">
                             Breve relatório da situação atual
                         </label>
                         <textarea
@@ -388,9 +388,9 @@ export default function RegisterPatientPage() {
                             onChange={(e) => update("clinicalStatus", e.target.value)}
                             rows={9}
                             placeholder="Descreva os principais sintomas, histórico recente ou observações relevantes do paciente..."
-                            className="w-full resize-none rounded-2xl border border-neutral-200/80 bg-neutral-50/80 px-4 py-3.5 text-[14.5px] text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/70 transition min-h-[220px]"
+                            className="w-full resize-none rounded-2xl border border-neutral-200/80 bg-neutral-50/80 px-4 py-3.5 text-[14.5px] text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/70 transition min-h-[220px] dark:border-neutral-800/80 dark:bg-neutral-900/60 dark:text-neutral-100 dark:placeholder:text-neutral-500"
                         />
-                        <p className="mt-2 text-right text-[11.5px] text-neutral-400">
+                        <p className="mt-2 text-right text-[11.5px] text-neutral-400 dark:text-neutral-500">
                             Mínimo de 50 caracteres recomendado para a primeira triagem.
                         </p>
                     </div>
@@ -398,7 +398,7 @@ export default function RegisterPatientPage() {
             </div>
 
             {/* Bloco 3: Anexos de Exames (full width dropzone) */}
-            <section className="rounded-3xl border-2 border-dashed border-neutral-300/90 bg-white/40 p-5 md:p-7">
+            <section className="rounded-3xl border-2 border-dashed border-neutral-300/90 bg-white/40 p-5 md:p-7 dark:border-neutral-700 dark:bg-neutral-900/40">
                 <div className="flex flex-col md:flex-row md:items-start gap-6 md:gap-10">
                     <div className="max-w-md">
                         <header className="flex items-center gap-2.5 mb-3">
@@ -407,11 +407,11 @@ export default function RegisterPatientPage() {
                                     <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                                 </svg>
                             </span>
-                            <h2 className="text-xl md:text-[22px] font-serif font-semibold tracking-tight text-neutral-900">
+                            <h2 className="text-xl md:text-[22px] font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                                 Anexos de Exames
                             </h2>
                         </header>
-                        <p className="text-[14.5px] text-neutral-600 leading-relaxed">
+                        <p className="text-[14.5px] text-neutral-600 leading-relaxed dark:text-neutral-400">
                             Arraste e solte arquivos aqui para anexar resultados laboratoriais, Raios-X ou históricos médicos anteriores.
                         </p>
                     </div>
@@ -421,9 +421,9 @@ export default function RegisterPatientPage() {
                         <Thumb title="Rx-Torax.png" subtitle="PNG" image />
                         <button
                             type="button"
-                            className="aspect-square rounded-2xl border-2 border-dashed border-neutral-300/90 hover:border-brand-400/80 hover:bg-brand-50/50 transition-colors p-3 md:p-4 flex flex-col items-center justify-center gap-2 text-neutral-500 hover:text-brand-700"
+                            className="aspect-square rounded-2xl border-2 border-dashed border-neutral-300/90 hover:border-brand-400/80 hover:bg-brand-50/50 transition-colors p-3 md:p-4 flex flex-col items-center justify-center gap-2 text-neutral-500 hover:text-brand-700 dark:border-neutral-700 dark:hover:border-brand-400/80 dark:hover:bg-brand-500/10 dark:text-neutral-400 dark:hover:text-brand-300"
                         >
-                            <span className="relative inline-flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-xl bg-white ring-1 ring-neutral-200/90">
+                            <span className="relative inline-flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-xl bg-white ring-1 ring-neutral-200/90 dark:bg-neutral-900 dark:ring-neutral-800/90">
                                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                                     <circle cx="12" cy="13" r="4" />
@@ -437,9 +437,9 @@ export default function RegisterPatientPage() {
                         </button>
                         <button
                             type="button"
-                            className="aspect-square rounded-2xl border-2 border-dashed border-neutral-300/90 hover:border-brand-400/80 hover:bg-brand-50/50 transition-colors p-3 md:p-4 flex flex-col items-center justify-center gap-2 text-neutral-500 hover:text-brand-700"
+                            className="aspect-square rounded-2xl border-2 border-dashed border-neutral-300/90 hover:border-brand-400/80 hover:bg-brand-50/50 transition-colors p-3 md:p-4 flex flex-col items-center justify-center gap-2 text-neutral-500 hover:text-brand-700 dark:border-neutral-700 dark:hover:border-brand-400/80 dark:hover:bg-brand-500/10 dark:text-neutral-400 dark:hover:text-brand-300"
                         >
-                            <span className="relative inline-flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-xl bg-white ring-1 ring-neutral-200/90">
+                            <span className="relative inline-flex h-10 w-10 md:h-11 md:w-11 items-center justify-center rounded-xl bg-white ring-1 ring-neutral-200/90 dark:bg-neutral-900 dark:ring-neutral-800/90">
                                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                                     <polyline points="17 8 12 3 7 8" />
@@ -455,10 +455,10 @@ export default function RegisterPatientPage() {
             </section>
 
             {/* Divisória fina + rodapé com ações */}
-            <div className="h-px w-full bg-neutral-200/70 mt-4" />
+            <div className="h-px w-full bg-neutral-200/70 mt-4 dark:bg-neutral-800/70" />
 
             {apiError && (
-                <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-[14px] font-semibold text-red-700 ring-1 ring-red-500/10">
+                <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-[14px] font-semibold text-red-700 ring-1 ring-red-500/10 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300 dark:ring-red-500/20">
                     {apiError}
                 </div>
             )}
@@ -466,7 +466,7 @@ export default function RegisterPatientPage() {
             <footer className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4 mt-4">
                 <Link
                     href="/dashboard/pacientes"
-                    className="inline-flex items-center justify-center sm:justify-start text-sm font-semibold text-neutral-600 hover:text-neutral-900 transition-colors px-3 py-2.5 -mx-3"
+                    className="inline-flex items-center justify-center sm:justify-start text-sm font-semibold text-neutral-600 hover:text-neutral-900 transition-colors px-3 py-2.5 -mx-3 dark:text-neutral-400 dark:hover:text-neutral-100"
                 >
                     Cancelar Registro
                 </Link>
@@ -497,7 +497,7 @@ export default function RegisterPatientPage() {
 }
 
 const inputCls =
-    "w-full rounded-2xl border border-neutral-200/80 bg-neutral-50/80 px-4 py-3 text-[14.5px] text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/70 focus:bg-white transition"
+    "w-full rounded-2xl border border-neutral-200/80 bg-neutral-50/80 px-4 py-3 text-[14.5px] text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/70 focus:bg-white transition dark:border-neutral-800/80 dark:bg-neutral-900/60 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:bg-neutral-900"
 
 function Field({
     label,
@@ -510,10 +510,10 @@ function Field({
 }) {
     return (
         <label className="block relative">
-            <span className="block text-sm font-semibold text-neutral-700 mb-1.5 flex items-baseline justify-between gap-2">
+            <span className="block text-sm font-semibold text-neutral-700 mb-1.5 flex items-baseline justify-between gap-2 dark:text-neutral-200">
                 <span>{label}</span>
                 {hint ? (
-                    <span className="font-normal text-[11.5px] text-neutral-400">{hint}</span>
+                    <span className="font-normal text-[11.5px] text-neutral-400 dark:text-neutral-500">{hint}</span>
                 ) : null}
             </span>
             {children}
@@ -523,7 +523,7 @@ function Field({
 
 function CalendarIcon() {
     return (
-        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400">
+        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <rect x="3" y="4" width="18" height="18" rx="2" />
                 <line x1="16" y1="2" x2="16" y2="6" />
@@ -536,8 +536,8 @@ function CalendarIcon() {
 
 function Thumb({ title, subtitle, image }: { title: string; subtitle: string; image?: boolean }) {
     return (
-        <div className="aspect-square relative rounded-2xl bg-white border border-neutral-200/80 shadow-[0_4px_16px_-14px_rgba(15,23,42,0.2)] overflow-hidden">
-            <div className={`absolute inset-0 flex items-center justify-center text-2xl ${image ? "bg-gradient-to-br from-slate-200 via-neutral-100 to-slate-300" : "bg-gradient-to-br from-emerald-50 to-neutral-100"}`}>
+        <div className="aspect-square relative rounded-2xl bg-white border border-neutral-200/80 shadow-[0_4px_16px_-14px_rgba(15,23,42,0.2)] overflow-hidden dark:bg-neutral-900 dark:border-neutral-800/80">
+            <div className={`absolute inset-0 flex items-center justify-center text-2xl ${image ? "bg-gradient-to-br from-slate-200 via-neutral-100 to-slate-300 dark:from-slate-700 dark:via-neutral-800 dark:to-slate-700" : "bg-gradient-to-br from-emerald-50 to-neutral-100 dark:from-emerald-500/10 dark:to-neutral-800"}`}>
                 {image ? (
                     <div className="relative w-full h-full opacity-70">
                         <div className="absolute inset-0 flex items-center justify-center">

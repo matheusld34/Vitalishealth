@@ -6,6 +6,7 @@ import type { Session } from "next-auth"
 import { signOut } from "next-auth/react"
 import Link from "next/link"
 import logoImage from "@/app/assets/images/logo.png"
+import { useTheme } from "@/components/theme/ThemeProvider"
 
 type Props = {
     session: Session
@@ -17,6 +18,7 @@ export default function Header({ session, onToggleSidebar }: Props) {
     const [avatarError, setAvatarError] = useState(false)
     const menuRef = useRef<HTMLDivElement | null>(null)
     const menuButtonRef = useRef<HTMLDivElement | null>(null)
+    const { isDark, toggle } = useTheme()
 
     const initials = (session.user.name ?? "VU")
         .split(" ")
@@ -60,14 +62,14 @@ export default function Header({ session, onToggleSidebar }: Props) {
     }
 
     return (
-        <header className="sticky top-0 z-50 h-16 md:h-20 border-b border-neutral-200/70 bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/70 shadow-[0_1px_0_rgba(0,0,0,0.02)]">
+        <header className="sticky top-0 z-50 h-16 md:h-20 border-b border-neutral-200/70 dark:border-neutral-800/80 bg-white/80 dark:bg-neutral-950/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/70 supports-[backdrop-filter]:dark:bg-neutral-950/70 shadow-[0_1px_0_rgba(0,0,0,0.02)] transition-colors duration-300">
             <div className="h-full max-w-[1600px] mx-auto px-4 md:px-8 flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3 md:gap-4">
                     <button
                         type="button"
                         aria-label="Abrir menu"
                         onClick={onToggleSidebar}
-                        className="md:hidden h-10 w-10 inline-flex items-center justify-center rounded-xl border border-neutral-200/80 text-neutral-700 bg-white hover:bg-neutral-50 hover:border-neutral-300 hover:shadow-sm transition-all duration-200"
+                        className="md:hidden h-10 w-10 inline-flex items-center justify-center rounded-xl border border-neutral-200/80 dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-600 hover:shadow-sm transition-all duration-200"
                     >
                         <svg
                             width="20"
@@ -98,10 +100,10 @@ export default function Header({ session, onToggleSidebar }: Props) {
                             />
                         </span>
                         <div className="min-w-0 leading-tight">
-                            <span className="block text-brand-800 font-serif font-semibold text-[19px] md:text-[22px] tracking-tight truncate">
+                            <span className="block text-brand-800 dark:text-brand-100 font-serif font-semibold text-[19px] md:text-[22px] tracking-tight truncate">
                                 Vitalis Health
                             </span>
-                            <span className="hidden md:block text-[11px] font-medium tracking-[0.18em] text-brand-600/80 uppercase">
+                            <span className="hidden md:block text-[11px] font-medium tracking-[0.18em] text-brand-600/80 dark:text-brand-400/80 uppercase">
                                 Clínica & Gestão
                             </span>
                         </div>
@@ -111,8 +113,49 @@ export default function Header({ session, onToggleSidebar }: Props) {
                 <div className="flex items-center gap-2 md:gap-3">
                     <button
                         type="button"
+                        onClick={toggle}
+                        aria-pressed={isDark}
+                        aria-label={isDark ? "Ativar tema claro" : "Ativar tema escuro"}
+                        title={isDark ? "Tema claro" : "Tema escuro"}
+                        className="relative h-10 w-10 inline-flex items-center justify-center rounded-xl border border-transparent text-neutral-600 dark:text-neutral-300 bg-neutral-50/60 dark:bg-neutral-900/60 hover:bg-white dark:hover:bg-neutral-800 hover:border-neutral-200 dark:hover:border-neutral-700 hover:text-brand-700 dark:hover:text-brand-300 hover:shadow-sm transition-all duration-200"
+                    >
+                        <span className="relative inline-flex h-[19px] w-[19px] items-center justify-center">
+                            <svg
+                                width="19"
+                                height="19"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                aria-hidden="true"
+                                className={`absolute transition-all duration-300 ${isDark ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-50 opacity-0"}`}
+                            >
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                            </svg>
+                            <svg
+                                width="19"
+                                height="19"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                aria-hidden="true"
+                                className={`absolute transition-all duration-300 ${isDark ? "rotate-90 scale-50 opacity-0" : "rotate-0 scale-100 opacity-100"}`}
+                            >
+                                <circle cx="12" cy="12" r="4" />
+                                <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+                            </svg>
+                        </span>
+                    </button>
+
+                    <button
+                        type="button"
                         aria-label="Notificações"
-                        className="relative h-10 w-10 inline-flex items-center justify-center rounded-xl border border-transparent text-neutral-600 bg-neutral-50/60 hover:bg-white hover:border-neutral-200 hover:text-brand-700 hover:shadow-sm transition-all duration-200"
+                        className="relative h-10 w-10 inline-flex items-center justify-center rounded-xl border border-transparent text-neutral-600 dark:text-neutral-300 bg-neutral-50/60 dark:bg-neutral-900/60 hover:bg-white dark:hover:bg-neutral-800 hover:border-neutral-200 dark:hover:border-neutral-700 hover:text-brand-700 dark:hover:text-brand-300 hover:shadow-sm transition-all duration-200"
                     >
                         <svg
                             width="19"
@@ -128,13 +171,13 @@ export default function Header({ session, onToggleSidebar }: Props) {
                             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                             <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                         </svg>
-                        <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white shadow-[0_0_0_1px_rgba(239,68,68,0.3)]" />
+                        <span className="absolute top-2 right-2.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-neutral-950 shadow-[0_0_0_1px_rgba(239,68,68,0.3)]" />
                     </button>
 
                     <button
                         type="button"
                         aria-label="Configurações"
-                        className="relative h-10 w-10 inline-flex items-center justify-center rounded-xl border border-transparent text-neutral-600 bg-neutral-50/60 hover:bg-white hover:border-neutral-200 hover:text-brand-700 hover:shadow-sm transition-all duration-200"
+                        className="relative h-10 w-10 inline-flex items-center justify-center rounded-xl border border-transparent text-neutral-600 dark:text-neutral-300 bg-neutral-50/60 dark:bg-neutral-900/60 hover:bg-white dark:hover:bg-neutral-800 hover:border-neutral-200 dark:hover:border-neutral-700 hover:text-brand-700 dark:hover:text-brand-300 hover:shadow-sm transition-all duration-200"
                     >
                         <svg
                             width="19"
@@ -152,7 +195,7 @@ export default function Header({ session, onToggleSidebar }: Props) {
                         </svg>
                     </button>
 
-                    <div className="mx-1 h-8 w-px bg-neutral-200/80 hidden md:block" aria-hidden="true" />
+                    <div className="mx-1 h-8 w-px bg-neutral-200/80 dark:bg-neutral-800 hidden md:block" aria-hidden="true" />
 
                     <div ref={menuButtonRef} className="relative">
                         <button
@@ -162,20 +205,20 @@ export default function Header({ session, onToggleSidebar }: Props) {
                             aria-expanded={menuOpen}
                             aria-label="Abrir menu do usuário"
                             className={`group flex items-center gap-2 md:gap-3 pl-1.5 pr-3 md:pl-2 md:pr-4 py-1.5 rounded-full border transition-all duration-200 ${menuOpen
-                                    ? "bg-brand-50 border-brand-200 shadow-[0_4px_14px_rgba(16,142,93,0.12)]"
-                                    : "bg-white border-neutral-200/80 hover:border-brand-200/80 hover:bg-brand-50/40 hover:shadow-[0_4px_14px_rgba(16,142,93,0.08)]"
+                                ? "bg-brand-50 dark:bg-brand-500/15 border-brand-200 dark:border-brand-700/50 shadow-[0_4px_14px_rgba(16,142,93,0.12)]"
+                                : "bg-white dark:bg-neutral-900 border-neutral-200/80 dark:border-neutral-700 hover:border-brand-200/80 dark:hover:border-brand-700/60 hover:bg-brand-50/40 dark:hover:bg-brand-500/10 hover:shadow-[0_4px_14px_rgba(16,142,93,0.08)]"
                                 }`}
                         >
                             <div className="hidden sm:flex flex-col items-end leading-tight">
-                                <span className="text-sm font-semibold text-neutral-800 truncate max-w-[150px]">
+                                <span className="text-sm font-semibold text-neutral-800 dark:text-neutral-100 truncate max-w-[150px]">
                                     {session.user.name ?? "Usuário"}
                                 </span>
-                                <span className="text-[11px] font-medium text-brand-700/80 uppercase tracking-wide">
+                                <span className="text-[11px] font-medium text-brand-700/80 dark:text-brand-300/80 uppercase tracking-wide">
                                     {roleLabel(session.user.role)}
                                 </span>
                             </div>
 
-                            <div className="relative h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 ring-2 ring-white shadow-[0_4px_14px_rgba(16,142,93,0.22)] overflow-hidden flex items-center justify-center transition-transform duration-200 group-hover:scale-[1.03]">
+                            <div className="relative h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 ring-2 ring-white dark:ring-neutral-900 shadow-[0_4px_14px_rgba(16,142,93,0.22)] overflow-hidden flex items-center justify-center transition-transform duration-200 group-hover:scale-[1.03]">
                                 {profileImage ? (
                                     <Image
                                         src={profileImage}
@@ -206,7 +249,7 @@ export default function Header({ session, onToggleSidebar }: Props) {
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                                 aria-hidden="true"
-                                className={`hidden md:block text-neutral-400 transition-transform duration-200 ${menuOpen ? "rotate-180 text-brand-700" : ""
+                                className={`hidden md:block text-neutral-400 dark:text-neutral-500 transition-transform duration-200 ${menuOpen ? "rotate-180 text-brand-700 dark:text-brand-300" : ""
                                     }`}
                             >
                                 <polyline points="6 9 12 15 18 9" />
@@ -217,11 +260,11 @@ export default function Header({ session, onToggleSidebar }: Props) {
                             <div
                                 ref={menuRef}
                                 role="menu"
-                                className="absolute right-0 mt-3 w-[300px] origin-top-right rounded-2xl border border-neutral-200/80 bg-white shadow-[0_20px_60px_-15px_rgba(15,23,42,0.18)] ring-1 ring-black/[0.03] focus:outline-none animate-[fadeIn_0.15s_ease-out,slideDown_0.18s_ease-out]"
+                                className="absolute right-0 mt-3 w-[300px] origin-top-right rounded-2xl border border-neutral-200/80 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-[0_20px_60px_-15px_rgba(15,23,42,0.18)] dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.75)] ring-1 ring-black/[0.03] dark:ring-white/[0.04] focus:outline-none animate-[fadeIn_0.15s_ease-out,slideDown_0.18s_ease-out]"
                                 style={{ animationFillMode: "both" }}
                             >
-                                <div className="px-4 py-4 border-b border-neutral-100 flex items-center gap-3">
-                                    <div className="relative h-12 w-12 shrink-0 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 ring-2 ring-white shadow-md overflow-hidden flex items-center justify-center">
+                                <div className="px-4 py-4 border-b border-neutral-100 dark:border-neutral-800 flex items-center gap-3">
+                                    <div className="relative h-12 w-12 shrink-0 rounded-full bg-gradient-to-br from-brand-500 to-brand-700 ring-2 ring-white dark:ring-neutral-800 shadow-md overflow-hidden flex items-center justify-center">
                                         {profileImage ? (
                                             <Image
                                                 src={profileImage}
@@ -239,13 +282,13 @@ export default function Header({ session, onToggleSidebar }: Props) {
                                         )}
                                     </div>
                                     <div className="min-w-0 leading-tight">
-                                        <p className="text-sm font-semibold text-neutral-900 truncate">
+                                        <p className="text-sm font-semibold text-neutral-900 dark:text-neutral-100 truncate">
                                             {session.user.name ?? "Usuário"}
                                         </p>
-                                        <p className="text-xs text-neutral-500 truncate">
+                                        <p className="text-xs text-neutral-500 dark:text-neutral-400 truncate">
                                             {session.user.email ?? ""}
                                         </p>
-                                        <p className="mt-1 inline-flex items-center px-2 py-0.5 rounded-full bg-brand-50 text-[10px] font-semibold tracking-wide text-brand-700 uppercase">
+                                        <p className="mt-1 inline-flex items-center px-2 py-0.5 rounded-full bg-brand-50 dark:bg-brand-500/15 text-[10px] font-semibold tracking-wide text-brand-700 dark:text-brand-300 uppercase">
                                             {roleLabel(session.user.role)}
                                         </p>
                                     </div>
@@ -256,9 +299,9 @@ export default function Header({ session, onToggleSidebar }: Props) {
                                         href="/dashboard/perfil"
                                         onClick={() => setMenuOpen(false)}
                                         role="menuitem"
-                                        className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 transition-colors"
+                                        className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors"
                                     >
-                                        <span className="h-8 w-8 inline-flex items-center justify-center rounded-lg bg-brand-50 text-brand-600">
+                                        <span className="h-8 w-8 inline-flex items-center justify-center rounded-lg bg-brand-50 dark:bg-brand-500/15 text-brand-600 dark:text-brand-300">
                                             <svg
                                                 width="17"
                                                 height="17"
@@ -276,7 +319,7 @@ export default function Header({ session, onToggleSidebar }: Props) {
                                         </span>
                                         <div className="flex-1 leading-tight">
                                             <span className="block font-medium">Meu perfil</span>
-                                            <span className="block text-[11px] text-neutral-500">
+                                            <span className="block text-[11px] text-neutral-500 dark:text-neutral-400">
                                                 Visualizar e editar dados
                                             </span>
                                         </div>
@@ -286,9 +329,9 @@ export default function Header({ session, onToggleSidebar }: Props) {
                                         href="/dashboard/configuracoes"
                                         onClick={() => setMenuOpen(false)}
                                         role="menuitem"
-                                        className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-neutral-700 hover:bg-neutral-50 hover:text-neutral-900 transition-colors"
+                                        className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors"
                                     >
-                                        <span className="h-8 w-8 inline-flex items-center justify-center rounded-lg bg-neutral-100 text-neutral-600">
+                                        <span className="h-8 w-8 inline-flex items-center justify-center rounded-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
                                             <svg
                                                 width="17"
                                                 height="17"
@@ -306,21 +349,21 @@ export default function Header({ session, onToggleSidebar }: Props) {
                                         </span>
                                         <div className="flex-1 leading-tight">
                                             <span className="block font-medium">Configurações</span>
-                                            <span className="block text-[11px] text-neutral-500">
+                                            <span className="block text-[11px] text-neutral-500 dark:text-neutral-400">
                                                 Preferências da conta
                                             </span>
                                         </div>
                                     </Link>
                                 </div>
 
-                                <div className="border-t border-neutral-100 py-1.5 px-2 mb-1">
+                                <div className="border-t border-neutral-100 dark:border-neutral-800 py-1.5 px-2 mb-1">
                                     <button
                                         type="button"
                                         onClick={handleSignOut}
                                         role="menuitem"
-                                        className="w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
+                                        className="w-full flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
                                     >
-                                        <span className="h-8 w-8 inline-flex items-center justify-center rounded-lg bg-red-50 text-red-500">
+                                        <span className="h-8 w-8 inline-flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-500/10 text-red-500 dark:text-red-400">
                                             <svg
                                                 width="17"
                                                 height="17"

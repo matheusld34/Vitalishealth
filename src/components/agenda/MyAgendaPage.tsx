@@ -51,39 +51,39 @@ const POLL_MS = 15000
 const STATUS_META: Record<string, { label: string; className: string; dot: string }> = {
     SCHEDULED: {
         label: "Pendente",
-        className: "bg-amber-50 text-amber-700 border-amber-200/70",
+        className: "bg-amber-50 text-amber-700 border-amber-200/70 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/20",
         dot: "bg-amber-500",
     },
     CONFIRMED: {
         label: "Confirmado",
-        className: "bg-sky-50 text-sky-700 border-sky-200/70",
+        className: "bg-sky-50 text-sky-700 border-sky-200/70 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/20",
         dot: "bg-sky-500",
     },
     URGENTE: {
         label: "Urgente",
-        className: "bg-rose-50 text-rose-700 border-rose-200/70",
+        className: "bg-rose-50 text-rose-700 border-rose-200/70 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/20",
         dot: "bg-rose-500",
     },
     COMPLETED: {
         label: "Realizada",
-        className: "bg-emerald-50 text-emerald-700 border-emerald-200/70",
+        className: "bg-emerald-50 text-emerald-700 border-emerald-200/70 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20",
         dot: "bg-emerald-500",
     },
     CANCELED: {
         label: "Cancelada",
-        className: "bg-neutral-100 text-neutral-600 border-neutral-200",
+        className: "bg-neutral-100 text-neutral-600 border-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-800",
         dot: "bg-neutral-400",
     },
     NO_SHOW: {
         label: "Paciente faltou",
-        className: "bg-orange-50 text-orange-700 border-orange-200/70",
+        className: "bg-orange-50 text-orange-700 border-orange-200/70 dark:bg-orange-500/10 dark:text-orange-300 dark:border-orange-500/20",
         dot: "bg-orange-500",
     },
 }
 
 const FALLBACK_STATUS = {
     label: "Agendada",
-    className: "bg-neutral-100 text-neutral-600 border-neutral-200",
+    className: "bg-neutral-100 text-neutral-600 border-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-800",
     dot: "bg-neutral-400",
 }
 
@@ -380,16 +380,14 @@ export default function MyAgendaPage({ userId, userRole, userName }: Props) {
 
                     <div className="flex flex-col items-end gap-2">
                         <span
-                            className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-semibold ring-1 ${
-                                offline
-                                    ? "bg-rose-400/20 ring-rose-200/40 text-rose-50"
-                                    : "bg-white/12 ring-white/20 text-white/90"
-                            }`}
+                            className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[11px] font-semibold ring-1 ${offline
+                                ? "bg-rose-400/20 ring-rose-200/40 text-rose-50"
+                                : "bg-white/12 ring-white/20 text-white/90"
+                                }`}
                         >
                             <span
-                                className={`h-1.5 w-1.5 rounded-full ${
-                                    offline ? "bg-rose-300" : "bg-emerald-300 animate-pulse"
-                                }`}
+                                className={`h-1.5 w-1.5 rounded-full ${offline ? "bg-rose-300" : "bg-emerald-300 animate-pulse"
+                                    }`}
                             />
                             {offline ? "Sem conexão" : "Sincronizado"}
                         </span>
@@ -428,7 +426,7 @@ export default function MyAgendaPage({ userId, userRole, userName }: Props) {
 
             {/* Abas + filtro */}
             <section className="flex flex-wrap items-center justify-between gap-3">
-                <div className="inline-flex rounded-2xl border border-neutral-200/80 bg-white p-1 shadow-[0_2px_10px_rgba(15,23,42,0.04)]">
+                <div className="inline-flex rounded-2xl border border-neutral-200/80 bg-white p-1 shadow-[0_2px_10px_rgba(15,23,42,0.04)] dark:border-neutral-800 dark:bg-neutral-900">
                     {tabs.map((entry) => {
                         const active = entry.key === tab
                         return (
@@ -436,17 +434,15 @@ export default function MyAgendaPage({ userId, userRole, userName }: Props) {
                                 key={entry.key}
                                 type="button"
                                 onClick={() => setTab(entry.key)}
-                                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all ${
-                                    active
-                                        ? "bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-[0_6px_16px_rgba(16,142,93,0.22)]"
-                                        : "text-neutral-600 hover:text-neutral-900"
-                                }`}
+                                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all ${active
+                                    ? "bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-[0_6px_16px_rgba(16,142,93,0.22)]"
+                                    : "text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+                                    }`}
                             >
                                 {entry.label}
                                 <span
-                                    className={`rounded-full px-1.5 py-0.5 text-[10.5px] font-bold ${
-                                        active ? "bg-white/20 text-white" : "bg-neutral-100 text-neutral-500"
-                                    }`}
+                                    className={`rounded-full px-1.5 py-0.5 text-[10.5px] font-bold ${active ? "bg-white/20 text-white" : "bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400"
+                                        }`}
                                 >
                                     {entry.count}
                                 </span>
@@ -457,14 +453,14 @@ export default function MyAgendaPage({ userId, userRole, userName }: Props) {
 
                 {isMaster && doctors.length > 0 && (
                     <div className="flex items-center gap-2">
-                        <label htmlFor="doctorFilter" className="text-xs font-semibold text-neutral-500">
+                        <label htmlFor="doctorFilter" className="text-xs font-semibold text-neutral-500 dark:text-neutral-400">
                             Médico
                         </label>
                         <select
                             id="doctorFilter"
                             value={doctorFilter}
                             onChange={(event) => setDoctorFilter(event.target.value)}
-                            className="rounded-xl border border-neutral-200/80 bg-white px-3.5 py-2.5 text-sm text-neutral-700 shadow-[0_2px_10px_rgba(15,23,42,0.04)] focus:border-brand-400/60 focus:outline-none focus:ring-2 focus:ring-brand-500/25"
+                            className="rounded-xl border border-neutral-200/80 bg-white px-3.5 py-2.5 text-sm text-neutral-700 shadow-[0_2px_10px_rgba(15,23,42,0.04)] focus:border-brand-400/60 focus:outline-none focus:ring-2 focus:ring-brand-500/25 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200"
                         >
                             <option value="">Todos os médicos</option>
                             {doctors.map((doc) => (
@@ -478,12 +474,12 @@ export default function MyAgendaPage({ userId, userRole, userName }: Props) {
             </section>
 
             {actionError && (
-                <div className="flex items-start justify-between gap-3 rounded-2xl border border-rose-200/70 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                <div className="flex items-start justify-between gap-3 rounded-2xl border border-rose-200/70 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-500/20 dark:bg-rose-500/10 dark:text-rose-300">
                     <span>{actionError}</span>
                     <button
                         type="button"
                         onClick={() => setActionError(null)}
-                        className="text-xs font-semibold text-rose-600 hover:text-rose-800"
+                        className="text-xs font-semibold text-rose-600 hover:text-rose-800 dark:text-rose-400 dark:hover:text-rose-200"
                     >
                         Fechar
                     </button>
@@ -508,15 +504,15 @@ export default function MyAgendaPage({ userId, userRole, userName }: Props) {
                         return (
                             <article
                                 key={item.id}
-                                className="group relative overflow-hidden rounded-2xl border border-neutral-200/70 bg-white p-4 shadow-[0_2px_10px_rgba(15,23,42,0.04)] transition-all duration-200 hover:border-brand-200 hover:shadow-[0_12px_32px_-16px_rgba(15,23,42,0.22)] md:p-5"
+                                className="group relative overflow-hidden rounded-2xl border border-neutral-200/70 bg-white p-4 shadow-[0_2px_10px_rgba(15,23,42,0.04)] transition-all duration-200 hover:border-brand-200 hover:shadow-[0_12px_32px_-16px_rgba(15,23,42,0.22)] md:p-5 dark:border-neutral-800/80 dark:bg-neutral-900 dark:hover:border-brand-500/40"
                             >
                                 <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
                                     {/* Horário */}
                                     <div className="flex items-center gap-3 lg:w-28 lg:shrink-0 lg:flex-col lg:items-start lg:gap-1">
-                                        <span className="text-2xl font-bold tabular-nums text-neutral-900">
+                                        <span className="text-2xl font-bold tabular-nums text-neutral-900 dark:text-neutral-100">
                                             {item.time}
                                         </span>
-                                        <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-[11px] font-semibold text-neutral-500">
+                                        <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-[11px] font-semibold text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
                                             {item.duration} min
                                         </span>
                                     </div>
@@ -531,18 +527,18 @@ export default function MyAgendaPage({ userId, userRole, userName }: Props) {
                                             {item.patientInitials}
                                         </span>
                                         <div className="min-w-0">
-                                            <p className="truncate text-[15px] font-semibold text-neutral-900">
+                                            <p className="truncate text-[15px] font-semibold text-neutral-900 dark:text-neutral-100">
                                                 {item.patientName}
                                             </p>
-                                            <p className="truncate text-xs text-neutral-500">
+                                            <p className="truncate text-xs text-neutral-500 dark:text-neutral-400">
                                                 {item.specialty} · {item.insurance}
                                             </p>
                                             {isMaster && (
-                                                <p className="truncate text-xs text-neutral-400">
+                                                <p className="truncate text-xs text-neutral-400 dark:text-neutral-500">
                                                     Dr(a). {item.doctorName}
                                                 </p>
                                             )}
-                                            <p className="mt-0.5 text-[11px] font-medium text-neutral-400 lg:hidden">
+                                            <p className="mt-0.5 text-[11px] font-medium text-neutral-400 lg:hidden dark:text-neutral-500">
                                                 {item.dayLabel}
                                             </p>
                                         </div>
@@ -550,8 +546,8 @@ export default function MyAgendaPage({ userId, userRole, userName }: Props) {
 
                                     {/* Data (desktop) */}
                                     <div className="hidden w-24 shrink-0 lg:block">
-                                        <p className="text-xs font-semibold text-neutral-600">{item.dayLabel}</p>
-                                        <p className="text-[11px] text-neutral-400">
+                                        <p className="text-xs font-semibold text-neutral-600 dark:text-neutral-400">{item.dayLabel}</p>
+                                        <p className="text-[11px] text-neutral-400 dark:text-neutral-500">
                                             {item.isToday ? "Consulta do dia" : "Agendada"}
                                         </p>
                                     </div>
@@ -583,14 +579,14 @@ export default function MyAgendaPage({ userId, userRole, userName }: Props) {
                                                     type="button"
                                                     onClick={() => void mark(item.id, "NO_SHOW")}
                                                     disabled={isUpdating}
-                                                    className="inline-flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-neutral-600 transition-all hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
+                                                    className="inline-flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-neutral-600 transition-all hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 disabled:cursor-not-allowed disabled:opacity-60 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:border-rose-500/20 dark:hover:bg-rose-500/10 dark:hover:text-rose-300"
                                                 >
                                                     {isUpdating ? <Spinner /> : <AbsentIcon />}
                                                     Paciente faltou
                                                 </button>
                                             </>
                                         ) : (
-                                            <span className="text-[11px] font-medium text-neutral-400">
+                                            <span className="text-[11px] font-medium text-neutral-400 dark:text-neutral-500">
                                                 {item.rawStatus === "COMPLETED"
                                                     ? "Atendimento finalizado"
                                                     : item.rawStatus === "NO_SHOW"
@@ -608,7 +604,7 @@ export default function MyAgendaPage({ userId, userRole, userName }: Props) {
                 )}
             </section>
 
-            <p className="pb-2 text-center text-[11px] text-neutral-400">
+            <p className="pb-2 text-center text-[11px] text-neutral-400 dark:text-neutral-500">
                 A lista é atualizada automaticamente a cada 15 segundos.
             </p>
         </div>
@@ -620,9 +616,8 @@ export default function MyAgendaPage({ userId, userRole, userName }: Props) {
 function HeroStat({ label, value, highlight = false }: { label: string; value: number; highlight?: boolean }) {
     return (
         <div
-            className={`rounded-2xl px-4 py-3 ring-1 backdrop-blur-sm ${
-                highlight ? "bg-white/18 ring-white/25" : "bg-white/10 ring-white/15"
-            }`}
+            className={`rounded-2xl px-4 py-3 ring-1 backdrop-blur-sm ${highlight ? "bg-white/18 ring-white/25" : "bg-white/10 ring-white/15"
+                }`}
         >
             <p className="text-[11px] font-medium uppercase tracking-wide text-white/75">{label}</p>
             <p className="mt-1 text-2xl font-bold tabular-nums text-white">{value}</p>
@@ -676,18 +671,18 @@ function AbsentIcon() {
 
 function SkeletonCard() {
     return (
-        <div className="animate-pulse rounded-2xl border border-neutral-200/70 bg-white p-4 md:p-5">
+        <div className="animate-pulse rounded-2xl border border-neutral-200/70 bg-white p-4 md:p-5 dark:border-neutral-800/80 dark:bg-neutral-900">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-                <div className="h-8 w-20 rounded-lg bg-neutral-100" />
+                <div className="h-8 w-20 rounded-lg bg-neutral-100 dark:bg-neutral-800" />
                 <div className="flex flex-1 items-center gap-3">
-                    <div className="h-11 w-11 rounded-xl bg-neutral-100" />
+                    <div className="h-11 w-11 rounded-xl bg-neutral-100 dark:bg-neutral-800" />
                     <div className="flex-1 space-y-2">
-                        <div className="h-3.5 w-40 rounded bg-neutral-100" />
-                        <div className="h-3 w-56 rounded bg-neutral-100" />
+                        <div className="h-3.5 w-40 rounded bg-neutral-100 dark:bg-neutral-800" />
+                        <div className="h-3 w-56 rounded bg-neutral-100 dark:bg-neutral-800" />
                     </div>
                 </div>
-                <div className="h-6 w-24 rounded-full bg-neutral-100" />
-                <div className="h-9 w-56 rounded-xl bg-neutral-100" />
+                <div className="h-6 w-24 rounded-full bg-neutral-100 dark:bg-neutral-800" />
+                <div className="h-9 w-56 rounded-xl bg-neutral-100 dark:bg-neutral-800" />
             </div>
         </div>
     )
@@ -714,8 +709,8 @@ function EmptyState({ tab, isMaster }: { tab: TabKey; isMaster: boolean }) {
     const { title, description } = messages[tab]
 
     return (
-        <div className="rounded-3xl border border-dashed border-neutral-200/90 bg-white/70 px-6 py-14 text-center">
-            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-600">
+        <div className="rounded-3xl border border-dashed border-neutral-200/90 bg-white/70 px-6 py-14 text-center dark:border-neutral-800/80 dark:bg-neutral-900/60">
+            <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400">
                 <svg
                     className="h-6 w-6"
                     viewBox="0 0 24 24"
@@ -731,8 +726,8 @@ function EmptyState({ tab, isMaster }: { tab: TabKey; isMaster: boolean }) {
                     <line x1="3" y1="10" x2="21" y2="10" />
                 </svg>
             </span>
-            <h3 className="mt-4 text-base font-semibold text-neutral-800">{title}</h3>
-            <p className="mx-auto mt-1.5 max-w-md text-sm text-neutral-500">{description}</p>
+            <h3 className="mt-4 text-base font-semibold text-neutral-800 dark:text-neutral-100">{title}</h3>
+            <p className="mx-auto mt-1.5 max-w-md text-sm text-neutral-500 dark:text-neutral-400">{description}</p>
         </div>
     )
 }

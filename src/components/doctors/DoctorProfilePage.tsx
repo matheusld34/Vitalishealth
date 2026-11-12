@@ -385,19 +385,19 @@ function statusPill(s: string) {
     switch (key) {
         case "CONCLUÍDO":
         case "CONCLUIDO":
-            return "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/15"
+            return "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/15 dark:bg-emerald-500/10 dark:text-emerald-300"
         case "CONFIRMADO":
-            return "bg-brand-50 text-brand-700 ring-1 ring-brand-600/15"
+            return "bg-brand-50 text-brand-700 ring-1 ring-brand-600/15 dark:bg-brand-500/10 dark:text-brand-300"
         case "AGENDADO":
-            return "bg-sky-50 text-sky-700 ring-1 ring-sky-600/15"
+            return "bg-sky-50 text-sky-700 ring-1 ring-sky-600/15 dark:bg-sky-500/10 dark:text-sky-300"
         case "PENDENTE":
-            return "bg-amber-50 text-amber-700 ring-1 ring-amber-600/15"
+            return "bg-amber-50 text-amber-700 ring-1 ring-amber-600/15 dark:bg-amber-500/10 dark:text-amber-300"
         case "EMANDAMENTO":
-            return "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-600/15"
+            return "bg-indigo-50 text-indigo-700 ring-1 ring-indigo-600/15 dark:bg-indigo-500/10 dark:text-indigo-300"
         case "CANCELADO":
-            return "bg-neutral-100 text-neutral-600 ring-1 ring-neutral-600/15"
+            return "bg-neutral-100 text-neutral-600 ring-1 ring-neutral-600/15 dark:bg-neutral-800 dark:text-neutral-300"
         default:
-            return "bg-neutral-50 text-neutral-700 ring-1 ring-neutral-600/10"
+            return "bg-neutral-50 text-neutral-700 ring-1 ring-neutral-600/10 dark:bg-neutral-800 dark:text-neutral-300 dark:ring-neutral-700"
     }
 }
 
@@ -590,18 +590,18 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
     if (loading && !doctor) {
         return (
             <div className="space-y-6 pb-10">
-                <div className="mx-auto max-w-md h-12 rounded-full bg-white shadow animate-pulse" />
-                <div className="h-8 w-48 rounded-xl bg-neutral-100 animate-pulse" />
-                <div className="h-64 rounded-3xl bg-white shadow animate-pulse" />
+                <div className="mx-auto max-w-md h-12 rounded-full bg-white shadow animate-pulse dark:bg-neutral-900" />
+                <div className="h-8 w-48 rounded-xl bg-neutral-100 animate-pulse dark:bg-neutral-800" />
+                <div className="h-64 rounded-3xl bg-white shadow animate-pulse dark:bg-neutral-900" />
                 <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.45fr)] gap-5 md:gap-6">
                     <div className="space-y-5 md:space-y-6">
-                        <div className="h-64 rounded-3xl bg-white shadow animate-pulse" />
-                        <div className="h-40 rounded-3xl bg-white shadow animate-pulse" />
+                        <div className="h-64 rounded-3xl bg-white shadow animate-pulse dark:bg-neutral-900" />
+                        <div className="h-40 rounded-3xl bg-white shadow animate-pulse dark:bg-neutral-900" />
                     </div>
                     <div className="space-y-5 md:space-y-6">
-                        <div className="h-48 rounded-3xl bg-white shadow animate-pulse" />
-                        <div className="h-64 rounded-3xl bg-white shadow animate-pulse" />
-                        <div className="h-80 rounded-3xl bg-white shadow animate-pulse" />
+                        <div className="h-48 rounded-3xl bg-white shadow animate-pulse dark:bg-neutral-900" />
+                        <div className="h-64 rounded-3xl bg-white shadow animate-pulse dark:bg-neutral-900" />
+                        <div className="h-80 rounded-3xl bg-white shadow animate-pulse dark:bg-neutral-900" />
                     </div>
                 </div>
             </div>
@@ -610,8 +610,8 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
 
     if (error || !doctor) {
         return (
-            <div className="rounded-3xl border border-red-200 bg-red-50 p-6 text-center">
-                <p className="text-lg font-semibold text-red-700">
+            <div className="rounded-3xl border border-red-200 bg-red-50 p-6 text-center dark:border-red-500/30 dark:bg-red-500/10">
+                <p className="text-lg font-semibold text-red-700 dark:text-red-300">
                     {error || "Médico não encontrado"}
                 </p>
                 <Link
@@ -629,7 +629,7 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
             {/* Search bar */}
             <div className="mx-auto max-w-md w-full">
                 <div className="relative">
-                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">
+                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <circle cx="11" cy="11" r="8" />
                             <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -638,24 +638,24 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                     <input
                         type="search"
                         placeholder="Buscar no perfil..."
-                        className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-3 pl-11 pr-4 text-sm placeholder:text-neutral-400 shadow-[0_2px_10px_rgba(15,23,42,0.05)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
+                        className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-3 pl-11 pr-4 text-sm placeholder:text-neutral-400 shadow-[0_2px_10px_rgba(15,23,42,0.05)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500"
                     />
                 </div>
             </div>
 
             {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 text-sm text-neutral-500">
-                <Link href="/dashboard/medicos" className="hover:text-neutral-800 transition-colors">
+            <nav className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+                <Link href="/dashboard/medicos" className="hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors">
                     Médicos
                 </Link>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300" aria-hidden="true">
                     <polyline points="9 18 15 12 9 6" />
                 </svg>
-                <span className="font-semibold text-brand-700">{doctor.fullName}</span>
+                <span className="font-semibold text-brand-700 dark:text-brand-300">{doctor.fullName}</span>
             </nav>
 
             {/* Header do Perfil */}
-            <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_10px_30px_-20px_rgba(15,23,42,0.25)] overflow-hidden relative">
+            <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_10px_30px_-20px_rgba(15,23,42,0.25)] overflow-hidden relative dark:border-neutral-800/80 dark:bg-neutral-900">
                 <div aria-hidden="true" className="absolute -top-20 right-0 h-64 w-64 rounded-full bg-brand-600/5 blur-3xl" />
                 <div className="flex flex-col lg:flex-row gap-5 md:gap-8 items-start relative">
                     {/* Foto */}
@@ -681,42 +681,42 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                             <div>
                                 <div className="flex flex-wrap items-center gap-3">
-                                    <h1 className="text-3xl md:text-5xl font-serif font-semibold tracking-tight text-neutral-900 leading-[1.05]">
+                                    <h1 className="text-3xl md:text-5xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100 leading-[1.05]">
                                         {doctor.fullName}
                                     </h1>
-                                    <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-brand-100 text-brand-700 text-[11px] md:text-xs font-bold tracking-[0.14em] uppercase ring-1 ring-brand-600/10">
+                                    <span className="inline-flex items-center px-3.5 py-1 rounded-full bg-brand-100 text-brand-700 text-[11px] md:text-xs font-bold tracking-[0.14em] uppercase ring-1 ring-brand-600/10 dark:bg-brand-500/20 dark:text-brand-300">
                                         {doctor.status}
                                     </span>
                                 </div>
-                                <p className="mt-3 text-xl md:text-2xl md:leading-snug text-brand-700 font-medium">
+                                <p className="mt-3 text-xl md:text-2xl md:leading-snug text-brand-700 dark:text-brand-300 font-medium">
                                     {doctor.specialty}
                                 </p>
-                                <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm md:text-[15px] text-neutral-600">
+                                <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm md:text-[15px] text-neutral-600 dark:text-neutral-400">
                                     <span className="inline-flex items-center gap-1.5">
-                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-brand-600">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-brand-600 dark:text-brand-400">
                                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                                         </svg>
-                                        <span className="font-semibold text-neutral-800">CRM {doctor.crm}</span>
+                                        <span className="font-semibold text-neutral-800 dark:text-neutral-100">CRM {doctor.crm}</span>
                                     </span>
                                     {doctor.rating !== "—" && (
                                         <span className="inline-flex items-center gap-1.5">
                                             <svg width="15" height="15" viewBox="0 0 24 24" fill="#f59e0b" aria-hidden="true">
                                                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                                             </svg>
-                                            <span className="font-semibold text-neutral-900">{doctor.rating}</span>
-                                            <span className="text-neutral-500">({doctor.reviews} avaliações)</span>
+                                            <span className="font-semibold text-neutral-900 dark:text-neutral-100">{doctor.rating}</span>
+                                            <span className="text-neutral-500 dark:text-neutral-400">({doctor.reviews} avaliações)</span>
                                         </span>
                                     )}
                                 </div>
-                                <p className="mt-2.5 inline-flex items-center gap-2 text-sm text-neutral-600">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-neutral-500">
+                                <p className="mt-2.5 inline-flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-neutral-500 dark:text-neutral-400">
                                         <rect x="3" y="4" width="18" height="18" rx="2" />
                                         <line x1="16" y1="2" x2="16" y2="6" />
                                         <line x1="8" y1="2" x2="8" y2="6" />
                                         <line x1="3" y1="10" x2="21" y2="10" />
                                     </svg>
                                     <span>
-                                        <span className="font-semibold text-neutral-900">{doctor.experience || "—"} anos de experiência</span>
+                                        <span className="font-semibold text-neutral-900 dark:text-neutral-100">{doctor.experience || "—"} anos de experiência</span>
                                     </span>
                                 </p>
                             </div>
@@ -727,7 +727,7 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                                     {canManage && !FALLBACK_DB[doctor.id] && (
                                         <Link
                                             href={`/dashboard/medicos/novo?id=${doctor.id}`}
-                                            className="inline-flex items-center justify-center gap-2 rounded-2xl px-4 md:px-5 py-2.5 md:py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-50 transition-colors"
+                                            className="inline-flex items-center justify-center gap-2 rounded-2xl px-4 md:px-5 py-2.5 md:py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-50 transition-colors dark:text-brand-300 dark:hover:bg-brand-500/10"
                                         >
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                                 <path d="M12 20h9" />
@@ -738,7 +738,7 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                                     )}
                                     <Link
                                         href="/dashboard/agendamento/novo"
-                                        className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-brand-700 px-4 md:px-5 py-2.5 md:py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-700 hover:text-white hover:shadow-[0_10px_22px_-6px_rgba(16,142,93,0.35)] transition-all"
+                                        className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-brand-700 px-4 md:px-5 py-2.5 md:py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-700 hover:text-white hover:shadow-[0_10px_22px_-6px_rgba(16,142,93,0.35)] transition-all dark:border-brand-400 dark:text-brand-300"
                                     >
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                             <path d="M12 20h9" />
@@ -749,7 +749,7 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                                     {canManage && (
                                         <button
                                             type="button"
-                                            className="inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-2.5 md:py-3 text-[14px] font-bold text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+                                            className="inline-flex items-center justify-center gap-2 rounded-2xl px-4 py-2.5 md:py-3 text-[14px] font-bold text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors dark:text-red-400 dark:hover:bg-red-500/10 dark:hover:text-red-300"
                                         >
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                                 <rect x="3" y="3" width="18" height="18" rx="2" />
@@ -770,15 +770,15 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                 {/* Coluna 1: Info Pessoais + Especialidades */}
                 <div className="space-y-5 md:space-y-6">
                     {/* Informações Pessoais */}
-                    <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-6 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)]">
+                    <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-6 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] dark:border-neutral-800/80 dark:bg-neutral-900">
                         <header className="flex items-center gap-2.5 mb-5">
-                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-brand-600/10">
+                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-brand-600/10 dark:bg-brand-500/10 dark:text-brand-300">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                     <circle cx="12" cy="7" r="4" />
                                 </svg>
                             </span>
-                            <h2 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900">
+                            <h2 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                                 Informações Pessoais
                             </h2>
                         </header>
@@ -792,7 +792,7 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                             )}
 
                             <div className="pt-1">
-                                <dt className="block text-[11px] font-bold tracking-[0.16em] uppercase text-neutral-500 mb-2">
+                                <dt className="block text-[11px] font-bold tracking-[0.16em] uppercase text-neutral-500 dark:text-neutral-400 mb-2">
                                     DIAS DE ATENDIMENTO
                                 </dt>
                                 <div className="flex flex-wrap gap-2">
@@ -803,7 +803,7 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                                                 key={w.key}
                                                 className={`inline-flex h-9 w-9 items-center justify-center rounded-full text-[12px] font-bold ${active
                                                     ? "bg-brand-600 text-white shadow-[0_4px_10px_-2px_rgba(16,142,93,0.3)] ring-2 ring-white"
-                                                    : "bg-neutral-100 text-neutral-500 ring-1 ring-neutral-200/70"
+                                                    : "bg-neutral-100 text-neutral-500 ring-1 ring-neutral-200/70 dark:bg-neutral-800 dark:text-neutral-400 dark:ring-neutral-800"
                                                     }`}
                                                 title={w.label}
                                             >
@@ -817,22 +817,22 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                     </section>
 
                     {/* Especialidades */}
-                    <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-6 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)]">
+                    <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-6 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] dark:border-neutral-800/80 dark:bg-neutral-900">
                         <header className="flex items-center gap-2.5 mb-5">
-                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/10">
+                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/10 dark:bg-emerald-500/10 dark:text-emerald-300">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                                     <path d="M9.5 8.5 8 10l4 4 2.5-2.5" />
                                 </svg>
                             </span>
-                            <h2 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900">
+                            <h2 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                                 Especialidades
                             </h2>
                         </header>
 
                         <div className="flex flex-wrap gap-2.5">
                             {doctor.specialties.map((s) => (
-                                <span key={s} className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-brand-50 text-brand-700 text-[13px] font-semibold ring-1 ring-brand-600/10">
+                                <span key={s} className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-brand-50 text-brand-700 text-[13px] font-semibold ring-1 ring-brand-600/10 dark:bg-brand-500/10 dark:text-brand-300">
                                     {s}
                                 </span>
                             ))}
@@ -843,29 +843,29 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                 {/* Coluna 2: Bio + Appointments + RecentActivity */}
                 <div className="space-y-5 md:space-y-6">
                     {/* Bio / Descrição */}
-                    <section className="relative rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] overflow-hidden">
+                    <section className="relative rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] overflow-hidden dark:border-neutral-800/80 dark:bg-neutral-900">
                         <div aria-hidden="true" className="pointer-events-none absolute -top-6 right-3 md:-top-2 md:right-6 select-none text-7xl md:text-[120px] font-black text-brand-700/10 leading-none tracking-tight font-serif">
                             {completedMonth || "0"}
                         </div>
                         <header className="flex items-center gap-2.5 mb-5 relative">
-                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-green-50 text-green-700 ring-1 ring-green-600/10">
+                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-green-50 text-green-700 ring-1 ring-green-600/10 dark:bg-green-500/10 dark:text-green-300">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                                     <polyline points="14 2 14 8 20 8" />
                                 </svg>
                             </span>
-                            <h2 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900">
+                            <h2 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                                 Bio / Descrição
                             </h2>
                         </header>
 
-                        <div className="space-y-5 text-[14.5px] md:text-[15.5px] leading-[1.75] text-neutral-700 relative">
+                        <div className="space-y-5 text-[14.5px] md:text-[15.5px] leading-[1.75] text-neutral-700 dark:text-neutral-300 relative">
                             {doctor.bio ? (
                                 doctor.bio.split(/\n+/).filter(Boolean).map((p, i) => (
                                     <p key={i}>{p}</p>
                                 ))
                             ) : (
-                                <p className="italic text-neutral-500">
+                                <p className="italic text-neutral-500 dark:text-neutral-400">
                                     Nenhuma biografia cadastrada para este médico. Você pode editar as informações para adicionar uma descrição profissional.
                                 </p>
                             )}
@@ -915,9 +915,9 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                             </div>
                         </section>
 
-                        <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-6 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)]">
+                        <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-6 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] dark:border-neutral-800/80 dark:bg-neutral-900">
                             <div className="flex items-center justify-between mb-5">
-                                <p className="text-[11px] md:text-xs font-bold tracking-[0.18em] uppercase text-neutral-500">
+                                <p className="text-[11px] md:text-xs font-bold tracking-[0.18em] uppercase text-neutral-500 dark:text-neutral-400">
                                     ATIVIDADES RECENTES
                                 </p>
                                 {appointmentsLoading && <span className="h-2 w-2 rounded-full bg-amber-400 animate-pulse" />}
@@ -925,7 +925,7 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
 
                             <ol className="space-y-4">
                                 {activity.length === 0 ? (
-                                    <li className="text-sm text-neutral-500 italic">
+                                    <li className="text-sm text-neutral-500 dark:text-neutral-400 italic">
                                         {appointmentsLoading ? "Carregando atividades..." : "Sem atividades registradas ainda."}
                                     </li>
                                 ) : (
@@ -933,12 +933,12 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                                         <li key={a.id} className="flex items-start gap-3">
                                             <span
                                                 className={`mt-1 inline-flex h-6 w-6 items-center justify-center rounded-full ring-1 ${a.tone === "emerald"
-                                                    ? "bg-emerald-50 text-emerald-600 ring-emerald-500/15"
+                                                    ? "bg-emerald-50 text-emerald-600 ring-emerald-500/15 dark:bg-emerald-500/10 dark:text-emerald-400"
                                                     : a.tone === "amber"
-                                                        ? "bg-amber-50 text-amber-600 ring-amber-500/15"
+                                                        ? "bg-amber-50 text-amber-600 ring-amber-500/15 dark:bg-amber-500/10 dark:text-amber-400"
                                                         : a.tone === "neutral"
-                                                            ? "bg-neutral-100 text-neutral-500 ring-neutral-400/15"
-                                                            : "bg-brand-50 text-brand-700 ring-brand-600/15"
+                                                            ? "bg-neutral-100 text-neutral-500 ring-neutral-400/15 dark:bg-neutral-800 dark:text-neutral-400 dark:ring-neutral-600/20"
+                                                            : "bg-brand-50 text-brand-700 ring-brand-600/15 dark:bg-brand-500/10 dark:text-brand-300"
                                                     }`}
                                             >
                                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -946,10 +946,10 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                                                 </svg>
                                             </span>
                                             <div className="min-w-0 flex-1">
-                                                <p className="text-[13.5px] text-neutral-800 leading-snug">
+                                                <p className="text-[13.5px] text-neutral-800 dark:text-neutral-100 leading-snug">
                                                     {a.label}
                                                 </p>
-                                                <p className="mt-0.5 text-[11.5px] text-neutral-500">
+                                                <p className="mt-0.5 text-[11.5px] text-neutral-500 dark:text-neutral-400">
                                                     {a.time}
                                                 </p>
                                             </div>
@@ -961,10 +961,10 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                     </div>
 
                     {/* Próximos Atendimentos tabela */}
-                    <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-6 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)]">
+                    <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-6 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] dark:border-neutral-800/80 dark:bg-neutral-900">
                         <header className="flex items-center justify-between gap-3 mb-4">
                             <div className="flex items-center gap-2.5">
-                                <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/10">
+                                <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/10 dark:bg-emerald-500/10 dark:text-emerald-300">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                         <circle cx="12" cy="12" r="10" />
                                         <polyline points="12 6 12 12 16 14" />
@@ -975,7 +975,7 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                                         Próximos Atendimentos
                                     </h3>
                                     {upcoming.length > 0 && (
-                                        <p className="text-[12px] text-neutral-500">
+                                        <p className="text-[12px] text-neutral-500 dark:text-neutral-400">
                                             {upcoming.length} próximo(s) agendado(s)
                                         </p>
                                     )}
@@ -983,7 +983,7 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                             </div>
                             <Link
                                 href="/dashboard/agendamento"
-                                className="text-sm font-bold text-brand-700 hover:text-brand-800 transition-colors shrink-0"
+                                className="text-sm font-bold text-brand-700 hover:text-brand-800 transition-colors shrink-0 dark:text-brand-300 dark:hover:text-brand-200"
                             >
                                 Ver Agenda
                             </Link>
@@ -992,36 +992,36 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
                                 <thead>
-                                    <tr className="text-left border-b border-neutral-100">
-                                        <th className="py-3 px-2 text-[11.5px] font-bold tracking-[0.16em] uppercase text-neutral-500">Paciente</th>
-                                        <th className="py-3 px-2 text-[11.5px] font-bold tracking-[0.16em] uppercase text-neutral-500">Data · Horário</th>
-                                        <th className="py-3 px-2 text-[11.5px] font-bold tracking-[0.16em] uppercase text-neutral-500">Tipo</th>
-                                        <th className="py-3 px-2 text-right text-[11.5px] font-bold tracking-[0.16em] uppercase text-neutral-500">Status</th>
+                                    <tr className="text-left border-b border-neutral-100 dark:border-neutral-800">
+                                        <th className="py-3 px-2 text-[11.5px] font-bold tracking-[0.16em] uppercase text-neutral-500 dark:text-neutral-400">Paciente</th>
+                                        <th className="py-3 px-2 text-[11.5px] font-bold tracking-[0.16em] uppercase text-neutral-500 dark:text-neutral-400">Data · Horário</th>
+                                        <th className="py-3 px-2 text-[11.5px] font-bold tracking-[0.16em] uppercase text-neutral-500 dark:text-neutral-400">Tipo</th>
+                                        <th className="py-3 px-2 text-right text-[11.5px] font-bold tracking-[0.16em] uppercase text-neutral-500 dark:text-neutral-400">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-neutral-100">
+                                <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
                                     {appointmentsLoading && upcoming.length === 0 ? (
                                         Array.from({ length: 3 }).map((_, i) => (
                                             <tr key={i}>
                                                 <td className="py-4 px-2">
-                                                    <div className="h-4 w-40 rounded-xl bg-neutral-100 animate-pulse" />
+                                                    <div className="h-4 w-40 rounded-xl bg-neutral-100 animate-pulse dark:bg-neutral-800" />
                                                 </td>
                                                 <td className="py-4 px-2">
-                                                    <div className="h-4 w-36 rounded-xl bg-neutral-100 animate-pulse" />
+                                                    <div className="h-4 w-36 rounded-xl bg-neutral-100 animate-pulse dark:bg-neutral-800" />
                                                 </td>
                                                 <td className="py-4 px-2">
-                                                    <div className="h-4 w-28 rounded-xl bg-neutral-100 animate-pulse" />
+                                                    <div className="h-4 w-28 rounded-xl bg-neutral-100 animate-pulse dark:bg-neutral-800" />
                                                 </td>
                                                 <td className="py-4 px-2">
-                                                    <div className="h-5 w-24 rounded-full bg-neutral-100 animate-pulse ml-auto" />
+                                                    <div className="h-5 w-24 rounded-full bg-neutral-100 animate-pulse dark:bg-neutral-800 ml-auto" />
                                                 </td>
                                             </tr>
                                         ))
                                     ) : upcoming.length === 0 ? (
                                         <tr>
                                             <td colSpan={4} className="py-10 px-2">
-                                                <div className="flex flex-col items-center justify-center gap-3 text-center py-4 rounded-2xl border-2 border-dashed border-neutral-200/80 bg-neutral-50/40">
-                                                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-white text-neutral-400 ring-1 ring-neutral-200/80">
+                                                <div className="flex flex-col items-center justify-center gap-3 text-center py-4 rounded-2xl border-2 border-dashed border-neutral-200/80 bg-neutral-50/40 dark:border-neutral-700 dark:bg-neutral-800/30">
+                                                    <div className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-white text-neutral-400 ring-1 ring-neutral-200/80 dark:bg-neutral-900 dark:text-neutral-500 dark:ring-neutral-800">
                                                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                                             <rect x="3" y="4" width="18" height="18" rx="2" />
                                                             <line x1="16" y1="2" x2="16" y2="6" />
@@ -1030,10 +1030,10 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                                                         </svg>
                                                     </div>
                                                     <div>
-                                                        <p className="text-[14.5px] font-semibold text-neutral-800">
+                                                        <p className="text-[14.5px] font-semibold text-neutral-800 dark:text-neutral-100">
                                                             Nenhum atendimento agendado
                                                         </p>
-                                                        <p className="text-[12.5px] text-neutral-500 mt-0.5">
+                                                        <p className="text-[12.5px] text-neutral-500 dark:text-neutral-400 mt-0.5">
                                                             Agende consultas para este médico na tela de agendamentos.
                                                         </p>
                                                     </div>
@@ -1052,31 +1052,31 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
                                         </tr>
                                     ) : (
                                         upcoming.map((row) => (
-                                            <tr key={row.id} className="hover:bg-neutral-50/60 transition-colors">
+                                            <tr key={row.id} className="hover:bg-neutral-50/60 transition-colors dark:hover:bg-neutral-800/50">
                                                 <td className="py-3.5 px-2">
                                                     {row.patientId ? (
                                                         <Link
                                                             href={`/dashboard/pacientes/${row.patientId}/historico`}
-                                                            className="inline-flex items-center gap-2 font-semibold text-neutral-900 hover:text-brand-700 transition-colors"
+                                                            className="inline-flex items-center gap-2 font-semibold text-neutral-900 hover:text-brand-700 transition-colors dark:text-neutral-100"
                                                         >
-                                                            <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-brand-50 text-brand-700 ring-1 ring-brand-600/10 text-[11px] font-bold">
+                                                            <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-brand-50 text-brand-700 ring-1 ring-brand-600/10 text-[11px] font-bold dark:bg-brand-500/10 dark:text-brand-300">
                                                                 {(row.patient || "P").charAt(0).toUpperCase()}
                                                             </span>
                                                             <span className="truncate max-w-[240px]">{row.patient}</span>
                                                         </Link>
                                                     ) : (
-                                                        <span className="font-semibold text-neutral-800">
+                                                        <span className="font-semibold text-neutral-800 dark:text-neutral-100">
                                                             {row.patient}
                                                         </span>
                                                     )}
                                                 </td>
-                                                <td className="py-3.5 px-2 text-neutral-700">
+                                                <td className="py-3.5 px-2 text-neutral-700 dark:text-neutral-300">
                                                     <span className="font-medium">{row.dateLabel}</span>
-                                                    <span className="mx-1.5 text-neutral-400">·</span>
-                                                    <span className="font-semibold text-neutral-900">{row.timeLabel}</span>
+                                                    <span className="mx-1.5 text-neutral-400 dark:text-neutral-500">·</span>
+                                                    <span className="font-semibold text-neutral-900 dark:text-neutral-100">{row.timeLabel}</span>
                                                 </td>
                                                 <td className="py-3.5 px-2">
-                                                    <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-neutral-50 text-neutral-700 text-[12.5px] font-medium ring-1 ring-neutral-200/80">
+                                                    <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-neutral-50 text-neutral-700 text-[12.5px] font-medium ring-1 ring-neutral-200/80 dark:bg-neutral-800 dark:text-neutral-300 dark:ring-neutral-800">
                                                         {row.type}
                                                     </span>
                                                 </td>
@@ -1101,10 +1101,10 @@ export default function DoctorProfilePage({ id, userRole }: { id: string; userRo
 function InfoRow({ label, value }: { label: string; value: string }) {
     return (
         <div>
-            <dt className="block text-[11px] font-bold tracking-[0.16em] uppercase text-neutral-500 mb-1.5">
+            <dt className="block text-[11px] font-bold tracking-[0.16em] uppercase text-neutral-500 dark:text-neutral-400 mb-1.5">
                 {label}
             </dt>
-            <dd className="text-[15px] font-semibold text-neutral-900 break-words">{value}</dd>
+            <dd className="text-[15px] font-semibold text-neutral-900 dark:text-neutral-100 break-words">{value}</dd>
         </div>
     )
 }

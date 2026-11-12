@@ -27,11 +27,10 @@ export default function StatCard({
     const dash = (circumference * clamped) / 100
 
     return (
-        <section className="bg-white rounded-2xl border border-neutral-200/70 shadow-sm p-6 md:p-8 flex flex-col items-center">
+        <section className="bg-white rounded-2xl border border-neutral-200/70 shadow-sm p-6 md:p-8 flex flex-col items-center dark:bg-neutral-900 dark:border-neutral-800/80">
             <h2
-                className={`text-base md:text-lg font-medium mb-6 md:mb-8 ${
-                    titleClassName || "text-neutral-800"
-                }`}
+                className={`text-base md:text-lg font-medium mb-6 md:mb-8 ${titleClassName || "text-neutral-800 dark:text-neutral-100"
+                    }`}
             >
                 {title}
             </h2>
@@ -48,7 +47,7 @@ export default function StatCard({
                         r={radius}
                         fill="none"
                         strokeWidth="14"
-                        className="stroke-neutral-200"
+                        className="stroke-neutral-200 dark:stroke-neutral-700"
                     />
                     <circle
                         cx="92"
@@ -62,26 +61,25 @@ export default function StatCard({
                     />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-3xl md:text-4xl font-semibold text-neutral-800 tabular-nums">
+                    <span className="text-3xl md:text-4xl font-semibold text-neutral-800 dark:text-neutral-100 tabular-nums">
                         {clamped}%
                     </span>
-                    <span className="mt-1 text-xs md:text-sm tracking-[0.16em] font-medium text-neutral-500 uppercase">
+                    <span className="mt-1 text-xs md:text-sm tracking-[0.16em] font-medium text-neutral-500 dark:text-neutral-400 uppercase">
                         {percentLabel}
                     </span>
                 </div>
             </div>
 
-            <div className="mt-8 w-full grid grid-cols-2 divide-x divide-neutral-200 border-t border-neutral-200 pt-6">
+            <div className="mt-8 w-full grid grid-cols-2 divide-x divide-neutral-200 dark:divide-neutral-800 border-t border-neutral-200 dark:border-neutral-800 pt-6">
                 {metrics.map((m) => (
                     <div key={m.label} className="text-center px-2">
                         <p
-                            className={`text-2xl md:text-3xl font-semibold tabular-nums ${
-                                m.valueClassName || "text-neutral-800"
-                            }`}
+                            className={`text-2xl md:text-3xl font-semibold tabular-nums ${m.valueClassName || "text-neutral-800 dark:text-neutral-100"
+                                }`}
                         >
                             {String(m.value).padStart(2, "0")}
                         </p>
-                        <p className="mt-1 text-xs md:text-sm font-medium tracking-[0.08em] text-neutral-500 uppercase">
+                        <p className="mt-1 text-xs md:text-sm font-medium tracking-[0.08em] text-neutral-500 dark:text-neutral-400 uppercase">
                             {m.label}
                         </p>
                     </div>

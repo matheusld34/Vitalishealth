@@ -326,7 +326,7 @@ export default function AppointmentsPage() {
             {/* Search bar */}
             <div className="mx-auto max-w-md w-full">
                 <div className="relative">
-                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">
+                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <circle cx="11" cy="11" r="8" />
                             <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -335,33 +335,33 @@ export default function AppointmentsPage() {
                     <input
                         type="search"
                         placeholder="Pesquisar agendamentos, pacientes..."
-                        className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-3 pl-11 pr-4 text-sm placeholder:text-neutral-400 shadow-[0_2px_10px_rgba(15,23,42,0.05)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
+                        className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-3 pl-11 pr-4 text-sm placeholder:text-neutral-400 shadow-[0_2px_10px_rgba(15,23,42,0.05)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500"
                     />
                 </div>
             </div>
 
             {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 text-sm text-neutral-500">
-                <Link href="/dashboard" className="hover:text-neutral-800 transition-colors">
+            <nav className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+                <Link href="/dashboard" className="hover:text-neutral-800 transition-colors dark:hover:text-neutral-100">
                     Dashboard
                 </Link>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300 dark:text-neutral-600" aria-hidden="true">
                     <polyline points="9 18 15 12 9 6" />
                 </svg>
-                <span className="font-semibold text-brand-700">Agendamento</span>
+                <span className="font-semibold text-brand-700 dark:text-brand-300">Agendamento</span>
             </nav>
 
             {/* 2 colunas: calendário + painel lateral */}
             <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] gap-5 md:gap-7">
                 {/* Calendário */}
-                <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)]">
+                <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] dark:border-neutral-800/80 dark:bg-neutral-900">
                     {/* Header calendar */}
                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
                         <div>
-                            <h2 className="text-2xl md:text-3xl font-serif font-semibold tracking-tight text-neutral-900">
+                            <h2 className="text-2xl md:text-3xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                                 {formatMonthYearTitle(viewMonth)}
                             </h2>
-                            <p className="text-sm text-neutral-500 mt-1">
+                            <p className="text-sm text-neutral-500 mt-1 dark:text-neutral-400">
                                 Visão Mensal de Agenda
                             </p>
                         </div>
@@ -387,7 +387,7 @@ export default function AppointmentsPage() {
                                     setJumpDateInput(toIsoDate(t))
                                     setViewMonth(new Date(t.getFullYear(), t.getMonth(), 1))
                                 }}
-                                className="inline-flex items-center justify-center rounded-xl bg-brand-50 text-brand-700 px-4 py-2.5 text-sm font-bold ring-1 ring-brand-600/10 hover:bg-brand-100 transition-colors"
+                                className="inline-flex items-center justify-center rounded-xl bg-brand-50 text-brand-700 px-4 py-2.5 text-sm font-bold ring-1 ring-brand-600/10 hover:bg-brand-100 transition-colors dark:bg-brand-500/10 dark:text-brand-300 dark:hover:bg-brand-500/20"
                             >
                                 Hoje
                             </button>
@@ -397,11 +397,11 @@ export default function AppointmentsPage() {
                     {/* Barra adicional: seletores de mês/ano + busca data */}
                     <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-4 mb-5">
                         <div>
-                            <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-neutral-500 mb-1.5">
+                            <label className="block text-[11px] font-black uppercase tracking-[0.16em] text-neutral-500 mb-1.5 dark:text-neutral-400">
                                 Ir para data
                             </label>
                             <div className="relative">
-                                <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500">
+                                <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500 dark:text-neutral-400">
                                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                         <rect x="3" y="4" width="18" height="18" rx="2" />
                                         <line x1="16" y1="2" x2="16" y2="6" />
@@ -421,19 +421,19 @@ export default function AppointmentsPage() {
                                             setViewMonth(new Date(d.getFullYear(), d.getMonth(), 1))
                                         }
                                     }}
-                                    className="w-full rounded-2xl border-2 border-neutral-200/80 bg-white pl-11 pr-4 py-2.5 text-sm font-semibold text-neutral-800 tabular-nums focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
+                                    className="w-full rounded-2xl border-2 border-neutral-200/80 bg-white pl-11 pr-4 py-2.5 text-sm font-semibold text-neutral-800 tabular-nums focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100"
                                 />
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-2 rounded-2xl border-2 border-neutral-200/80 bg-gradient-to-br from-neutral-50 to-white px-3 py-2.5">
+                        <div className="flex items-center gap-2 rounded-2xl border-2 border-neutral-200/80 bg-gradient-to-br from-neutral-50 to-white px-3 py-2.5 dark:border-neutral-800 dark:from-neutral-800/40 dark:to-neutral-900">
                             <select
                                 aria-label="Mês"
                                 value={viewMonth.getMonth()}
                                 onChange={(e) =>
                                     setViewMonth(new Date(viewMonth.getFullYear(), Number(e.target.value), 1))
                                 }
-                                className="flex-1 bg-transparent px-2 py-1.5 rounded-xl appearance-none text-[14px] font-black text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand-500/30 cursor-pointer hover:bg-white"
+                                className="flex-1 bg-transparent px-2 py-1.5 rounded-xl appearance-none text-[14px] font-black text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand-500/30 cursor-pointer hover:bg-white dark:text-neutral-100 dark:hover:bg-neutral-800"
                             >
                                 {MONTHS.map((m, i) => (
                                     <option key={m} value={i}>
@@ -447,7 +447,7 @@ export default function AppointmentsPage() {
                                 onChange={(e) =>
                                     setViewMonth(new Date(Number(e.target.value), viewMonth.getMonth(), 1))
                                 }
-                                className="bg-transparent px-2 py-1.5 rounded-xl appearance-none text-[14px] font-black text-neutral-900 tabular-nums focus:outline-none focus:ring-2 focus:ring-brand-500/30 cursor-pointer hover:bg-white"
+                                className="bg-transparent px-2 py-1.5 rounded-xl appearance-none text-[14px] font-black text-neutral-900 tabular-nums focus:outline-none focus:ring-2 focus:ring-brand-500/30 cursor-pointer hover:bg-white dark:text-neutral-100 dark:hover:bg-neutral-800"
                             >
                                 {Array.from({ length: 11 }, (_, i) => viewMonth.getFullYear() - 2 + i).map((y) => (
                                     <option key={y} value={y}>
@@ -463,7 +463,7 @@ export default function AppointmentsPage() {
                         {WEEK_DAYS.map((d) => (
                             <div
                                 key={d}
-                                className="text-center text-[11px] md:text-xs font-black tracking-[0.16em] uppercase text-neutral-500 py-2"
+                                className="text-center text-[11px] md:text-xs font-black tracking-[0.16em] uppercase text-neutral-500 py-2 dark:text-neutral-400"
                             >
                                 {d}
                             </div>
@@ -493,19 +493,18 @@ export default function AppointmentsPage() {
                                         "group relative aspect-square min-h-[64px] md:min-h-[76px] rounded-2xl p-1.5 md:p-2 text-sm transition-all duration-200 select-none",
                                         !cell.inMonth ? "pointer-events-none opacity-0" : "",
                                         !clickable
-                                            ? "text-neutral-300 cursor-not-allowed line-through"
+                                            ? "text-neutral-300 cursor-not-allowed line-through dark:text-neutral-600"
                                             : isSelected
                                                 ? "bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 text-white shadow-[0_12px_26px_-10px_rgba(16,142,93,0.55)] ring-2 ring-brand-600/25 scale-[1.03]"
                                                 : isToday
-                                                    ? "bg-brand-50 text-brand-800 ring-2 ring-brand-600/30 hover:bg-brand-100"
-                                                    : "hover:bg-neutral-50 text-neutral-800",
+                                                    ? "bg-brand-50 text-brand-800 ring-2 ring-brand-600/30 hover:bg-brand-100 dark:bg-brand-500/10 dark:text-brand-200 dark:hover:bg-brand-500/20"
+                                                    : "hover:bg-neutral-50 text-neutral-800 dark:hover:bg-neutral-800/60 dark:text-neutral-100",
                                     ].join(" ")}
                                 >
                                     <div className="flex items-start justify-between gap-1">
                                         <span
-                                            className={`text-[13px] md:text-sm font-bold ${
-                                                isSelected ? "text-white" : ""
-                                            }`}
+                                            className={`text-[13px] md:text-sm font-bold ${isSelected ? "text-white" : ""
+                                                }`}
                                         >
                                             {cell.day}
                                         </span>
@@ -517,15 +516,14 @@ export default function AppointmentsPage() {
                                     <div className="mt-1 flex flex-col items-center gap-1 md:gap-1.5 justify-end min-h-[calc(100%-20px)]">
                                         {meta?.badgeLabel && (
                                             <span
-                                                className={`inline-flex px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-lg text-[9.5px] md:text-[10.5px] font-extrabold tracking-wide ${
-                                                    meta.badgeType === "warning"
-                                                        ? isSelected
-                                                            ? "bg-white/25 text-white ring-1 ring-white/20"
-                                                            : "bg-amber-100 text-amber-800 ring-1 ring-amber-700/20"
-                                                        : isSelected
-                                                            ? "bg-white/25 text-white ring-1 ring-white/20"
-                                                            : "bg-brand-50 text-brand-700 ring-1 ring-brand-600/20"
-                                                }`}
+                                                className={`inline-flex px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-lg text-[9.5px] md:text-[10.5px] font-extrabold tracking-wide ${meta.badgeType === "warning"
+                                                    ? isSelected
+                                                        ? "bg-white/25 text-white ring-1 ring-white/20"
+                                                        : "bg-amber-100 text-amber-800 ring-1 ring-amber-700/20 dark:bg-amber-500/10 dark:text-amber-300"
+                                                    : isSelected
+                                                        ? "bg-white/25 text-white ring-1 ring-white/20"
+                                                        : "bg-brand-50 text-brand-700 ring-1 ring-brand-600/20 dark:bg-brand-500/10 dark:text-brand-300"
+                                                    }`}
                                             >
                                                 {meta.badgeLabel}
                                             </span>
@@ -534,17 +532,15 @@ export default function AppointmentsPage() {
                                             <div className="flex items-center gap-1 mt-auto pb-0.5">
                                                 {meta.confirmed > 0 && (
                                                     <span
-                                                        className={`h-1.5 w-1.5 rounded-full ${
-                                                            isSelected ? "bg-white/90" : "bg-brand-600"
-                                                        }`}
+                                                        className={`h-1.5 w-1.5 rounded-full ${isSelected ? "bg-white/90" : "bg-brand-600"
+                                                            }`}
                                                         aria-hidden="true"
                                                     />
                                                 )}
                                                 {meta.pending > 0 && (
                                                     <span
-                                                        className={`h-1.5 w-1.5 rounded-full ${
-                                                            isSelected ? "bg-amber-200" : "bg-amber-500"
-                                                        }`}
+                                                        className={`h-1.5 w-1.5 rounded-full ${isSelected ? "bg-amber-200" : "bg-amber-500"
+                                                            }`}
                                                         aria-hidden="true"
                                                     />
                                                 )}
@@ -596,13 +592,13 @@ export default function AppointmentsPage() {
                     </div>
 
                     {/* Daily schedule */}
-                    <section className="rounded-3xl border border-neutral-200/70 bg-white shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] overflow-hidden flex flex-col">
-                        <div className="flex items-center justify-between px-5 md:px-6 py-4 md:py-5 border-b border-neutral-100">
+                    <section className="rounded-3xl border border-neutral-200/70 bg-white shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] overflow-hidden flex flex-col dark:border-neutral-800/80 dark:bg-neutral-900">
+                        <div className="flex items-center justify-between px-5 md:px-6 py-4 md:py-5 border-b border-neutral-100 dark:border-neutral-800">
                             <div>
-                                <h3 className="text-lg md:text-xl font-serif font-semibold text-neutral-900">
+                                <h3 className="text-lg md:text-xl font-serif font-semibold text-neutral-900 dark:text-neutral-100">
                                     Agenda do Dia
                                 </h3>
-                                <p className="text-xs text-neutral-500 mt-0.5">
+                                <p className="text-xs text-neutral-500 mt-0.5 dark:text-neutral-400">
                                     {formatShortHeader(selectedDate)} — {appointmentsForSelected.length} total
                                 </p>
                             </div>
@@ -621,15 +617,15 @@ export default function AppointmentsPage() {
                         <div className="flex-1 px-3 md:px-5 py-4 space-y-3 md:space-y-4 max-h-[480px] overflow-y-auto">
                             {loading && appointmentsForSelected.length === 0
                                 ? Array.from({ length: 3 }).map((_, i) => (
-                                      <AppointmentCardSkeleton key={i} />
-                                  ))
+                                    <AppointmentCardSkeleton key={i} />
+                                ))
                                 : appointmentsForSelected.map((a) => (
-                                      <AppointmentCard key={a.id} appointment={a} />
-                                  ))}
+                                    <AppointmentCard key={a.id} appointment={a} />
+                                ))}
 
                             {!loading && appointmentsForSelected.length === 0 ? (
                                 <div className="mt-6 md:mt-8 text-center py-8">
-                                    <div className="relative mx-auto h-12 w-12 inline-flex items-center justify-center rounded-full bg-neutral-100 text-neutral-400">
+                                    <div className="relative mx-auto h-12 w-12 inline-flex items-center justify-center rounded-full bg-neutral-100 text-neutral-400 dark:bg-neutral-800 dark:text-neutral-500">
                                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                                             <polyline points="22 4 12 14.01 9 11.01" />
@@ -637,11 +633,11 @@ export default function AppointmentsPage() {
                                             <line x1="16" y1="12" x2="10" y2="16" />
                                         </svg>
                                     </div>
-                                    <p className="mt-4 text-sm font-semibold text-neutral-700">
+                                    <p className="mt-4 text-sm font-semibold text-neutral-700 dark:text-neutral-200">
                                         Nenhum agendamento para {formatShortHeader(selectedDate)}
                                     </p>
-                                    <p className="mt-1 text-xs text-neutral-500 max-w-xs mx-auto leading-relaxed">
-                                        Clique em <span className="font-semibold text-brand-700">+ Novo Agendamento</span> no topo para começar.
+                                    <p className="mt-1 text-xs text-neutral-500 max-w-xs mx-auto leading-relaxed dark:text-neutral-400">
+                                        Clique em <span className="font-semibold text-brand-700 dark:text-brand-300">+ Novo Agendamento</span> no topo para começar.
                                     </p>
                                     <Link
                                         href="/dashboard/agendamento/novo"
@@ -657,10 +653,10 @@ export default function AppointmentsPage() {
                             ) : null}
                         </div>
 
-                        <div className="px-5 md:px-6 py-4 md:py-5 border-t border-neutral-100">
+                        <div className="px-5 md:px-6 py-4 md:py-5 border-t border-neutral-100 dark:border-neutral-800">
                             <Link
                                 href="/dashboard/agendamento/todos"
-                                className="group inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-brand-700/70 px-4 py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-700 hover:text-white hover:shadow-[0_8px_18px_rgba(16,142,93,0.22)] transition-all"
+                                className="group inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-brand-700/70 px-4 py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-700 hover:text-white hover:shadow-[0_8px_18px_rgba(16,142,93,0.22)] transition-all dark:border-brand-500/60 dark:text-brand-300"
                             >
                                 Ver Todos os Agendamentos
                                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">
@@ -683,7 +679,7 @@ function NavButton({ direction, onClick }: { direction: "prev" | "next"; onClick
             type="button"
             onClick={onClick}
             aria-label={isPrev ? "Mês anterior" : "Próximo mês"}
-            className="inline-flex h-11 w-11 md:h-10 md:w-10 items-center justify-center rounded-xl border border-neutral-200/80 bg-white text-neutral-700 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 transition-colors"
+            className="inline-flex h-11 w-11 md:h-10 md:w-10 items-center justify-center rounded-xl border border-neutral-200/80 bg-white text-neutral-700 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 transition-colors dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:bg-brand-500/10 dark:hover:text-brand-300 dark:hover:border-brand-500/40"
         >
             {isPrev ? (
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -701,12 +697,12 @@ function NavButton({ direction, onClick }: { direction: "prev" | "next"; onClick
 function AppointmentCard({ appointment }: { appointment: Appointment }) {
     const statusPill =
         appointment.status === "CONFIRMED"
-            ? "bg-green-100 text-green-700 ring-1 ring-green-700/15"
-            : "bg-amber-100 text-amber-700 ring-1 ring-amber-600/15"
+            ? "bg-green-100 text-green-700 ring-1 ring-green-700/15 dark:bg-green-500/10 dark:text-green-300"
+            : "bg-amber-100 text-amber-700 ring-1 ring-amber-600/15 dark:bg-amber-500/10 dark:text-amber-300"
     const statusLabel = appointment.status === "CONFIRMED" ? "Confirmado" : "Pendente"
 
     return (
-        <article className="group rounded-2xl bg-neutral-50/60 hover:bg-neutral-100/80 transition-colors p-3 md:p-4">
+        <article className="group rounded-2xl bg-neutral-50/60 hover:bg-neutral-100/80 transition-colors p-3 md:p-4 dark:bg-neutral-800/60 dark:hover:bg-neutral-700/50">
             <div className="flex items-start gap-3 md:gap-4">
                 <div
                     className={`mt-0.5 relative h-11 w-11 shrink-0 rounded-2xl bg-gradient-to-br ${appointment.avatarColor} text-white text-xs font-bold ring-2 ring-white shadow-sm flex items-center justify-center overflow-hidden`}
@@ -719,10 +715,10 @@ function AppointmentCard({ appointment }: { appointment: Appointment }) {
                 <div className="flex-1 min-w-0">
                     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                         <div className="min-w-0">
-                            <p className="text-[15px] font-semibold text-neutral-900 truncate">
+                            <p className="text-[15px] font-semibold text-neutral-900 truncate dark:text-neutral-100">
                                 {appointment.patientName}
                             </p>
-                            <p className="text-sm text-neutral-500 mt-0.5 truncate">
+                            <p className="text-sm text-neutral-500 mt-0.5 truncate dark:text-neutral-400">
                                 {appointment.procedure}
                             </p>
                         </div>
@@ -731,16 +727,16 @@ function AppointmentCard({ appointment }: { appointment: Appointment }) {
                         </span>
                     </div>
 
-                    <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs md:text-sm text-neutral-600">
+                    <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs md:text-sm text-neutral-600 dark:text-neutral-400">
                         <span className="inline-flex items-center gap-1.5">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-neutral-400">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-neutral-400 dark:text-neutral-500">
                                 <circle cx="12" cy="12" r="10" />
                                 <polyline points="12 6 12 12 16 14" />
                             </svg>
                             {appointment.time}
                         </span>
                         <span className="inline-flex items-center gap-1.5">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-neutral-400">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-neutral-400 dark:text-neutral-500">
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                 <circle cx="12" cy="7" r="4" />
                             </svg>
@@ -755,20 +751,20 @@ function AppointmentCard({ appointment }: { appointment: Appointment }) {
 
 function AppointmentCardSkeleton() {
     return (
-        <div className="rounded-2xl bg-neutral-50/60 p-3 md:p-4 animate-pulse">
+        <div className="rounded-2xl bg-neutral-50/60 p-3 md:p-4 animate-pulse dark:bg-neutral-800/60">
             <div className="flex items-start gap-3 md:gap-4">
-                <div className="h-11 w-11 shrink-0 rounded-2xl bg-neutral-200" />
+                <div className="h-11 w-11 shrink-0 rounded-2xl bg-neutral-200 dark:bg-neutral-700" />
                 <div className="flex-1 min-w-0 space-y-2.5">
                     <div className="flex items-start justify-between gap-3">
                         <div className="space-y-2 flex-1">
-                            <div className="h-4 w-40 rounded-lg bg-neutral-200" />
-                            <div className="h-3 w-28 rounded-lg bg-neutral-200" />
+                            <div className="h-4 w-40 rounded-lg bg-neutral-200 dark:bg-neutral-700" />
+                            <div className="h-3 w-28 rounded-lg bg-neutral-200 dark:bg-neutral-700" />
                         </div>
-                        <div className="h-6 w-20 rounded-full bg-neutral-200 shrink-0" />
+                        <div className="h-6 w-20 rounded-full bg-neutral-200 dark:bg-neutral-700 shrink-0" />
                     </div>
                     <div className="flex flex-wrap gap-5 pt-1">
-                        <div className="h-3 w-24 rounded-lg bg-neutral-200" />
-                        <div className="h-3 w-32 rounded-lg bg-neutral-200" />
+                        <div className="h-3 w-24 rounded-lg bg-neutral-200 dark:bg-neutral-700" />
+                        <div className="h-3 w-32 rounded-lg bg-neutral-200 dark:bg-neutral-700" />
                     </div>
                 </div>
             </div>

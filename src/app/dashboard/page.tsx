@@ -45,11 +45,11 @@ export default async function DashboardPage() {
 
     const metricsTotal = [
         { label: "TOTAL PREVISTO", value: s.total },
-        { label: "FINALIZADOS", value: s.done, valueClassName: "text-brand-600" },
+        { label: "FINALIZADOS", value: s.done, valueClassName: "text-brand-600 dark:text-brand-400" },
     ] as [Metric, Metric]
     const metricsPending = [
         { label: "NA FILA", value: s.pending },
-        { label: "EM ATENDIMENTO", value: s.inProgress, valueClassName: "text-brand-600" },
+        { label: "EM ATENDIMENTO", value: s.inProgress, valueClassName: "text-brand-600 dark:text-brand-400" },
     ] as [Metric, Metric]
     // Cast explícito necessário porque "as [Metric, Metric]" + inferência tupla
     const finalPct = s.total === 0 ? 0 : s.completedPct
@@ -61,10 +61,10 @@ export default async function DashboardPage() {
     return (
         <DashboardLayout session={session}>
             <div className="mb-6 md:mb-8">
-                <h1 className="text-2xl md:text-3xl font-serif font-semibold text-brand-800">
+                <h1 className="text-2xl md:text-3xl font-serif font-semibold text-brand-800 dark:text-brand-200">
                     Painel de Controle - Visão Geral
                 </h1>
-                <p className="mt-2 text-sm md:text-base text-neutral-600">
+                <p className="mt-2 text-sm md:text-base text-neutral-600 dark:text-neutral-400">
                     Bem-vindo de volta, {greetingName}. Aqui está o resumo do dia.
                 </p>
             </div>
@@ -72,7 +72,7 @@ export default async function DashboardPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6 md:mb-8">
                 <StatCard
                     title="Atendimentos Realizados (Hoje)"
-                    titleClassName="text-brand-700"
+                    titleClassName="text-brand-700 dark:text-brand-300"
                     percent={mTotal[1].value > 0 ? (finalPct >= 10 ? finalPct : 8) : 8}
                     percentLabel={finalPct >= 10 ? `${finalPct}% CONCLUÍDO` : "CONCLUÍDO"}
                     ringColor="stroke-brand-700"
@@ -80,7 +80,7 @@ export default async function DashboardPage() {
                 />
                 <StatCard
                     title="Atendimentos Pendentes (Hoje)"
-                    titleClassName="text-neutral-600"
+                    titleClassName="text-neutral-600 dark:text-neutral-400"
                     percent={mPending[0].value + mPending[1].value > 0 ? (pendingPct >= 10 ? pendingPct : 6) : 6}
                     percentLabel={pendingPct >= 10 ? `${pendingPct}% AGUARDANDO` : "AGUARDANDO"}
                     ringColor="stroke-neutral-600"

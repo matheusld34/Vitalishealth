@@ -345,7 +345,7 @@ export default function AllAppointmentsPage() {
             {/* Busca */}
             <div className="mx-auto max-w-md w-full">
                 <div className="relative">
-                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">
+                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <circle cx="11" cy="11" r="8" />
                             <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -356,29 +356,29 @@ export default function AllAppointmentsPage() {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Buscar por paciente, médico ou especialidade..."
-                        className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-3 pl-11 pr-4 text-sm placeholder:text-neutral-400 shadow-[0_2px_10px_rgba(15,23,42,0.05)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
+                        className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-3 pl-11 pr-4 text-sm placeholder:text-neutral-400 shadow-[0_2px_10px_rgba(15,23,42,0.05)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500"
                     />
                 </div>
             </div>
 
             {/* Breadcrumb + header + CTA */}
             <div className="space-y-4">
-                <nav className="flex items-center gap-2 text-sm text-neutral-500">
-                    <Link href="/dashboard/agendamento" className="hover:text-neutral-800 transition-colors">
+                <nav className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+                    <Link href="/dashboard/agendamento" className="hover:text-neutral-800 transition-colors dark:hover:text-neutral-100">
                         Agendamento
                     </Link>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300 dark:text-neutral-600" aria-hidden="true">
                         <polyline points="9 18 15 12 9 6" />
                     </svg>
-                    <span className="font-semibold text-brand-700">Todos os Agendamentos</span>
+                    <span className="font-semibold text-brand-700 dark:text-brand-300">Todos os Agendamentos</span>
                 </nav>
 
                 <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl md:text-4xl font-serif font-semibold tracking-tight text-neutral-900">
+                        <h1 className="text-3xl md:text-4xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                             Todos os Agendamentos
                         </h1>
-                        <p className="mt-1.5 text-sm md:text-[15px] text-neutral-600 max-w-2xl">
+                        <p className="mt-1.5 text-sm md:text-[15px] text-neutral-600 max-w-2xl dark:text-neutral-400">
                             Visualize, filtre e gerencie todas as consultas e atendimentos da clínica em um único lugar.
                         </p>
                     </div>
@@ -446,12 +446,12 @@ export default function AllAppointmentsPage() {
             </section>
 
             {/* Filtros */}
-            <section className="rounded-3xl border border-neutral-200/70 bg-white p-4 md:p-5 shadow-[0_4px_20px_-14px_rgba(15,23,42,0.15)] space-y-4">
+            <section className="rounded-3xl border border-neutral-200/70 bg-white p-4 md:p-5 shadow-[0_4px_20px_-14px_rgba(15,23,42,0.15)] space-y-4 dark:border-neutral-800/80 dark:bg-neutral-900">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                     {/* Período */}
                     <FilterField label="Período">
                         <div className="relative">
-                            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500">
+                            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500 dark:text-neutral-400">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <rect x="3" y="4" width="18" height="18" rx="2" />
                                     <line x1="16" y1="2" x2="16" y2="6" />
@@ -462,7 +462,7 @@ export default function AllAppointmentsPage() {
                             <select
                                 value={dateRange}
                                 onChange={(e) => setDateRange(e.target.value)}
-                                className="w-full appearance-none rounded-xl border border-neutral-200/80 bg-neutral-50/70 pl-10 pr-10 py-2.5 text-sm font-semibold text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
+                                className="w-full appearance-none rounded-xl border border-neutral-200/80 bg-neutral-50/70 pl-10 pr-10 py-2.5 text-sm font-semibold text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition dark:border-neutral-800 dark:bg-neutral-800 dark:text-neutral-100"
                             >
                                 <option value="hoje">Hoje</option>
                                 <option value="esta-semana">Esta Semana</option>
@@ -470,7 +470,7 @@ export default function AllAppointmentsPage() {
                                 <option value="proximo-mes">Próximo Mês</option>
                                 <option value="todos">Todos os Períodos</option>
                             </select>
-                            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400">
+                            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <polyline points="6 9 12 15 18 9" />
                                 </svg>
@@ -481,7 +481,7 @@ export default function AllAppointmentsPage() {
                     {/* Médico */}
                     <FilterField label="Médico">
                         <div className="relative">
-                            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500">
+                            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500 dark:text-neutral-400">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                     <circle cx="12" cy="7" r="4" />
@@ -490,7 +490,7 @@ export default function AllAppointmentsPage() {
                             <select
                                 value={doctorFilter}
                                 onChange={(e) => setDoctorFilter(e.target.value)}
-                                className="w-full appearance-none rounded-xl border border-neutral-200/80 bg-neutral-50/70 pl-10 pr-10 py-2.5 text-sm font-semibold text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
+                                className="w-full appearance-none rounded-xl border border-neutral-200/80 bg-neutral-50/70 pl-10 pr-10 py-2.5 text-sm font-semibold text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition dark:border-neutral-800 dark:bg-neutral-800 dark:text-neutral-100"
                             >
                                 <option value="todos">Todos os Especialistas</option>
                                 {doctorOptions.map(([id, name]) => (
@@ -499,7 +499,7 @@ export default function AllAppointmentsPage() {
                                     </option>
                                 ))}
                             </select>
-                            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400">
+                            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <polyline points="6 9 12 15 18 9" />
                                 </svg>
@@ -523,7 +523,7 @@ export default function AllAppointmentsPage() {
 
                 {/* Status chips */}
                 <div>
-                    <p className="text-[11px] font-black uppercase tracking-[0.18em] text-neutral-400 mb-2">
+                    <p className="text-[11px] font-black uppercase tracking-[0.18em] text-neutral-400 mb-2 dark:text-neutral-500">
                         Status
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -535,22 +535,22 @@ export default function AllAppointmentsPage() {
             </section>
 
             {/* Tabela */}
-            <section className="relative rounded-3xl border border-neutral-200/70 bg-white shadow-[0_4px_24px_-12px_rgba(15,23,42,0.12)] overflow-hidden">
-                <div className="flex items-center justify-between gap-3 px-5 md:px-7 py-5 border-b border-neutral-100 bg-neutral-50/40">
-                    <p className="text-xs md:text-sm text-neutral-500">
-                        Mostrando <span className="font-semibold text-neutral-800">{start}–{end}</span> de{" "}
-                        <span className="font-semibold text-neutral-800">{filtered.length.toLocaleString("pt-BR")}</span>{" "}
+            <section className="relative rounded-3xl border border-neutral-200/70 bg-white shadow-[0_4px_24px_-12px_rgba(15,23,42,0.12)] overflow-hidden dark:border-neutral-800/80 dark:bg-neutral-900">
+                <div className="flex items-center justify-between gap-3 px-5 md:px-7 py-5 border-b border-neutral-100 bg-neutral-50/40 dark:border-neutral-800 dark:bg-neutral-800/40">
+                    <p className="text-xs md:text-sm text-neutral-500 dark:text-neutral-400">
+                        Mostrando <span className="font-semibold text-neutral-800 dark:text-neutral-100">{start}–{end}</span> de{" "}
+                        <span className="font-semibold text-neutral-800 dark:text-neutral-100">{filtered.length.toLocaleString("pt-BR")}</span>{" "}
                         agendamentos
                     </p>
                     <div className="flex items-center gap-2">
                         {refreshing && (
-                            <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-brand-700">
+                            <span className="hidden sm:inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-brand-700 dark:text-brand-300">
                                 <span className="h-1.5 w-1.5 rounded-full bg-brand-600 animate-pulse" />
                                 Sincronizando
                             </span>
                         )}
                         {offline && (
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wider text-red-700 ring-1 ring-red-600/15">
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-red-50 px-2.5 py-1 text-[11px] font-black uppercase tracking-wider text-red-700 ring-1 ring-red-600/15 dark:bg-red-500/10 dark:text-red-300">
                                 offline
                             </span>
                         )}
@@ -558,7 +558,7 @@ export default function AllAppointmentsPage() {
                             type="button"
                             onClick={() => load()}
                             aria-label="Atualizar lista"
-                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-neutral-200/80 hover:bg-neutral-50 text-xs font-bold text-neutral-600 transition-colors"
+                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white border border-neutral-200/80 hover:bg-neutral-50 text-xs font-bold text-neutral-600 transition-colors dark:bg-neutral-900 dark:border-neutral-800 dark:hover:bg-neutral-800 dark:text-neutral-300"
                         >
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                 <polyline points="23 4 23 10 17 10" />
@@ -573,7 +573,7 @@ export default function AllAppointmentsPage() {
                 <div className="overflow-x-auto">
                     <table className="min-w-full">
                         <thead>
-                            <tr className="border-b border-neutral-100 bg-neutral-50/60">
+                            <tr className="border-b border-neutral-100 bg-neutral-50/60 dark:border-neutral-800 dark:bg-neutral-800/50">
                                 <Th className="pl-5 md:pl-7">Paciente</Th>
                                 <Th>Médico</Th>
                                 <Th>Data</Th>
@@ -584,102 +584,102 @@ export default function AllAppointmentsPage() {
                                 <Th className="text-right pr-5 md:pr-7">Ações</Th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-neutral-100">
+                        <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
                             {loading && all.length === 0
                                 ? Array.from({ length: 6 }).map((_, i) => <SkeletonRow key={i} />)
                                 : visible.map((r) => (
-                                      <tr key={r.id} className="group hover:bg-brand-50/30 transition-colors">
-                                          <td className="py-4 md:py-5 pl-5 md:pl-7 pr-4">
-                                              <div className="flex items-center gap-3 min-w-0">
-                                                  <div className={`relative h-11 w-11 shrink-0 rounded-full bg-gradient-to-br ${r.patientGradient} text-white text-sm font-bold shadow-sm ring-2 ring-white overflow-hidden flex items-center justify-center`}>
-                                                      {r.patientInitials}
-                                                  </div>
-                                                  <div className="min-w-0 leading-tight">
-                                                      <p className="text-[15px] font-semibold text-neutral-900 truncate">
-                                                          {r.patientName}
-                                                      </p>
-                                                      <p className="text-xs text-neutral-500 mt-0.5 truncate">
-                                                          {r.procedure}
-                                                      </p>
-                                                  </div>
-                                              </div>
-                                          </td>
-                                          <td className="py-4 md:py-5 px-4">
-                                              <div className="flex items-center gap-2.5 min-w-0">
-                                                  <div className={`relative h-9 w-9 shrink-0 rounded-full bg-gradient-to-br ${r.doctorGradient} text-white text-[11px] font-bold shadow-sm ring-2 ring-white overflow-hidden flex items-center justify-center`}>
-                                                      {r.doctorInitials}
-                                                  </div>
-                                                  <div className="min-w-0 leading-tight">
-                                                      <p className="text-sm font-semibold text-neutral-900 truncate">
-                                                          {r.doctorName}
-                                                      </p>
-                                                      <p className="text-[11px] text-neutral-500 truncate">
-                                                          {r.crm || r.specialty}
-                                                      </p>
-                                                  </div>
-                                              </div>
-                                          </td>
-                                          <td className="py-4 md:py-5 px-4">
-                                              <div className="leading-tight">
-                                                  <p className="text-sm font-bold text-neutral-900 whitespace-nowrap">{r.dateLabel}</p>
-                                                  <p className="text-[11.5px] uppercase tracking-wider font-bold text-neutral-500">
-                                                      {r.weekdayShort}
-                                                  </p>
-                                              </div>
-                                          </td>
-                                          <td className="py-4 md:py-5 px-4">
-                                              <div className="leading-tight">
-                                                  <p className="text-sm font-black text-neutral-900 tabular-nums">{r.time}</p>
-                                                  <p className="text-[11.5px] font-semibold text-neutral-500 tabular-nums">
-                                                      {r.duration}
-                                                  </p>
-                                              </div>
-                                          </td>
-                                          <td className="py-4 md:py-5 px-4">
-                                              <span className="inline-flex items-center px-3 py-1 rounded-full bg-neutral-100 text-neutral-700 text-xs font-semibold ring-1 ring-neutral-200/80 whitespace-nowrap">
-                                                  {r.specialty}
-                                              </span>
-                                          </td>
-                                          <td className="py-4 md:py-5 px-4">
-                                              <p className="text-sm font-medium text-neutral-700 whitespace-nowrap">
-                                                  {r.insurance}
-                                              </p>
-                                          </td>
-                                          <td className="py-4 md:py-5 px-4">
-                                              <StatusBadge status={r.status} />
-                                          </td>
-                                          <td className="py-4 md:py-5 pl-4 pr-5 md:pr-7">
-                                              <div className="flex items-center justify-end gap-1.5">
-                                                  {r.patientId ? (
-                                                      <Link
-                                                          href={`/dashboard/pacientes/${r.patientId}/historico`}
-                                                          aria-label={`Ver histórico de ${r.patientName}`}
-                                                          className="inline-flex items-center justify-center h-9 w-9 rounded-xl text-brand-700 bg-brand-50 ring-1 ring-brand-600/10 hover:bg-brand-100 transition-colors"
-                                                      >
-                                                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                                              <circle cx="12" cy="12" r="3" />
-                                                          </svg>
-                                                      </Link>
-                                                  ) : (
-                                                      <span className="inline-flex items-center justify-center h-9 w-9 rounded-xl text-neutral-300 bg-neutral-50 cursor-not-allowed">
-                                                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                                              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                                              <circle cx="12" cy="12" r="3" />
-                                                          </svg>
-                                                      </span>
-                                                  )}
-                                              </div>
-                                          </td>
-                                      </tr>
-                                  ))}
+                                    <tr key={r.id} className="group hover:bg-brand-50/30 transition-colors dark:hover:bg-brand-500/10">
+                                        <td className="py-4 md:py-5 pl-5 md:pl-7 pr-4">
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <div className={`relative h-11 w-11 shrink-0 rounded-full bg-gradient-to-br ${r.patientGradient} text-white text-sm font-bold shadow-sm ring-2 ring-white overflow-hidden flex items-center justify-center`}>
+                                                    {r.patientInitials}
+                                                </div>
+                                                <div className="min-w-0 leading-tight">
+                                                    <p className="text-[15px] font-semibold text-neutral-900 truncate dark:text-neutral-100">
+                                                        {r.patientName}
+                                                    </p>
+                                                    <p className="text-xs text-neutral-500 mt-0.5 truncate dark:text-neutral-400">
+                                                        {r.procedure}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="py-4 md:py-5 px-4">
+                                            <div className="flex items-center gap-2.5 min-w-0">
+                                                <div className={`relative h-9 w-9 shrink-0 rounded-full bg-gradient-to-br ${r.doctorGradient} text-white text-[11px] font-bold shadow-sm ring-2 ring-white overflow-hidden flex items-center justify-center`}>
+                                                    {r.doctorInitials}
+                                                </div>
+                                                <div className="min-w-0 leading-tight">
+                                                    <p className="text-sm font-semibold text-neutral-900 truncate dark:text-neutral-100">
+                                                        {r.doctorName}
+                                                    </p>
+                                                    <p className="text-[11px] text-neutral-500 truncate dark:text-neutral-400">
+                                                        {r.crm || r.specialty}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="py-4 md:py-5 px-4">
+                                            <div className="leading-tight">
+                                                <p className="text-sm font-bold text-neutral-900 whitespace-nowrap dark:text-neutral-100">{r.dateLabel}</p>
+                                                <p className="text-[11.5px] uppercase tracking-wider font-bold text-neutral-500 dark:text-neutral-400">
+                                                    {r.weekdayShort}
+                                                </p>
+                                            </div>
+                                        </td>
+                                        <td className="py-4 md:py-5 px-4">
+                                            <div className="leading-tight">
+                                                <p className="text-sm font-black text-neutral-900 tabular-nums dark:text-neutral-100">{r.time}</p>
+                                                <p className="text-[11.5px] font-semibold text-neutral-500 tabular-nums dark:text-neutral-400">
+                                                    {r.duration}
+                                                </p>
+                                            </div>
+                                        </td>
+                                        <td className="py-4 md:py-5 px-4">
+                                            <span className="inline-flex items-center px-3 py-1 rounded-full bg-neutral-100 text-neutral-700 text-xs font-semibold ring-1 ring-neutral-200/80 whitespace-nowrap dark:bg-neutral-800 dark:text-neutral-300 dark:ring-neutral-700/60">
+                                                {r.specialty}
+                                            </span>
+                                        </td>
+                                        <td className="py-4 md:py-5 px-4">
+                                            <p className="text-sm font-medium text-neutral-700 whitespace-nowrap dark:text-neutral-200">
+                                                {r.insurance}
+                                            </p>
+                                        </td>
+                                        <td className="py-4 md:py-5 px-4">
+                                            <StatusBadge status={r.status} />
+                                        </td>
+                                        <td className="py-4 md:py-5 pl-4 pr-5 md:pr-7">
+                                            <div className="flex items-center justify-end gap-1.5">
+                                                {r.patientId ? (
+                                                    <Link
+                                                        href={`/dashboard/pacientes/${r.patientId}/historico`}
+                                                        aria-label={`Ver histórico de ${r.patientName}`}
+                                                        className="inline-flex items-center justify-center h-9 w-9 rounded-xl text-brand-700 bg-brand-50 ring-1 ring-brand-600/10 hover:bg-brand-100 transition-colors dark:text-brand-300 dark:bg-brand-500/10 dark:hover:bg-brand-500/20"
+                                                    >
+                                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                                            <circle cx="12" cy="12" r="3" />
+                                                        </svg>
+                                                    </Link>
+                                                ) : (
+                                                    <span className="inline-flex items-center justify-center h-9 w-9 rounded-xl text-neutral-300 bg-neutral-50 cursor-not-allowed dark:text-neutral-600 dark:bg-neutral-800">
+                                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                                            <circle cx="12" cy="12" r="3" />
+                                                        </svg>
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
                         </tbody>
                     </table>
                 </div>
 
                 {showEmpty && (
                     <div className="px-6 py-14 text-center">
-                        <div className="mx-auto h-14 w-14 inline-flex items-center justify-center rounded-full bg-neutral-100 text-neutral-400">
+                        <div className="mx-auto h-14 w-14 inline-flex items-center justify-center rounded-full bg-neutral-100 text-neutral-400 dark:bg-neutral-800 dark:text-neutral-500">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                 <rect x="3" y="4" width="18" height="18" rx="2" />
                                 <line x1="16" y1="2" x2="16" y2="6" />
@@ -687,10 +687,10 @@ export default function AllAppointmentsPage() {
                                 <line x1="3" y1="10" x2="21" y2="10" />
                             </svg>
                         </div>
-                        <p className="mt-4 text-sm font-semibold text-neutral-700">
+                        <p className="mt-4 text-sm font-semibold text-neutral-700 dark:text-neutral-200">
                             Nenhum agendamento encontrado
                         </p>
-                        <p className="mt-1 text-xs text-neutral-500 max-w-sm mx-auto leading-relaxed">
+                        <p className="mt-1 text-xs text-neutral-500 max-w-sm mx-auto leading-relaxed dark:text-neutral-400">
                             Ajuste os filtros ou crie um novo agendamento para começar.
                         </p>
                         <Link
@@ -708,11 +708,11 @@ export default function AllAppointmentsPage() {
 
                 {/* Paginação */}
                 {totalPages > 1 && (
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-5 md:px-7 py-5 border-t border-neutral-100 bg-white">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-5 md:px-7 py-5 border-t border-neutral-100 bg-white dark:border-neutral-800 dark:bg-neutral-900">
                         <button
                             type="button"
                             onClick={() => setPage((p) => Math.max(1, p - 1))}
-                            className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-500 border border-transparent hover:bg-neutral-50 hover:text-neutral-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-500 border border-transparent hover:bg-neutral-50 hover:text-neutral-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed dark:text-neutral-400 dark:hover:bg-neutral-800/60 dark:hover:text-neutral-100"
                             disabled={currentPage === 1}
                         >
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -723,7 +723,7 @@ export default function AllAppointmentsPage() {
                         <div className="flex items-center gap-1.5">
                             {pageNumbers(currentPage, totalPages).map((p, i) =>
                                 p === "…" ? (
-                                    <span key={`ellipsis-${i}`} className="px-1 text-neutral-400" aria-hidden="true">
+                                    <span key={`ellipsis-${i}`} className="px-1 text-neutral-400 dark:text-neutral-500" aria-hidden="true">
                                         …
                                     </span>
                                 ) : (
@@ -736,7 +736,7 @@ export default function AllAppointmentsPage() {
                         <button
                             type="button"
                             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                            className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-800 hover:bg-neutral-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                            className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-800 hover:bg-neutral-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed dark:text-neutral-100 dark:hover:bg-neutral-800/60"
                             disabled={currentPage === totalPages}
                         >
                             Próximo
@@ -749,13 +749,13 @@ export default function AllAppointmentsPage() {
             </section>
 
             {/* Rodapé ações */}
-            <div className="h-px w-full bg-neutral-200/70" />
+            <div className="h-px w-full bg-neutral-200/70 dark:bg-neutral-800/60" />
             <footer className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4">
-                <p className="text-sm text-neutral-500 px-1">
+                <p className="text-sm text-neutral-500 px-1 dark:text-neutral-400">
                     {lastSync ? (
                         <>
                             Dados atualizados em{" "}
-                            <span className="font-semibold text-neutral-800">
+                            <span className="font-semibold text-neutral-800 dark:text-neutral-100">
                                 {lastSync.toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })},{" "}
                                 {pad(lastSync.getHours())}:{pad(lastSync.getMinutes())}
                             </span>
@@ -769,7 +769,7 @@ export default function AllAppointmentsPage() {
                         type="button"
                         onClick={exportCsv}
                         disabled={filtered.length === 0}
-                        className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-neutral-200 px-5 py-3.5 text-[14.5px] font-bold text-neutral-700 hover:bg-neutral-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-neutral-200 px-5 py-3.5 text-[14.5px] font-bold text-neutral-700 hover:bg-neutral-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed dark:border-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-800/60"
                     >
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -798,7 +798,7 @@ export default function AllAppointmentsPage() {
 
 function Th({ children, className = "" }: { children: React.ReactNode; className?: string }) {
     return (
-        <th scope="col" className={`px-4 py-4 text-left text-[11px] font-semibold tracking-[0.16em] text-neutral-500 uppercase whitespace-nowrap ${className}`}>
+        <th scope="col" className={`px-4 py-4 text-left text-[11px] font-semibold tracking-[0.16em] text-neutral-500 uppercase whitespace-nowrap dark:text-neutral-400 ${className}`}>
             {children}
         </th>
     )
@@ -809,40 +809,40 @@ function SkeletonRow() {
         <tr className="animate-pulse">
             <td className="py-4 md:py-5 pl-5 md:pl-7 pr-4">
                 <div className="flex items-center gap-3">
-                    <div className="h-11 w-11 shrink-0 rounded-full bg-neutral-200" />
+                    <div className="h-11 w-11 shrink-0 rounded-full bg-neutral-200 dark:bg-neutral-700" />
                     <div className="space-y-2">
-                        <div className="h-4 w-36 rounded-lg bg-neutral-200" />
-                        <div className="h-3 w-24 rounded-lg bg-neutral-200" />
+                        <div className="h-4 w-36 rounded-lg bg-neutral-200 dark:bg-neutral-700" />
+                        <div className="h-3 w-24 rounded-lg bg-neutral-200 dark:bg-neutral-700" />
                     </div>
                 </div>
             </td>
             <td className="py-4 md:py-5 px-4">
                 <div className="flex items-center gap-2.5">
-                    <div className="h-9 w-9 shrink-0 rounded-full bg-neutral-200" />
+                    <div className="h-9 w-9 shrink-0 rounded-full bg-neutral-200 dark:bg-neutral-700" />
                     <div className="space-y-2">
-                        <div className="h-3.5 w-28 rounded-lg bg-neutral-200" />
-                        <div className="h-2.5 w-20 rounded-lg bg-neutral-200" />
+                        <div className="h-3.5 w-28 rounded-lg bg-neutral-200 dark:bg-neutral-700" />
+                        <div className="h-2.5 w-20 rounded-lg bg-neutral-200 dark:bg-neutral-700" />
                     </div>
                 </div>
             </td>
             <td className="py-4 md:py-5 px-4">
-                <div className="h-4 w-24 rounded-lg bg-neutral-200" />
+                <div className="h-4 w-24 rounded-lg bg-neutral-200 dark:bg-neutral-700" />
             </td>
             <td className="py-4 md:py-5 px-4">
-                <div className="h-4 w-14 rounded-lg bg-neutral-200" />
+                <div className="h-4 w-14 rounded-lg bg-neutral-200 dark:bg-neutral-700" />
             </td>
             <td className="py-4 md:py-5 px-4">
-                <div className="h-6 w-24 rounded-full bg-neutral-200" />
+                <div className="h-6 w-24 rounded-full bg-neutral-200 dark:bg-neutral-700" />
             </td>
             <td className="py-4 md:py-5 px-4">
-                <div className="h-4 w-20 rounded-lg bg-neutral-200" />
+                <div className="h-4 w-20 rounded-lg bg-neutral-200 dark:bg-neutral-700" />
             </td>
             <td className="py-4 md:py-5 px-4">
-                <div className="h-6 w-24 rounded-full bg-neutral-200" />
+                <div className="h-6 w-24 rounded-full bg-neutral-200 dark:bg-neutral-700" />
             </td>
             <td className="py-4 md:py-5 pl-4 pr-5 md:pr-7">
                 <div className="flex justify-end">
-                    <div className="h-9 w-9 rounded-xl bg-neutral-200" />
+                    <div className="h-9 w-9 rounded-xl bg-neutral-200 dark:bg-neutral-700" />
                 </div>
             </td>
         </tr>
@@ -864,16 +864,16 @@ function StatCard({
 }) {
     const iconCls =
         iconType === "brand"
-            ? "bg-brand-50 text-brand-700 ring-brand-600/10"
+            ? "bg-brand-50 text-brand-700 ring-brand-600/10 dark:bg-brand-500/10 dark:text-brand-300"
             : iconType === "success"
-            ? "bg-green-50 text-green-700 ring-green-600/10"
-            : iconType === "warning"
-            ? "bg-amber-50 text-amber-700 ring-amber-600/10"
-            : "bg-sky-50 text-sky-700 ring-sky-600/10"
+                ? "bg-green-50 text-green-700 ring-green-600/10 dark:bg-green-500/10 dark:text-green-300"
+                : iconType === "warning"
+                    ? "bg-amber-50 text-amber-700 ring-amber-600/10 dark:bg-amber-500/10 dark:text-amber-300"
+                    : "bg-sky-50 text-sky-700 ring-sky-600/10 dark:bg-sky-500/10 dark:text-sky-300"
     return (
-        <div className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-6 shadow-[0_4px_20px_-14px_rgba(15,23,42,0.15)] hover:shadow-[0_8px_28px_-14px_rgba(15,23,42,0.22)] transition-shadow">
+        <div className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-6 shadow-[0_4px_20px_-14px_rgba(15,23,42,0.15)] hover:shadow-[0_8px_28px_-14px_rgba(15,23,42,0.22)] transition-shadow dark:border-neutral-800/80 dark:bg-neutral-900">
             <div className="flex items-start justify-between gap-3">
-                <p className="text-[11px] md:text-xs font-semibold tracking-[0.18em] text-neutral-400 uppercase">
+                <p className="text-[11px] md:text-xs font-semibold tracking-[0.18em] text-neutral-400 uppercase dark:text-neutral-500">
                     {label}
                 </p>
                 {icon && (
@@ -883,11 +883,11 @@ function StatCard({
                 )}
             </div>
             <div className="mt-4 flex items-end justify-between gap-3">
-                <p className="text-3xl md:text-[34px] font-black tracking-tight text-neutral-900 tabular-nums">
+                <p className="text-3xl md:text-[34px] font-black tracking-tight text-neutral-900 tabular-nums dark:text-neutral-100">
                     {value}
                 </p>
                 {badge && (
-                    <span className="mb-1 inline-flex items-center px-2.5 py-0.5 rounded-lg bg-neutral-100 text-neutral-700 text-[11px] font-black ring-1 ring-neutral-200/80">
+                    <span className="mb-1 inline-flex items-center px-2.5 py-0.5 rounded-lg bg-neutral-100 text-neutral-700 text-[11px] font-black ring-1 ring-neutral-200/80 dark:bg-neutral-800 dark:text-neutral-300 dark:ring-neutral-700/60">
                         {badge}
                     </span>
                 )}
@@ -899,7 +899,7 @@ function StatCard({
 function FilterField({ label, children }: { label: string; children: React.ReactNode }) {
     return (
         <div>
-            <p className="text-[11px] font-black uppercase tracking-[0.18em] text-neutral-400 mb-2">{label}</p>
+            <p className="text-[11px] font-black uppercase tracking-[0.18em] text-neutral-400 mb-2 dark:text-neutral-500">{label}</p>
             {children}
         </div>
     )
@@ -910,11 +910,10 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
         <button
             type="button"
             onClick={onClick}
-            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
-                active
-                    ? "bg-gradient-to-br from-brand-600 to-brand-800 text-white shadow-[0_6px_16px_-6px_rgba(16,142,93,0.55)] ring-2 ring-brand-500/20"
-                    : "bg-neutral-100 hover:bg-neutral-200/80 text-neutral-700"
-            }`}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${active
+                ? "bg-gradient-to-br from-brand-600 to-brand-800 text-white shadow-[0_6px_16px_-6px_rgba(16,142,93,0.55)] ring-2 ring-brand-500/20"
+                : "bg-neutral-100 hover:bg-neutral-200/80 text-neutral-700 dark:bg-neutral-800 dark:hover:bg-neutral-700/60 dark:text-neutral-300"
+                }`}
         >
             {children}
         </button>
@@ -933,7 +932,7 @@ function StatusChip({
     const [base] = statusStyles(label)
     const activeCls = active
         ? base
-        : "bg-neutral-100 hover:bg-neutral-200/80 text-neutral-700 ring-transparent"
+        : "bg-neutral-100 hover:bg-neutral-200/80 text-neutral-700 ring-transparent dark:bg-neutral-800 dark:hover:bg-neutral-700/60 dark:text-neutral-300"
     return (
         <button
             type="button"
@@ -958,19 +957,19 @@ function StatusBadge({ status }: { status: AptStatus }) {
 function statusStyles(s: string): [string] {
     switch (s) {
         case "Confirmado":
-            return ["bg-green-100 text-green-700 ring-green-700/15"]
+            return ["bg-green-100 text-green-700 ring-green-700/15 dark:bg-green-500/10 dark:text-green-300"]
         case "Pendente":
-            return ["bg-amber-100 text-amber-700 ring-amber-600/15"]
+            return ["bg-amber-100 text-amber-700 ring-amber-600/15 dark:bg-amber-500/10 dark:text-amber-300"]
         case "Urgente":
-            return ["bg-orange-100 text-orange-700 ring-orange-600/15"]
+            return ["bg-orange-100 text-orange-700 ring-orange-600/15 dark:bg-orange-500/10 dark:text-orange-300"]
         case "Concluído":
-            return ["bg-sky-100 text-sky-700 ring-sky-700/15"]
+            return ["bg-sky-100 text-sky-700 ring-sky-700/15 dark:bg-sky-500/10 dark:text-sky-300"]
         case "Cancelado":
-            return ["bg-red-100 text-red-700 ring-red-700/15"]
+            return ["bg-red-100 text-red-700 ring-red-700/15 dark:bg-red-500/10 dark:text-red-300"]
         case "Não Compareceu":
-            return ["bg-violet-100 text-violet-700 ring-violet-700/15"]
+            return ["bg-violet-100 text-violet-700 ring-violet-700/15 dark:bg-violet-500/10 dark:text-violet-300"]
         default:
-            return ["bg-neutral-100 text-neutral-700 ring-neutral-200/80"]
+            return ["bg-neutral-100 text-neutral-700 ring-neutral-200/80 dark:bg-neutral-800 dark:text-neutral-300 dark:ring-neutral-700/60"]
     }
 }
 
@@ -997,7 +996,7 @@ function PageButton({
         <button
             type="button"
             onClick={onClick}
-            className="inline-flex h-9 min-w-9 items-center justify-center rounded-xl px-3 text-sm font-semibold text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors"
+            className="inline-flex h-9 min-w-9 items-center justify-center rounded-xl px-3 text-sm font-semibold text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
         >
             {children}
         </button>

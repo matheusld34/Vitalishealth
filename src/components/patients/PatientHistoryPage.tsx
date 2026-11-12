@@ -413,7 +413,7 @@ export default function PatientHistoryPage({ id }: { id: string }) {
             {/* Search bar */}
             <div className="mx-auto max-w-md w-full">
                 <div className="relative">
-                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">
+                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <circle cx="11" cy="11" r="8" />
                             <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -422,30 +422,30 @@ export default function PatientHistoryPage({ id }: { id: string }) {
                     <input
                         type="search"
                         placeholder="Buscar prontuário, exames ou atendimentos..."
-                        className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-3 pl-11 pr-4 text-sm placeholder:text-neutral-400 shadow-[0_2px_10px_rgba(15,23,42,0.05)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
+                        className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-3 pl-11 pr-4 text-sm placeholder:text-neutral-400 shadow-[0_2px_10px_rgba(15,23,42,0.05)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition dark:border-neutral-800/80 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500"
                     />
                 </div>
             </div>
 
             {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 text-sm text-neutral-500">
-                <Link href="/dashboard/pacientes" className="hover:text-neutral-800 transition-colors">
+            <nav className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+                <Link href="/dashboard/pacientes" className="hover:text-neutral-800 dark:hover:text-neutral-100 transition-colors">
                     Pacientes
                 </Link>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300 dark:text-neutral-600" aria-hidden="true">
                     <polyline points="9 18 15 12 9 6" />
                 </svg>
-                <Link href={`/dashboard/pacientes/${id}`} className="hover:text-neutral-800 transition-colors">
+                <Link href={`/dashboard/pacientes/${id}`} className="hover:text-neutral-800 dark:hover:text-neutral-100 transition-colors">
                     {patient.name}
                 </Link>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300 dark:text-neutral-600" aria-hidden="true">
                     <polyline points="9 18 15 12 9 6" />
                 </svg>
-                <span className="font-semibold text-brand-700">Histórico Clínico</span>
+                <span className="font-semibold text-brand-700 dark:text-brand-300">Histórico Clínico</span>
             </nav>
 
             {/* Header perfil paciente */}
-            <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_10px_30px_-20px_rgba(15,23,42,0.25)] overflow-hidden relative">
+            <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_10px_30px_-20px_rgba(15,23,42,0.25)] overflow-hidden relative dark:border-neutral-800/80 dark:bg-neutral-900">
                 <div aria-hidden="true" className="absolute -top-24 -right-10 h-72 w-72 rounded-full bg-brand-600/5 blur-3xl" />
                 <div className="flex flex-col lg:flex-row items-start gap-6 md:gap-8 relative">
                     {/* Avatar grande */}
@@ -467,17 +467,17 @@ export default function PatientHistoryPage({ id }: { id: string }) {
                         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5 w-full">
                             <div>
                                 <div className="flex flex-wrap items-center gap-3">
-                                    <h1 className="text-3xl md:text-5xl font-serif font-semibold tracking-tight text-neutral-900">
+                                    <h1 className="text-3xl md:text-5xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                                         {patient.name}
                                     </h1>
                                     <StatusBadge status={patient.status} />
                                 </div>
-                                <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-neutral-600">
+                                <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-neutral-600 dark:text-neutral-400">
                                     <BadgePill
                                         icon="note"
                                         label="Prontuário"
                                         value={patient.record}
-                                        valueClass="font-bold text-brand-700"
+                                        valueClass="font-bold text-brand-700 dark:text-brand-300"
                                     />
                                     <BadgePill
                                         icon="insurance"
@@ -502,7 +502,7 @@ export default function PatientHistoryPage({ id }: { id: string }) {
                                 <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto justify-end">
                                     <button
                                         type="button"
-                                        className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-brand-700 px-4 md:px-5 py-2.5 md:py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-700 hover:text-white hover:shadow-[0_10px_22px_-6px_rgba(16,142,93,0.35)] transition-all"
+                                        className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-brand-700 px-4 md:px-5 py-2.5 md:py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-700 hover:text-white hover:shadow-[0_10px_22px_-6px_rgba(16,142,93,0.35)] transition-all dark:border-brand-400 dark:text-brand-300"
                                     >
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                             <path d="M12 20h9" />
@@ -562,22 +562,22 @@ export default function PatientHistoryPage({ id }: { id: string }) {
                     </div>
 
                     {/* Próximas consultas */}
-                    <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-6 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)]">
+                    <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-6 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] dark:border-neutral-800/80 dark:bg-neutral-900">
                         <header className="flex items-center justify-between gap-3 mb-4">
                             <div className="flex items-center gap-2.5">
-                                <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/10">
+                                <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/10 dark:bg-emerald-500/10 dark:text-emerald-300">
                                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                         <circle cx="12" cy="12" r="10" />
                                         <polyline points="12 6 12 12 16 14" />
                                     </svg>
                                 </span>
-                                <h3 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900">
+                                <h3 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                                     Próximas Consultas
                                 </h3>
                             </div>
                             <Link
                                 href="/dashboard/agendamento"
-                                className="text-sm font-bold text-brand-700 hover:text-brand-800 transition-colors"
+                                className="text-sm font-bold text-brand-700 hover:text-brand-800 transition-colors dark:text-brand-300 dark:hover:text-brand-200"
                             >
                                 Ver tudo
                             </Link>
@@ -589,7 +589,7 @@ export default function PatientHistoryPage({ id }: { id: string }) {
                                     <UpcomingRow key={h.id} item={h} />
                                 ))}
                             {history.filter((h) => h.status === "Confirmado").length === 0 ? (
-                                <p className="py-5 text-center text-sm text-neutral-500 rounded-2xl border border-dashed border-neutral-200">
+                                <p className="py-5 text-center text-sm text-neutral-500 rounded-2xl border border-dashed border-neutral-200 dark:text-neutral-400 dark:border-neutral-800">
                                     Nenhuma consulta confirmada para este paciente.
                                 </p>
                             ) : null}
@@ -597,7 +597,7 @@ export default function PatientHistoryPage({ id }: { id: string }) {
                     </section>
 
                     {/* Documentos Anexados */}
-                    <section className="rounded-3xl border-2 border-dashed border-neutral-300/90 bg-white/40 p-5 md:p-6">
+                    <section className="rounded-3xl border-2 border-dashed border-neutral-300/90 bg-white/40 p-5 md:p-6 dark:border-neutral-700 dark:bg-neutral-900/40">
                         <header className="flex items-center justify-between gap-3 mb-4">
                             <div className="flex items-center gap-2.5">
                                 <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-700 text-white ring-1 ring-brand-700/50">
@@ -605,18 +605,18 @@ export default function PatientHistoryPage({ id }: { id: string }) {
                                         <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
                                     </svg>
                                 </span>
-                                <h3 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900">
+                                <h3 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                                     Documentos e Exames
                                 </h3>
                             </div>
                             <button
                                 type="button"
-                                className="text-xs font-bold text-brand-700 hover:text-brand-800"
+                                className="text-xs font-bold text-brand-700 hover:text-brand-800 dark:text-brand-300 dark:hover:text-brand-200"
                             >
                                 Upload +
                             </button>
                         </header>
-                        <p className="text-sm text-neutral-600 leading-relaxed max-w-md mb-4">
+                        <p className="text-sm text-neutral-600 leading-relaxed max-w-md mb-4 dark:text-neutral-400">
                             Arraste arquivos aqui para anexar laudos, radiografias ou históricos externos.
                         </p>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -628,10 +628,10 @@ export default function PatientHistoryPage({ id }: { id: string }) {
                 </div>
 
                 {/* Timeline Histórico */}
-                <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)]">
+                <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] dark:border-neutral-800/80 dark:bg-neutral-900">
                     <header className="flex items-center justify-between gap-3 mb-6">
                         <div className="flex items-center gap-2.5">
-                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-brand-600/10">
+                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-brand-600/10 dark:bg-brand-500/10 dark:text-brand-300">
                                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <circle cx="12" cy="12" r="10" />
                                     <line x1="12" y1="16" x2="12" y2="12" />
@@ -639,17 +639,17 @@ export default function PatientHistoryPage({ id }: { id: string }) {
                                 </svg>
                             </span>
                             <div>
-                                <h2 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900">
+                                <h2 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                                     Linha do Tempo Clínica
                                 </h2>
-                                <p className="text-sm text-neutral-500 mt-0.5">
+                                <p className="text-sm text-neutral-500 mt-0.5 dark:text-neutral-400">
                                     {history.length} atendimentos registrados
                                 </p>
                             </div>
                         </div>
                         <button
                             type="button"
-                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200/80 text-neutral-700 text-xs font-bold transition-colors"
+                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-neutral-100 hover:bg-neutral-200/80 text-neutral-700 text-xs font-bold transition-colors dark:bg-neutral-800 dark:hover:bg-neutral-700/80 dark:text-neutral-200"
                         >
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                 <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
@@ -663,18 +663,18 @@ export default function PatientHistoryPage({ id }: { id: string }) {
             </div>
 
             {/* Rodapé ações */}
-            <div className="h-px w-full bg-neutral-200/70" />
+            <div className="h-px w-full bg-neutral-200/70 dark:bg-neutral-800" />
             <footer className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4">
                 <Link
                     href="/dashboard/pacientes"
-                    className="inline-flex items-center justify-center sm:justify-start text-sm font-semibold text-neutral-600 hover:text-neutral-900 transition-colors px-3 py-2.5 -mx-3"
+                    className="inline-flex items-center justify-center sm:justify-start text-sm font-semibold text-neutral-600 hover:text-neutral-900 transition-colors px-3 py-2.5 -mx-3 dark:text-neutral-400 dark:hover:text-neutral-100"
                 >
                     ← Voltar para listagem de pacientes
                 </Link>
                 <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3">
                     <button
                         type="button"
-                        className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-neutral-200 px-5 py-3.5 text-[14px] font-bold text-neutral-600 hover:bg-neutral-50 transition-colors"
+                        className="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-neutral-200 px-5 py-3.5 text-[14px] font-bold text-neutral-600 hover:bg-neutral-50 transition-colors dark:border-neutral-800 dark:text-neutral-400 dark:hover:bg-neutral-800/60"
                     >
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -726,13 +726,13 @@ function StatusBadgePill({ status, floating }: { status: PatientDetail["status"]
 function statusStyles(s: PatientDetail["status"]) {
     switch (s) {
         case "Em Tratamento":
-            return ["bg-neutral-100 text-neutral-700 ring-neutral-200", "Em Tratamento"]
+            return ["bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 ring-neutral-200 dark:ring-neutral-700", "Em Tratamento"]
         case "Ativo":
-            return ["bg-green-100 text-green-700 ring-green-700/15", "Ativo"]
+            return ["bg-green-100 dark:bg-green-500/10 text-green-700 dark:text-green-300 ring-green-700/15", "Ativo"]
         case "Aguardando":
-            return ["bg-neutral-200 text-neutral-700 ring-neutral-300", "Aguardando"]
+            return ["bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 ring-neutral-300 dark:ring-neutral-600", "Aguardando"]
         case "Inativo":
-            return ["bg-red-100 text-red-700 ring-red-700/15", "Inativo"]
+            return ["bg-red-100 dark:bg-red-500/10 text-red-700 dark:text-red-300 ring-red-700/15", "Inativo"]
     }
 }
 
@@ -749,7 +749,7 @@ function BadgePill({
 }) {
     return (
         <span className="inline-flex items-center gap-2">
-            <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-neutral-100 text-neutral-500">
+            <span className="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
                 {icon === "note" && (
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -770,17 +770,17 @@ function BadgePill({
                     </svg>
                 )}
             </span>
-            <span className="text-xs text-neutral-500 font-semibold">{label}:</span>
-            <span className={`text-sm font-semibold text-neutral-900 ${valueClass ?? ""}`}>{value}</span>
+            <span className="text-xs text-neutral-500 font-semibold dark:text-neutral-400">{label}:</span>
+            <span className={`text-sm font-semibold text-neutral-900 dark:text-neutral-100 ${valueClass ?? ""}`}>{value}</span>
         </span>
     )
 }
 
 function InfoChip({ icon, label, value }: { icon: "document" | "phone" | "email"; label: string; value: string }) {
     return (
-        <div className="rounded-2xl border border-neutral-200/80 bg-neutral-50/70 px-3.5 py-3">
-            <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-neutral-500 mb-1.5">
-                <span className="inline-flex h-5 w-5 items-center justify-center rounded-md bg-white ring-1 ring-neutral-200/90 text-neutral-500">
+        <div className="rounded-2xl border border-neutral-200/80 bg-neutral-50/70 px-3.5 py-3 dark:border-neutral-800/80 dark:bg-neutral-900/60">
+            <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.16em] text-neutral-500 mb-1.5 dark:text-neutral-400">
+                <span className="inline-flex h-5 w-5 items-center justify-center rounded-md bg-white ring-1 ring-neutral-200/90 text-neutral-500 dark:bg-neutral-900 dark:ring-neutral-800/90 dark:text-neutral-400">
                     {icon === "document" && (
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <rect x="3" y="4" width="18" height="18" rx="2" />
@@ -800,8 +800,8 @@ function InfoChip({ icon, label, value }: { icon: "document" | "phone" | "email"
                         </svg>
                     )}
                 </span>
-                <span className="text-[13.5px] font-semibold text-neutral-900 truncate block">{value}</span>
-                <span className="block text-xs text-neutral-500 font-medium">{label}</span>
+                <span className="text-[13.5px] font-semibold text-neutral-900 truncate block dark:text-neutral-100">{value}</span>
+                <span className="block text-xs text-neutral-500 font-medium dark:text-neutral-400">{label}</span>
             </div>
         </div>
     )
@@ -823,7 +823,7 @@ function MiniCard({
     suffix?: React.ReactNode
 }) {
     return (
-        <div className="relative overflow-hidden rounded-2xl border border-neutral-200/80 bg-white p-3.5 md:p-4 shadow-[0_4px_20px_-16px_rgba(15,23,42,0.15)]">
+        <div className="relative overflow-hidden rounded-2xl border border-neutral-200/80 bg-white p-3.5 md:p-4 shadow-[0_4px_20px_-16px_rgba(15,23,42,0.15)] dark:border-neutral-800/80 dark:bg-neutral-900">
             <div className="flex items-start justify-between mb-3">
                 <span className={`relative inline-flex h-8 w-8 items-center justify-center rounded-xl text-white bg-gradient-to-br ${accent} shadow-sm`}>
                     {icon === "stethoscope" && (
@@ -856,16 +856,16 @@ function MiniCard({
                 </span>
                 {suffix}
             </div>
-            <p className="text-[11px] md:text-xs font-bold uppercase tracking-[0.14em] text-neutral-500">{label}</p>
-            <p className="mt-1 text-2xl md:text-3xl font-black text-neutral-900 tracking-tight leading-none">{value}</p>
-            {hint && <p className="mt-1 text-[11.5px] text-neutral-500 truncate">{hint}</p>}
+            <p className="text-[11px] md:text-xs font-bold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">{label}</p>
+            <p className="mt-1 text-2xl md:text-3xl font-black text-neutral-900 tracking-tight leading-none dark:text-neutral-100">{value}</p>
+            {hint && <p className="mt-1 text-[11.5px] text-neutral-500 truncate dark:text-neutral-400">{hint}</p>}
         </div>
     )
 }
 
 function BadgeSmallTrend() {
     return (
-        <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-700 text-[10px] font-black tracking-wide">
+        <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-emerald-100 text-emerald-700 text-[10px] font-black tracking-wide dark:bg-emerald-500/10 dark:text-emerald-300">
             <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <polyline points="17 11 12 6 7 11" />
                 <line x1="12" y1="18" x2="12" y2="6" />
@@ -877,30 +877,30 @@ function BadgeSmallTrend() {
 
 function UpcomingRow({ item }: { item: HistoryItem }) {
     return (
-        <div className="flex items-start gap-3 p-3 rounded-2xl hover:bg-neutral-50 transition-colors">
+        <div className="flex items-start gap-3 p-3 rounded-2xl hover:bg-neutral-50 transition-colors dark:hover:bg-neutral-800/60">
             <div className={`h-10 w-10 shrink-0 rounded-xl bg-gradient-to-br ${item.doctorAvatar} text-white flex items-center justify-center text-[11px] font-bold ring-2 ring-white shadow-sm`}>
                 {item.doctor.split(" ").slice(-1).map((p) => p[0]).join("")}
             </div>
             <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-3">
                     <div>
-                        <p className="text-sm font-bold text-neutral-900 truncate">{item.doctor}</p>
-                        <p className="text-xs text-neutral-500 mt-0.5 truncate">{item.kind}</p>
+                        <p className="text-sm font-bold text-neutral-900 truncate dark:text-neutral-100">{item.doctor}</p>
+                        <p className="text-xs text-neutral-500 mt-0.5 truncate dark:text-neutral-400">{item.kind}</p>
                     </div>
-                    <span className="shrink-0 inline-flex items-center px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-[10px] font-black tracking-wide ring-1 ring-green-700/10">
+                    <span className="shrink-0 inline-flex items-center px-2.5 py-1 rounded-full bg-green-100 text-green-700 text-[10px] font-black tracking-wide ring-1 ring-green-700/10 dark:bg-green-500/10 dark:text-green-300">
                         {item.status.toUpperCase()}
                     </span>
                 </div>
-                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-neutral-600">
+                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-neutral-600 dark:text-neutral-400">
                     <span className="inline-flex items-center gap-1">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-neutral-400">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-neutral-400 dark:text-neutral-500">
                             <circle cx="12" cy="12" r="10" />
                             <polyline points="12 6 12 12 16 14" />
                         </svg>
                         {item.dayRef.split("·")[0].trim()}
                     </span>
                     <span className="inline-flex items-center gap-1">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-neutral-400">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-neutral-400 dark:text-neutral-500">
                             <rect x="3" y="4" width="18" height="18" rx="2" />
                             <line x1="16" y1="2" x2="16" y2="6" />
                             <line x1="8" y1="2" x2="8" y2="6" />
@@ -916,7 +916,7 @@ function UpcomingRow({ item }: { item: HistoryItem }) {
 
 function ThumbDoc({ label, kind, date, image }: { label: string; kind: "LAB" | "IMG"; date: string; image?: boolean }) {
     return (
-        <div className="aspect-[3/4] relative rounded-2xl bg-white border border-neutral-200/80 shadow-[0_4px_14px_-12px_rgba(15,23,42,0.2)] overflow-hidden group hover:-translate-y-0.5 transition-transform">
+        <div className="aspect-[3/4] relative rounded-2xl bg-white border border-neutral-200/80 shadow-[0_4px_14px_-12px_rgba(15,23,42,0.2)] overflow-hidden group hover:-translate-y-0.5 transition-transform dark:bg-neutral-900 dark:border-neutral-800/80">
             <div className={`absolute inset-0 flex items-center justify-center ${image ? "bg-gradient-to-br from-slate-200 via-neutral-100 to-slate-300" : "bg-gradient-to-br from-emerald-50 via-white to-brand-50"}`}>
                 {image ? (
                     <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="rgba(15,23,42,0.45)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -938,7 +938,7 @@ function ThumbDoc({ label, kind, date, image }: { label: string; kind: "LAB" | "
             <button
                 type="button"
                 aria-label="Baixar documento"
-                className="absolute top-2 right-2 h-6 w-6 rounded-full bg-white/90 hover:bg-white text-neutral-700 inline-flex items-center justify-center transition-colors opacity-0 group-hover:opacity-100"
+                className="absolute top-2 right-2 h-6 w-6 rounded-full bg-white/90 hover:bg-white text-neutral-700 inline-flex items-center justify-center transition-colors opacity-0 group-hover:opacity-100 dark:bg-neutral-800/90 dark:hover:bg-neutral-800 dark:text-neutral-200"
             >
                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -958,9 +958,9 @@ function AddDoc() {
     return (
         <button
             type="button"
-            className="aspect-[3/4] rounded-2xl border-2 border-dashed border-neutral-300/90 hover:border-brand-400/70 hover:bg-brand-50/50 transition-colors p-3 flex flex-col items-center justify-center gap-1.5 text-neutral-500 hover:text-brand-700"
+            className="aspect-[3/4] rounded-2xl border-2 border-dashed border-neutral-300/90 hover:border-brand-400/70 hover:bg-brand-50/50 transition-colors p-3 flex flex-col items-center justify-center gap-1.5 text-neutral-500 hover:text-brand-700 dark:border-neutral-700 dark:hover:bg-brand-500/10 dark:text-neutral-400 dark:hover:text-brand-300"
         >
-            <span className="relative inline-flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-xl bg-white ring-1 ring-neutral-200">
+            <span className="relative inline-flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-xl bg-white ring-1 ring-neutral-200 dark:bg-neutral-900 dark:ring-neutral-800">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <line x1="12" y1="5" x2="12" y2="19" />
                     <line x1="5" y1="12" x2="19" y2="12" />
@@ -975,7 +975,7 @@ function AddDoc() {
 
 function Timeline({ items }: { items: HistoryItem[] }) {
     return (
-        <ol className="relative border-l-2 border-neutral-200/80 ml-2">
+        <ol className="relative border-l-2 border-neutral-200/80 ml-2 dark:border-neutral-800/80">
             {items.map((it, idx) => {
                 const isLast = idx === items.length - 1
                 return (
@@ -991,17 +991,17 @@ function Timeline({ items }: { items: HistoryItem[] }) {
                             <span className="sr-only">{it.status}</span>
                         </span>
 
-                        <div className="rounded-2xl border border-neutral-200/70 bg-neutral-50/60 hover:bg-white hover:shadow-[0_10px_26px_-16px_rgba(15,23,42,0.15)] transition-all p-3.5 md:p-4">
+                        <div className="rounded-2xl border border-neutral-200/70 bg-neutral-50/60 hover:bg-white hover:shadow-[0_10px_26px_-16px_rgba(15,23,42,0.15)] transition-all p-3.5 md:p-4 dark:border-neutral-800/80 dark:bg-neutral-900/60 dark:hover:bg-neutral-800">
                             <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 mb-2.5">
-                                <span className="text-[11.5px] font-black uppercase tracking-[0.16em] text-neutral-500 flex items-center gap-1">
+                                <span className="text-[11.5px] font-black uppercase tracking-[0.16em] text-neutral-500 flex items-center gap-1 dark:text-neutral-400">
                                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                         <circle cx="12" cy="12" r="10" />
                                         <polyline points="12 6 12 12 16 14" />
                                     </svg>
                                     {it.dayRef}
                                 </span>
-                                <span className="h-1 w-1 rounded-full bg-neutral-300" />
-                                <span className="text-[11.5px] font-bold text-neutral-600">{it.room}</span>
+                                <span className="h-1 w-1 rounded-full bg-neutral-300 dark:bg-neutral-600" />
+                                <span className="text-[11.5px] font-bold text-neutral-600 dark:text-neutral-400">{it.room}</span>
                                 <span className={`ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10.5px] font-black tracking-wide ring-1 ${timelineStatusStyle(it.status)}`}>
                                     {it.status.toUpperCase()}
                                 </span>
@@ -1009,32 +1009,32 @@ function Timeline({ items }: { items: HistoryItem[] }) {
 
                             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-2">
                                 <div>
-                                    <h4 className="text-sm md:text-[15px] font-bold text-neutral-900">
+                                    <h4 className="text-sm md:text-[15px] font-bold text-neutral-900 dark:text-neutral-100">
                                         {it.kind}
                                     </h4>
                                     <div className="mt-1.5 inline-flex items-center gap-2">
                                         <span className={`h-7 w-7 rounded-xl bg-gradient-to-br ${it.doctorAvatar} text-white text-[10.5px] font-bold flex items-center justify-center shadow-sm ring-2 ring-white shrink-0`}>
                                             {it.doctor.split(" ").slice(-1).map((p) => p[0]).join("")}
                                         </span>
-                                        <span className="text-sm text-neutral-700 font-medium">{it.doctor}</span>
+                                        <span className="text-sm text-neutral-700 font-medium dark:text-neutral-200">{it.doctor}</span>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-1.5 sm:justify-end text-[11.5px] text-neutral-500">
+                                <div className="flex items-center gap-1.5 sm:justify-end text-[11.5px] text-neutral-500 dark:text-neutral-400">
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                                     </svg>
-                                    <span className="font-semibold text-neutral-600">Anotações clínicas</span>
+                                    <span className="font-semibold text-neutral-600 dark:text-neutral-400">Anotações clínicas</span>
                                 </div>
                             </div>
 
-                            <p className="text-[13.5px] leading-relaxed text-neutral-700 bg-white rounded-xl p-3 md:p-3.5 ring-1 ring-neutral-200/70">
+                            <p className="text-[13.5px] leading-relaxed text-neutral-700 bg-white rounded-xl p-3 md:p-3.5 ring-1 ring-neutral-200/70 dark:text-neutral-200 dark:bg-neutral-900 dark:ring-neutral-800/70">
                                 {it.observations}
                             </p>
 
                             <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
                                 <button
                                     type="button"
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white ring-1 ring-neutral-200 hover:ring-brand-300 hover:text-brand-700 text-neutral-600 text-xs font-bold transition-colors"
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white ring-1 ring-neutral-200 hover:ring-brand-300 hover:text-brand-700 text-neutral-600 text-xs font-bold transition-colors dark:bg-neutral-900 dark:ring-neutral-800 dark:text-neutral-400"
                                 >
                                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -1044,7 +1044,7 @@ function Timeline({ items }: { items: HistoryItem[] }) {
                                 </button>
                                 <button
                                     type="button"
-                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-50 ring-1 ring-brand-600/10 hover:ring-brand-500 text-brand-700 text-xs font-bold transition-colors"
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-50 ring-1 ring-brand-600/10 hover:ring-brand-500 text-brand-700 text-xs font-bold transition-colors dark:bg-brand-500/10 dark:text-brand-300"
                                 >
                                     <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                         <path d="M12 20h9" />
@@ -1064,12 +1064,12 @@ function Timeline({ items }: { items: HistoryItem[] }) {
 function timelineStatusStyle(s: HistoryItem["status"]) {
     switch (s) {
         case "Concluído":
-            return "bg-green-100 text-green-700 ring-green-700/15"
+            return "bg-green-100 text-green-700 ring-green-700/15 dark:bg-green-500/10 dark:text-green-300"
         case "Confirmado":
-            return "bg-amber-100 text-amber-700 ring-amber-600/15"
+            return "bg-amber-100 text-amber-700 ring-amber-600/15 dark:bg-amber-500/10 dark:text-amber-300"
         case "Cancelado":
-            return "bg-red-100 text-red-700 ring-red-700/15"
+            return "bg-red-100 text-red-700 ring-red-700/15 dark:bg-red-500/10 dark:text-red-300"
         case "Em Andamento":
-            return "bg-brand-50 text-brand-700 ring-brand-600/15"
+            return "bg-brand-50 text-brand-700 ring-brand-600/15 dark:bg-brand-500/10 dark:text-brand-300"
     }
 }

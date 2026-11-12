@@ -271,7 +271,7 @@ export default function NewAppointmentPage() {
             {/* Busca topo */}
             <div className="mx-auto max-w-md w-full">
                 <div className="relative">
-                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">
+                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <circle cx="11" cy="11" r="8" />
                             <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -280,7 +280,7 @@ export default function NewAppointmentPage() {
                     <input
                         type="search"
                         placeholder="Buscar paciente, médico ou registro..."
-                        className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-3 pl-11 pr-4 text-sm placeholder:text-neutral-400 shadow-[0_2px_10px_rgba(15,23,42,0.05)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
+                        className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-3 pl-11 pr-4 text-sm placeholder:text-neutral-400 shadow-[0_2px_10px_rgba(15,23,42,0.05)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition dark:border-neutral-800/80 dark:bg-neutral-900/80 dark:placeholder:text-neutral-500"
                     />
                 </div>
             </div>
@@ -288,16 +288,16 @@ export default function NewAppointmentPage() {
             {/* Breadcrumb + título + botões */}
             <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-5">
                 <div className="space-y-3">
-                    <nav className="flex items-center gap-2 text-sm text-neutral-500">
-                        <Link href="/dashboard/agendamento" className="hover:text-neutral-800 transition-colors">
+                    <nav className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+                        <Link href="/dashboard/agendamento" className="hover:text-neutral-800 transition-colors dark:hover:text-neutral-200">
                             Appointments
                         </Link>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300" aria-hidden="true">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300 dark:text-neutral-600" aria-hidden="true">
                             <polyline points="9 18 15 12 9 6" />
                         </svg>
-                        <span className="font-semibold text-brand-700">Novo Atendimento</span>
+                        <span className="font-semibold text-brand-700 dark:text-brand-300">Novo Atendimento</span>
                     </nav>
-                    <h1 className="text-3xl md:text-4xl font-serif font-semibold tracking-tight text-neutral-900">
+                    <h1 className="text-3xl md:text-4xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                         Novo Atendimento
                     </h1>
                 </div>
@@ -305,7 +305,7 @@ export default function NewAppointmentPage() {
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                     <Link
                         href="/dashboard/agendamento"
-                        className="inline-flex items-center justify-center rounded-2xl border-2 border-neutral-200 px-6 py-3 text-[14.5px] font-bold text-neutral-700 hover:bg-neutral-50 transition-colors"
+                        className="inline-flex items-center justify-center rounded-2xl border-2 border-neutral-200 px-6 py-3 text-[14.5px] font-bold text-neutral-700 hover:bg-neutral-50 transition-colors dark:border-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-800/60"
                     >
                         Cancelar
                     </Link>
@@ -332,15 +332,15 @@ export default function NewAppointmentPage() {
                 {/* Coluna formulário */}
                 <div className="space-y-5 md:space-y-6">
                     {/* Bloco 1: Informações Principais */}
-                    <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)]">
+                    <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] dark:border-neutral-800/80 dark:bg-neutral-900">
                         <header className="flex items-center gap-2.5 mb-6">
-                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-brand-600/10">
+                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-brand-600/10 dark:bg-brand-500/10 dark:text-brand-300">
                                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <circle cx="12" cy="7" r="4" />
                                     <path d="M5.5 21a6.5 6.5 0 0 1 13 0" />
                                 </svg>
                             </span>
-                            <h2 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900">
+                            <h2 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                                 Informações Principais
                             </h2>
                         </header>
@@ -349,10 +349,10 @@ export default function NewAppointmentPage() {
                             {/* Paciente */}
                             <div>
                                 <div className="flex items-center justify-between mb-2">
-                                    <label className="text-sm font-bold text-neutral-700">Paciente</label>
+                                    <label className="text-sm font-bold text-neutral-700 dark:text-neutral-200">Paciente</label>
                                     <Link
                                         href="/dashboard/pacientes/novo"
-                                        className="inline-flex items-center gap-1 text-[11.5px] font-black uppercase tracking-[0.14em] text-brand-700 hover:text-brand-800"
+                                        className="inline-flex items-center gap-1 text-[11.5px] font-black uppercase tracking-[0.14em] text-brand-700 hover:text-brand-800 dark:text-brand-300 dark:hover:text-brand-200"
                                     >
                                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                             <line x1="12" y1="5" x2="12" y2="19" />
@@ -380,7 +380,7 @@ export default function NewAppointmentPage() {
                                     }))}
                                 />
                                 {!loadingOptions && !patientOpts.length && (
-                                    <p className="mt-2 text-[12.5px] font-semibold text-amber-700">
+                                    <p className="mt-2 text-[12.5px] font-semibold text-amber-700 dark:text-amber-300">
                                         Cadastre o paciente em{" "}
                                         <Link href="/dashboard/pacientes/novo" className="underline">
                                             Pacientes → Novo
@@ -392,7 +392,7 @@ export default function NewAppointmentPage() {
 
                             {/* Médico */}
                             <div>
-                                <label className="block text-sm font-bold text-neutral-700 mb-2">
+                                <label className="block text-sm font-bold text-neutral-700 mb-2 dark:text-neutral-200">
                                     Médico Responsável
                                 </label>
                                 <SelectWrapper
@@ -414,7 +414,7 @@ export default function NewAppointmentPage() {
                                     }))}
                                 />
                                 {!loadingOptions && !doctorOpts.length && (
-                                    <p className="mt-2 text-[12.5px] font-semibold text-amber-700">
+                                    <p className="mt-2 text-[12.5px] font-semibold text-amber-700 dark:text-amber-300">
                                         Cadastre o profissional em{" "}
                                         <Link href="/dashboard/medicos" className="underline">
                                             Médicos
@@ -427,9 +427,9 @@ export default function NewAppointmentPage() {
                     </section>
 
                     {/* Bloco 2: Data e Horário */}
-                    <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)]">
+                    <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] dark:border-neutral-800/80 dark:bg-neutral-900">
                         <header className="flex items-center gap-2.5 mb-6">
-                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-brand-600/10">
+                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-brand-600/10 dark:bg-brand-500/10 dark:text-brand-300">
                                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <rect x="3" y="5" width="18" height="16" rx="2" />
                                     <line x1="3" y1="10" x2="21" y2="10" />
@@ -438,7 +438,7 @@ export default function NewAppointmentPage() {
                                 </svg>
                             </span>
                             <div className="flex-1 min-w-0">
-                                <h2 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900">
+                                <h2 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                                     Data e Horário
                                 </h2>
                             </div>
@@ -452,7 +452,7 @@ export default function NewAppointmentPage() {
                                     setJumpDateInput(iso)
                                     setViewMonth(new Date(t.getFullYear(), t.getMonth(), 1))
                                 }}
-                                className="inline-flex items-center gap-1.5 rounded-xl bg-brand-50 text-brand-700 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] ring-1 ring-brand-600/10 hover:bg-brand-100 transition-colors"
+                                className="inline-flex items-center gap-1.5 rounded-xl bg-brand-50 text-brand-700 px-3 py-2 text-xs font-black uppercase tracking-[0.12em] ring-1 ring-brand-600/10 hover:bg-brand-100 transition-colors dark:bg-brand-500/10 dark:text-brand-300 dark:hover:bg-brand-500/20"
                             >
                                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <circle cx="12" cy="12" r="10" />
@@ -465,11 +465,11 @@ export default function NewAppointmentPage() {
                         {/* Barra busca rápida por data + mês/ano navegação */}
                         <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1.7fr)] gap-5 mb-6">
                             <div>
-                                <label className="block text-xs font-black uppercase tracking-[0.14em] text-neutral-500 mb-2">
+                                <label className="block text-xs font-black uppercase tracking-[0.14em] text-neutral-500 mb-2 dark:text-neutral-400">
                                     Ir para data
                                 </label>
                                 <div className="relative">
-                                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500">
+                                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500 dark:text-neutral-400">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                             <rect x="3" y="4" width="18" height="18" rx="2" />
                                             <line x1="16" y1="2" x2="16" y2="6" />
@@ -500,19 +500,19 @@ export default function NewAppointmentPage() {
                                             const d = safeParseIso(v)
                                             setViewMonth(new Date(d.getFullYear(), d.getMonth(), 1))
                                         }}
-                                        className="w-full rounded-2xl border-2 border-neutral-200/80 bg-white pl-12 pr-4 py-3 text-sm font-semibold text-neutral-800 tabular-nums focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
+                                        className="w-full rounded-2xl border-2 border-neutral-200/80 bg-white pl-12 pr-4 py-3 text-sm font-semibold text-neutral-800 tabular-nums focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition dark:border-neutral-800/80 dark:bg-neutral-900 dark:text-neutral-100"
                                     />
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-3 md:gap-4 rounded-2xl border-2 border-neutral-200/80 bg-gradient-to-br from-neutral-50 to-white px-4 py-3">
+                            <div className="flex items-center gap-3 md:gap-4 rounded-2xl border-2 border-neutral-200/80 bg-gradient-to-br from-neutral-50 to-white px-4 py-3 dark:border-neutral-800/80 dark:from-neutral-800/40 dark:to-neutral-900">
                                 <button
                                     type="button"
                                     aria-label="Mês anterior"
                                     onClick={() =>
                                         setViewMonth((v) => new Date(v.getFullYear(), v.getMonth() - 1, 1))
                                     }
-                                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white border border-neutral-200/80 text-neutral-600 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 transition-colors"
+                                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white border border-neutral-200/80 text-neutral-600 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 transition-colors dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-brand-500/10 dark:hover:text-brand-300 dark:hover:border-brand-500/30"
                                 >
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                         <polyline points="15 18 9 12 15 6" />
@@ -528,7 +528,7 @@ export default function NewAppointmentPage() {
                                                 new Date(viewMonth.getFullYear(), Number(e.target.value), 1)
                                             )
                                         }
-                                        className="bg-transparent px-2 py-1.5 rounded-xl appearance-none text-[15px] md:text-base font-black text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand-500/30 cursor-pointer hover:bg-white"
+                                        className="bg-transparent px-2 py-1.5 rounded-xl appearance-none text-[15px] md:text-base font-black text-neutral-900 focus:outline-none focus:ring-2 focus:ring-brand-500/30 cursor-pointer hover:bg-white dark:text-neutral-100 dark:hover:bg-neutral-800"
                                     >
                                         {MONTHS.map((m, i) => (
                                             <option key={m} value={i}>
@@ -544,7 +544,7 @@ export default function NewAppointmentPage() {
                                                 new Date(Number(e.target.value), viewMonth.getMonth(), 1)
                                             )
                                         }
-                                        className="bg-transparent px-2 py-1.5 rounded-xl appearance-none text-[15px] md:text-base font-black text-neutral-900 tabular-nums focus:outline-none focus:ring-2 focus:ring-brand-500/30 cursor-pointer hover:bg-white"
+                                        className="bg-transparent px-2 py-1.5 rounded-xl appearance-none text-[15px] md:text-base font-black text-neutral-900 tabular-nums focus:outline-none focus:ring-2 focus:ring-brand-500/30 cursor-pointer hover:bg-white dark:text-neutral-100 dark:hover:bg-neutral-800"
                                     >
                                         {Array.from({ length: 11 }, (_, i) => viewMonth.getFullYear() - 2 + i).map((y) => (
                                             <option key={y} value={y}>
@@ -560,7 +560,7 @@ export default function NewAppointmentPage() {
                                     onClick={() =>
                                         setViewMonth((v) => new Date(v.getFullYear(), v.getMonth() + 1, 1))
                                     }
-                                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white border border-neutral-200/80 text-neutral-600 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 transition-colors"
+                                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white border border-neutral-200/80 text-neutral-600 hover:bg-brand-50 hover:text-brand-700 hover:border-brand-200 transition-colors dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-brand-500/10 dark:hover:text-brand-300 dark:hover:border-brand-500/30"
                                 >
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                         <polyline points="9 18 15 12 9 6" />
@@ -576,7 +576,7 @@ export default function NewAppointmentPage() {
                                 {WEEK_DAYS.map((d) => (
                                     <div
                                         key={d}
-                                        className="text-center text-[11px] font-black uppercase tracking-[0.16em] text-neutral-500 py-2"
+                                        className="text-center text-[11px] font-black uppercase tracking-[0.16em] text-neutral-500 py-2 dark:text-neutral-400"
                                     >
                                         {d}
                                     </div>
@@ -619,15 +619,15 @@ export default function NewAppointmentPage() {
                                                 inMonth ? "" : "opacity-0 pointer-events-none",
                                                 !clickable
                                                     ? availability.configured && !doctorWorks && !isPast
-                                                        ? "bg-neutral-100/70 text-neutral-300 cursor-not-allowed"
-                                                        : "text-neutral-300 cursor-not-allowed line-through"
+                                                        ? "bg-neutral-100/70 text-neutral-300 cursor-not-allowed dark:bg-neutral-800/60 dark:text-neutral-600"
+                                                        : "text-neutral-300 cursor-not-allowed line-through dark:text-neutral-600"
                                                     : isSelected
                                                         ? "bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 text-white shadow-[0_10px_22px_-8px_rgba(16,142,93,0.55)] ring-2 ring-brand-600/30 scale-[1.04]"
                                                         : isToday
-                                                            ? "bg-brand-50 text-brand-800 ring-2 ring-brand-600/30 hover:bg-brand-100"
+                                                            ? "bg-brand-50 text-brand-800 ring-2 ring-brand-600/30 hover:bg-brand-100 dark:bg-brand-500/10 dark:text-brand-200 dark:ring-brand-500/30 dark:hover:bg-brand-500/20"
                                                             : doctorWorks
-                                                                ? "text-neutral-800 bg-brand-50/40 hover:bg-neutral-100"
-                                                                : "text-neutral-800 hover:bg-neutral-100",
+                                                                ? "text-neutral-800 bg-brand-50/40 hover:bg-neutral-100 dark:text-neutral-100 dark:bg-brand-500/10 dark:hover:bg-neutral-800"
+                                                                : "text-neutral-800 hover:bg-neutral-100 dark:text-neutral-100 dark:hover:bg-neutral-800",
                                             ].join(" ")}
                                         >
                                             {cell.day}
@@ -642,15 +642,15 @@ export default function NewAppointmentPage() {
                             {/* Legenda de disponibilidade do médico */}
                             <div className="mt-3.5 flex flex-wrap items-center justify-between gap-2 text-[12.5px]">
                                 {availability.configured ? (
-                                    <p className="text-neutral-600">
-                                        <span className="font-bold text-brand-800">
+                                    <p className="text-neutral-600 dark:text-neutral-400">
+                                        <span className="font-bold text-brand-800 dark:text-brand-200">
                                             {DAY_LABELS[dayKey] ?? dayKey} selecionado.
                                         </span>{" "}
                                         Dias de atendimento de {doctor?.name ?? "médico"}:{" "}
-                                        <span className="font-semibold text-neutral-800">{dayLabel || "—"}</span>
+                                        <span className="font-semibold text-neutral-800 dark:text-neutral-100">{dayLabel || "—"}</span>
                                     </p>
                                 ) : (
-                                    <p className="text-amber-700">
+                                    <p className="text-amber-700 dark:text-amber-300">
                                         Sem disponibilidade cadastrada — qualquer dia e horário podem ser escolhidos.
                                         Defina a grade em{" "}
                                         <Link href="/dashboard/medicos" className="font-semibold underline">
@@ -665,9 +665,9 @@ export default function NewAppointmentPage() {
                         {/* Horário + Duração */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
                             <div>
-                                <label className="block text-sm font-bold text-neutral-700 mb-2">Horário</label>
+                                <label className="block text-sm font-bold text-neutral-700 mb-2 dark:text-neutral-200">Horário</label>
                                 <div className="relative">
-                                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500">
+                                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500 dark:text-neutral-400">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                             <circle cx="12" cy="12" r="10" />
                                             <polyline points="12 6 12 12 16 14" />
@@ -681,16 +681,16 @@ export default function NewAppointmentPage() {
                                     />
                                 </div>
                                 {availability.configured && !timeFitsAvailability && (
-                                    <p className="mt-2 text-[12.5px] font-semibold text-rose-600">
+                                    <p className="mt-2 text-[12.5px] font-semibold text-rose-600 dark:text-rose-400">
                                         Fora da disponibilidade. Atendimento: {windowLabel}.
                                     </p>
                                 )}
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold text-neutral-700 mb-2">Duração Estimada</label>
+                                <label className="block text-sm font-bold text-neutral-700 mb-2 dark:text-neutral-200">Duração Estimada</label>
                                 <div className="relative">
-                                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500">
+                                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500 dark:text-neutral-400">
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                             <circle cx="12" cy="12" r="10" />
                                             <polyline points="12 6 12 12 16 14" />
@@ -707,7 +707,7 @@ export default function NewAppointmentPage() {
                                             </option>
                                         ))}
                                     </select>
-                                    <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400">
+                                    <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                             <polyline points="6 9 12 15 18 9" />
                                         </svg>
@@ -719,10 +719,10 @@ export default function NewAppointmentPage() {
                         {/* Sugestões de horários */}
                         <div>
                             <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
-                                <p className="text-sm font-semibold text-neutral-700">
+                                <p className="text-sm font-semibold text-neutral-700 dark:text-neutral-200">
                                     Horários Disponíveis ({formatShortPt(selectedDate)})
                                 </p>
-                                <span className="text-[11.5px] font-bold uppercase tracking-[0.14em] text-neutral-500">
+                                <span className="text-[11.5px] font-bold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">
                                     {duration} · {windowLabel}
                                 </span>
                             </div>
@@ -737,7 +737,7 @@ export default function NewAppointmentPage() {
                                                 onClick={() => setTime(t)}
                                                 className={`px-4 py-2 rounded-xl text-sm font-bold tabular-nums transition-all ${active
                                                     ? "bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 text-white shadow-[0_8px_18px_-6px_rgba(16,142,93,0.55)] ring-2 ring-brand-600/20"
-                                                    : "bg-neutral-200/70 hover:bg-neutral-300/70 text-neutral-700"
+                                                    : "bg-neutral-200/70 hover:bg-neutral-300/70 text-neutral-700 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-neutral-200"
                                                     }`}
                                             >
                                                 {t}
@@ -746,7 +746,7 @@ export default function NewAppointmentPage() {
                                     })}
                                 </div>
                             ) : (
-                                <p className="rounded-2xl bg-amber-50 ring-1 ring-amber-500/20 px-4 py-3 text-[13px] font-semibold text-amber-800">
+                                <p className="rounded-2xl bg-amber-50 ring-1 ring-amber-500/20 px-4 py-3 text-[13px] font-semibold text-amber-800 dark:bg-amber-500/10 dark:text-amber-300">
                                     Nenhum horário comporta {duration} dentro da disponibilidade deste médico.
                                     Reduza a duração ou escolha outro profissional.
                                 </p>
@@ -755,9 +755,9 @@ export default function NewAppointmentPage() {
                     </section>
 
                     {/* Bloco 3: Motivo da Consulta & Observações */}
-                    <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)]">
+                    <section className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_4px_24px_-14px_rgba(15,23,42,0.12)] dark:border-neutral-800/80 dark:bg-neutral-900">
                         <header className="flex items-center gap-2.5 mb-5">
-                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-brand-600/10">
+                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-brand-600/10 dark:bg-brand-500/10 dark:text-brand-300">
                                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                                     <polyline points="14 2 14 8 20 8" />
@@ -765,7 +765,7 @@ export default function NewAppointmentPage() {
                                     <line x1="8" y1="17" x2="14" y2="17" />
                                 </svg>
                             </span>
-                            <h2 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900">
+                            <h2 className="text-lg md:text-xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                                 Motivo da Consulta & Observações
                             </h2>
                         </header>
@@ -775,7 +775,7 @@ export default function NewAppointmentPage() {
                             onChange={(e) => setObservations(e.target.value)}
                             rows={7}
                             placeholder="Descreva os sintomas iniciais ou motivo do agendamento..."
-                            className="w-full rounded-2xl border-2 border-neutral-200/80 bg-neutral-50/40 focus:bg-white p-4 md:p-5 text-[14.5px] leading-relaxed placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition resize-none"
+                            className="w-full rounded-2xl border-2 border-neutral-200/80 bg-neutral-50/40 focus:bg-white p-4 md:p-5 text-[14.5px] leading-relaxed placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition resize-none dark:border-neutral-800/80 dark:bg-neutral-900/40 dark:text-neutral-100 dark:placeholder:text-neutral-500 dark:focus:bg-neutral-900"
                         />
 
                         <div className="mt-5 flex flex-wrap items-center gap-x-7 gap-y-3">
@@ -798,7 +798,7 @@ export default function NewAppointmentPage() {
                 {/* Coluna direita: Resumo + Card médico */}
                 <div className="space-y-5 md:space-y-6 xl:sticky xl:top-6">
                     {/* Resumo do Agendamento */}
-                    <aside className="rounded-3xl bg-white border border-neutral-200/70 shadow-[0_10px_30px_-14px_rgba(15,23,42,0.18)] overflow-hidden">
+                    <aside className="rounded-3xl bg-white border border-neutral-200/70 shadow-[0_10px_30px_-14px_rgba(15,23,42,0.18)] overflow-hidden dark:border-neutral-800/80 dark:bg-neutral-900">
                         {/* Header verde */}
                         <div className="bg-gradient-to-br from-brand-600 via-brand-700 to-brand-800 px-5 md:px-6 py-5 md:py-6 text-white">
                             <h2 className="text-xl md:text-[22px] font-serif font-semibold tracking-tight">
@@ -811,8 +811,8 @@ export default function NewAppointmentPage() {
 
                         <div className="p-5 md:p-6 space-y-5">
                             {/* Data e Hora (card) */}
-                            <div className="rounded-2xl bg-neutral-100/70 p-4 flex items-start gap-3.5">
-                                <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-brand-700 ring-1 ring-neutral-200/80 shadow-sm">
+                            <div className="rounded-2xl bg-neutral-100/70 p-4 flex items-start gap-3.5 dark:bg-neutral-800/60">
+                                <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-brand-700 ring-1 ring-neutral-200/80 shadow-sm dark:bg-neutral-900 dark:text-brand-300 dark:ring-neutral-800/80">
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                         <rect x="3" y="5" width="18" height="16" rx="2" />
                                         <line x1="3" y1="10" x2="21" y2="10" />
@@ -821,20 +821,20 @@ export default function NewAppointmentPage() {
                                     </svg>
                                 </span>
                                 <div className="min-w-0">
-                                    <p className="text-[11.5px] font-black uppercase tracking-[0.16em] text-neutral-500 mb-1">
+                                    <p className="text-[11.5px] font-black uppercase tracking-[0.16em] text-neutral-500 mb-1 dark:text-neutral-400">
                                         Data e Hora
                                     </p>
-                                    <p className="text-base md:text-lg font-bold text-neutral-900 leading-tight">
+                                    <p className="text-base md:text-lg font-bold text-neutral-900 leading-tight dark:text-neutral-100">
                                         {formattedDate}
                                     </p>
-                                    <p className="mt-0.5 text-sm font-semibold text-brand-700">
-                                        {formattedTime} <span className="text-neutral-500 font-medium">({duration})</span>
+                                    <p className="mt-0.5 text-sm font-semibold text-brand-700 dark:text-brand-300">
+                                        {formattedTime} <span className="text-neutral-500 font-medium dark:text-neutral-400">({duration})</span>
                                     </p>
                                 </div>
                             </div>
 
                             {/* Rows informação */}
-                            <dl className="divide-y divide-neutral-100">
+                            <dl className="divide-y divide-neutral-100 dark:divide-neutral-800">
                                 <InfoRow label="Paciente:" value={patient?.name ?? "—"} bold />
                                 <InfoRow label="Convênio:" value={patient?.insurance ?? "—"} />
                                 <InfoRow label="Especialidade:" value={doctor?.specialty ?? "—"} />
@@ -843,7 +843,7 @@ export default function NewAppointmentPage() {
 
                             {/* Caixa informativa */}
                             {availability.configured && (!dayIsAvailable || !timeFitsAvailability) ? (
-                                <div className="rounded-2xl bg-amber-50 ring-1 ring-amber-500/20 p-4">
+                                <div className="rounded-2xl bg-amber-50 ring-1 ring-amber-500/20 p-4 dark:bg-amber-500/10">
                                     <div className="flex items-start gap-3">
                                         <span className="mt-0.5 shrink-0 inline-flex h-6 w-6 items-center justify-center rounded-full bg-amber-600 text-white">
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -852,7 +852,7 @@ export default function NewAppointmentPage() {
                                                 <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
                                             </svg>
                                         </span>
-                                        <p className="text-[13px] leading-relaxed text-amber-900">
+                                        <p className="text-[13px] leading-relaxed text-amber-900 dark:text-amber-200">
                                             {doctor?.name ?? "Este médico"} atende{" "}
                                             <span className="font-bold">{dayLabel || "—"}</span>, das{" "}
                                             <span className="font-bold">{windowLabel}</span>. Escolha um dia e um
@@ -861,7 +861,7 @@ export default function NewAppointmentPage() {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="rounded-2xl bg-brand-50/80 ring-1 ring-brand-600/10 p-4">
+                                <div className="rounded-2xl bg-brand-50/80 ring-1 ring-brand-600/10 p-4 dark:bg-brand-500/10">
                                     <div className="flex items-start gap-3">
                                         <span className="mt-0.5 shrink-0 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-700 text-white">
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -870,7 +870,7 @@ export default function NewAppointmentPage() {
                                                 <line x1="12" y1="8" x2="12.01" y2="8" />
                                             </svg>
                                         </span>
-                                        <p className="text-[13px] leading-relaxed text-neutral-700">
+                                        <p className="text-[13px] leading-relaxed text-neutral-700 dark:text-neutral-200">
                                             {availability.configured
                                                 ? `Horário dentro da grade de ${doctorName} (${dayLabel}, ${windowLabel}). Ao confirmar, o paciente receberá um e-mail de confirmação automaticamente.`
                                                 : `${doctorName} ainda não cadastrou uma grade de atendimento, então o horário é livre. Ao confirmar, o paciente receberá um e-mail de confirmação automaticamente.`}
@@ -904,7 +904,7 @@ export default function NewAppointmentPage() {
                                 </button>
                                 <Link
                                     href="/dashboard/agendamento"
-                                    className="w-full inline-flex items-center justify-center py-2.5 text-sm font-semibold text-neutral-600 hover:text-neutral-900 transition-colors"
+                                    className="w-full inline-flex items-center justify-center py-2.5 text-sm font-semibold text-neutral-600 hover:text-neutral-900 transition-colors dark:text-neutral-400 dark:hover:text-neutral-100"
                                 >
                                     Cancelar e Voltar
                                 </Link>
@@ -913,10 +913,10 @@ export default function NewAppointmentPage() {
                     </aside>
 
                     {/* Card médico selecionado (disponível) */}
-                    <aside className="rounded-3xl border-2 border-neutral-200/80 bg-white p-4 md:p-5 shadow-[0_4px_20px_-14px_rgba(15,23,42,0.12)]">
+                    <aside className="rounded-3xl border-2 border-neutral-200/80 bg-white p-4 md:p-5 shadow-[0_4px_20px_-14px_rgba(15,23,42,0.12)] dark:border-neutral-800/80 dark:bg-neutral-900">
                         <div className="flex items-center gap-3.5">
                             <div className="relative shrink-0">
-                                <div className="h-14 w-14 md:h-16 md:w-16 rounded-2xl bg-gradient-to-br from-slate-500 via-slate-700 to-slate-900 text-white flex items-center justify-center ring-2 ring-white shadow overflow-hidden">
+                                <div className="h-14 w-14 md:h-16 md:w-16 rounded-2xl bg-gradient-to-br from-slate-500 via-slate-700 to-slate-900 text-white flex items-center justify-center ring-2 ring-white shadow overflow-hidden dark:ring-neutral-800">
                                     <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="opacity-90 mt-2">
                                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                         <circle cx="12" cy="7" r="4" />
@@ -936,13 +936,13 @@ export default function NewAppointmentPage() {
                                 </div>
                             </div>
                             <div className="min-w-0 flex-1">
-                                <p className="text-[15px] md:text-base font-bold text-neutral-900 truncate">
+                                <p className="text-[15px] md:text-base font-bold text-neutral-900 truncate dark:text-neutral-100">
                                     {doctor?.name || "Selecione um médico"}
                                 </p>
-                                <p className="text-[12px] text-neutral-500 mt-0.5 font-semibold">
+                                <p className="text-[12px] text-neutral-500 mt-0.5 font-semibold dark:text-neutral-400">
                                     CRM: {doctor?.crm || "—"}
                                 </p>
-                                <span className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10.5px] font-black uppercase tracking-[0.16em] ring-1 ring-emerald-700/10">
+                                <span className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[10.5px] font-black uppercase tracking-[0.16em] ring-1 ring-emerald-700/10 dark:bg-emerald-500/10 dark:text-emerald-300">
                                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 shadow-[0_0_0_3px_rgba(16,185,129,0.18)] animate-pulse" />
                                     {doctor?.specialty || "Selecione"}
                                 </span>
@@ -950,8 +950,8 @@ export default function NewAppointmentPage() {
                         </div>
 
                         {/* Disponibilidade cadastrada do médico */}
-                        <div className="mt-4 rounded-2xl border border-neutral-200/80 bg-neutral-50/70 p-3.5">
-                            <p className="text-[10.5px] font-black uppercase tracking-[0.16em] text-neutral-500 mb-2">
+                        <div className="mt-4 rounded-2xl border border-neutral-200/80 bg-neutral-50/70 p-3.5 dark:border-neutral-800/80 dark:bg-neutral-900/60">
+                            <p className="text-[10.5px] font-black uppercase tracking-[0.16em] text-neutral-500 mb-2 dark:text-neutral-400">
                                 Disponibilidade
                             </p>
                             {availability.configured ? (
@@ -963,18 +963,18 @@ export default function NewAppointmentPage() {
                                             <line x1="8" y1="2" x2="8" y2="6" />
                                             <line x1="3" y1="10" x2="21" y2="10" />
                                         </svg>
-                                        <span className="text-[12.5px] font-semibold text-neutral-800">{dayLabel || "—"}</span>
+                                        <span className="text-[12.5px] font-semibold text-neutral-800 dark:text-neutral-100">{dayLabel || "—"}</span>
                                     </div>
                                     <div className="flex items-start gap-2">
                                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="mt-0.5 shrink-0 text-brand-700">
                                             <circle cx="12" cy="12" r="10" />
                                             <polyline points="12 6 12 12 16 14" />
                                         </svg>
-                                        <span className="text-[12.5px] font-semibold text-neutral-800">{windowLabel}</span>
+                                        <span className="text-[12.5px] font-semibold text-neutral-800 dark:text-neutral-100">{windowLabel}</span>
                                     </div>
                                 </div>
                             ) : (
-                                <p className="text-[12.5px] font-semibold text-amber-700">
+                                <p className="text-[12.5px] font-semibold text-amber-700 dark:text-amber-300">
                                     Sem grade cadastrada — horários livres.
                                 </p>
                             )}
@@ -991,7 +991,7 @@ export default function NewAppointmentPage() {
                     role="status"
                 >
                     <div
-                        className={`flex items-start gap-3 rounded-2xl border bg-white p-4 shadow-[0_18px_40px_-16px_rgba(15,23,42,0.35)] ${toast.kind === "success" ? "border-brand-600/20" : "border-rose-500/20"
+                        className={`flex items-start gap-3 rounded-2xl border bg-white p-4 shadow-[0_18px_40px_-16px_rgba(15,23,42,0.35)] dark:bg-neutral-900 ${toast.kind === "success" ? "border-brand-600/20" : "border-rose-500/20"
                             }`}
                     >
                         <span
@@ -1012,10 +1012,10 @@ export default function NewAppointmentPage() {
                             )}
                         </span>
                         <div className="min-w-0 flex-1">
-                            <p className="text-sm font-bold text-neutral-900">
+                            <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100">
                                 {toast.kind === "success" ? "Sucesso" : "Atenção"}
                             </p>
-                            <p className="mt-0.5 text-[13px] leading-relaxed text-neutral-600">
+                            <p className="mt-0.5 text-[13px] leading-relaxed text-neutral-600 dark:text-neutral-400">
                                 {toast.message}
                             </p>
                         </div>
@@ -1023,7 +1023,7 @@ export default function NewAppointmentPage() {
                             type="button"
                             onClick={() => setToast(null)}
                             aria-label="Fechar aviso"
-                            className="shrink-0 rounded-lg p-1 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 transition-colors"
+                            className="shrink-0 rounded-lg p-1 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-700 transition-colors dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-200"
                         >
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                 <line x1="18" y1="6" x2="6" y2="18" />
@@ -1062,6 +1062,14 @@ export default function NewAppointmentPage() {
                 .inputCls::placeholder {
                     color: #94a3b8;
                 }
+                .dark .inputCls {
+                    border-color: rgba(38, 38, 38, 0.9);
+                    background-color: rgba(23, 23, 23, 1);
+                    color: #f5f5f5;
+                }
+                .dark .inputCls::placeholder {
+                    color: #737373;
+                }
                 .inputCls:focus {
                     outline: none;
                     border-color: rgba(16, 185, 129, 0.45);
@@ -1093,7 +1101,7 @@ function SelectWrapper({
 }) {
     return (
         <div className="relative">
-            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500">
+            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500 dark:text-neutral-400">
                 {icon === "person" && (
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                         <circle cx="12" cy="7" r="4" />
@@ -1123,7 +1131,7 @@ function SelectWrapper({
                     </option>
                 ))}
             </select>
-            <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400">
+            <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <polyline points="6 9 12 15 18 9" />
                 </svg>
@@ -1135,8 +1143,8 @@ function SelectWrapper({
 function InfoRow({ label, value, bold }: { label: string; value: string; bold?: boolean }) {
     return (
         <div className="flex items-center justify-between gap-4 py-3.5">
-            <dt className="text-sm font-semibold text-neutral-600 shrink-0">{label}</dt>
-            <dd className={`text-right ${bold ? "font-black text-neutral-900 text-[15px]" : "font-bold text-neutral-800"}`}>
+            <dt className="text-sm font-semibold text-neutral-600 shrink-0 dark:text-neutral-400">{label}</dt>
+            <dd className={`text-right ${bold ? "font-black text-neutral-900 text-[15px] dark:text-neutral-100" : "font-bold text-neutral-800 dark:text-neutral-200"}`}>
                 {value}
             </dd>
         </div>
@@ -1168,7 +1176,7 @@ function Check({
                     className="peer sr-only"
                 />
                 <span
-                    className={`flex h-5 w-5 items-center justify-center rounded-md border-2 transition-all ${checked ? active : "bg-white border-neutral-300 group-hover:border-neutral-400"
+                    className={`flex h-5 w-5 items-center justify-center rounded-md border-2 transition-all ${checked ? active : "bg-white border-neutral-300 group-hover:border-neutral-400 dark:bg-neutral-800 dark:border-neutral-600 dark:group-hover:border-neutral-500"
                         }`}
                 >
                     <svg
@@ -1187,7 +1195,7 @@ function Check({
                     </svg>
                 </span>
             </span>
-            <span className="text-sm font-semibold text-neutral-700 group-hover:text-neutral-900 transition-colors">
+            <span className="text-sm font-semibold text-neutral-700 group-hover:text-neutral-900 transition-colors dark:text-neutral-200 dark:group-hover:text-neutral-100">
                 {label}
             </span>
         </label>

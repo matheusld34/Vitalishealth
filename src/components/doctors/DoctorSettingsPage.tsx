@@ -61,7 +61,7 @@ export default function DoctorSettingsPage({ userId, userRole, userName }: Props
     return (
         <div className="space-y-6 md:space-y-7 pb-10">
             {/* Banner de contexto */}
-            <section className="relative overflow-hidden rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_10px_30px_-20px_rgba(15,23,42,0.25)]">
+            <section className="relative overflow-hidden rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-7 shadow-[0_10px_30px_-20px_rgba(15,23,42,0.25)] dark:border-neutral-800/80 dark:bg-neutral-900">
                 <div aria-hidden="true" className="absolute -top-24 -right-16 h-64 w-64 rounded-full bg-brand-600/5 blur-3xl" />
                 <div aria-hidden="true" className="absolute -bottom-24 -left-20 h-56 w-56 rounded-full bg-emerald-400/10 blur-3xl" />
 
@@ -80,17 +80,17 @@ export default function DoctorSettingsPage({ userId, userRole, userName }: Props
                             </svg>
                         </span>
                         <div className="min-w-0">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-[11px] font-bold tracking-[0.16em] uppercase ring-1 ring-brand-600/10">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-[11px] font-bold tracking-[0.16em] uppercase ring-1 ring-brand-600/10 dark:bg-brand-500/10 dark:text-brand-300">
                                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <rect x="3" y="11" width="18" height="11" rx="2" />
                                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                                 </svg>
                                 Acesso restrito · Médico e Master
                             </div>
-                            <h1 className="mt-2.5 text-3xl md:text-4xl font-serif font-semibold tracking-tight text-neutral-900">
+                            <h1 className="mt-2.5 text-3xl md:text-4xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                                 {isMaster ? "Perfis Médicos" : "Meu Perfil Profissional"}
                             </h1>
-                            <p className="mt-2 max-w-2xl text-[14.5px] md:text-[15px] text-neutral-600 leading-relaxed">
+                            <p className="mt-2 max-w-2xl text-[14.5px] md:text-[15px] text-neutral-600 leading-relaxed dark:text-neutral-400">
                                 {isMaster
                                     ? "Selecione um médico do corpo clínico e atualize suas credenciais, especialidades, horários e informações complementares."
                                     : `Mantenha seus dados de atuação atualizados, ${userName.split(" ")[0] || "doutor(a)"}. As informações de CRM, especialidades e horários são exibidas no seu perfil dentro do sistema.`}
@@ -100,9 +100,9 @@ export default function DoctorSettingsPage({ userId, userRole, userName }: Props
 
                     {isMaster && (
                         <div>
-                            <label className="block text-sm font-semibold text-neutral-700 mb-1.5">
+                            <label className="block text-sm font-semibold text-neutral-700 mb-1.5 dark:text-neutral-300">
                                 Médico
-                                <span className="font-normal text-[11.5px] text-neutral-400 ml-2">
+                                <span className="font-normal text-[11.5px] text-neutral-400 ml-2 dark:text-neutral-500">
                                     {doctors.length} cadastrado(s)
                                 </span>
                             </label>
@@ -111,7 +111,7 @@ export default function DoctorSettingsPage({ userId, userRole, userName }: Props
                                     value={selected ?? ""}
                                     onChange={(e) => setSelected(e.target.value)}
                                     disabled={loading || doctors.length === 0}
-                                    className="w-full appearance-none cursor-pointer rounded-2xl border border-neutral-200/80 bg-neutral-50/80 px-4 py-3 pr-10 text-[14.5px] text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/70 focus:bg-white transition disabled:opacity-60 disabled:cursor-not-allowed"
+                                    className="w-full appearance-none cursor-pointer rounded-2xl border border-neutral-200/80 bg-neutral-50/80 px-4 py-3 pr-10 text-[14.5px] text-neutral-800 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/70 focus:bg-white transition disabled:opacity-60 disabled:cursor-not-allowed dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100 dark:focus:bg-neutral-900"
                                 >
                                     {doctors.length === 0 && (
                                         <option value="">{loading ? "Carregando médicos..." : "Nenhum médico cadastrado"}</option>
@@ -123,7 +123,7 @@ export default function DoctorSettingsPage({ userId, userRole, userName }: Props
                                         </option>
                                     ))}
                                 </select>
-                                <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400">
+                                <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                         <polyline points="6 9 12 15 18 9" />
                                     </svg>
@@ -135,32 +135,32 @@ export default function DoctorSettingsPage({ userId, userRole, userName }: Props
             </section>
 
             {error && (
-                <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-[14px] font-semibold text-red-700 ring-1 ring-red-500/10">
+                <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-[14px] font-semibold text-red-700 ring-1 ring-red-500/10 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300">
                     {error}
                 </div>
             )}
 
             {loading && isMaster ? (
                 <div className="space-y-5">
-                    <div className="h-72 rounded-3xl bg-white shadow animate-pulse" />
+                    <div className="h-72 rounded-3xl bg-white shadow animate-pulse dark:bg-neutral-900" />
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                        <div className="h-96 rounded-3xl bg-white shadow animate-pulse" />
-                        <div className="h-96 rounded-3xl bg-white shadow animate-pulse" />
+                        <div className="h-96 rounded-3xl bg-white shadow animate-pulse dark:bg-neutral-900" />
+                        <div className="h-96 rounded-3xl bg-white shadow animate-pulse dark:bg-neutral-900" />
                     </div>
                 </div>
             ) : isMaster && !selected ? (
-                <div className="flex flex-col items-center justify-center gap-3 rounded-3xl border-2 border-dashed border-neutral-200/80 bg-white/60 py-16 text-center">
-                    <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-neutral-100 text-neutral-400">
+                <div className="flex flex-col items-center justify-center gap-3 rounded-3xl border-2 border-dashed border-neutral-200/80 bg-white/60 py-16 text-center dark:border-neutral-800 dark:bg-neutral-900/60">
+                    <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-neutral-100 text-neutral-400 dark:bg-neutral-800 dark:text-neutral-500">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                             <circle cx="12" cy="7" r="4" />
                         </svg>
                     </span>
                     <div>
-                        <p className="text-[15px] font-semibold text-neutral-800">
+                        <p className="text-[15px] font-semibold text-neutral-800 dark:text-neutral-100">
                             Nenhum médico para editar
                         </p>
-                        <p className="mt-1 text-[13px] text-neutral-500">
+                        <p className="mt-1 text-[13px] text-neutral-500 dark:text-neutral-400">
                             Cadastre um profissional na tela de Médicos para gerenciar suas informações aqui.
                         </p>
                     </div>

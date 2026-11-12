@@ -140,7 +140,7 @@ export default function Sidebar({ userRole, onNavigate }: Props) {
     return (
         <div className="h-full flex flex-col px-3 md:px-4 py-4 md:py-5">
             <div className="px-3 pb-2 pt-1">
-                <p className="text-[10.5px] font-semibold tracking-[0.22em] text-neutral-400 uppercase">
+                <p className="text-[10.5px] font-semibold tracking-[0.22em] text-neutral-400 dark:text-neutral-500 uppercase">
                     Navegação
                 </p>
             </div>
@@ -157,24 +157,24 @@ export default function Sidebar({ userRole, onNavigate }: Props) {
                             href={item.href}
                             onClick={onNavigate}
                             className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 ${isActive
-                                ? "bg-gradient-to-r from-brand-500/10 via-brand-500/8 to-brand-500/0 text-brand-800 shadow-[inset_2px_0_0_rgba(16,142,93,0.65)]"
-                                : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
+                                ? "bg-gradient-to-r from-brand-500/10 via-brand-500/8 to-brand-500/0 text-brand-800 dark:text-brand-200 shadow-[inset_2px_0_0_rgba(16,142,93,0.65)]"
+                                : "text-neutral-600 dark:text-neutral-400 hover:bg-neutral-50 dark:hover:bg-neutral-800/70 hover:text-neutral-900 dark:hover:text-neutral-100"
                                 }`}
                         >
                             <span
                                 className={`relative h-8 w-8 shrink-0 inline-flex items-center justify-center rounded-lg transition-all duration-200 ${isActive
                                     ? "bg-brand-500 text-white shadow-[0_4px_10px_rgba(16,142,93,0.22)]"
-                                    : "bg-neutral-100 text-neutral-500 group-hover:bg-neutral-200 group-hover:text-neutral-700"
+                                    : "bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 group-hover:bg-neutral-200 dark:group-hover:bg-neutral-700 group-hover:text-neutral-700 dark:group-hover:text-neutral-200"
                                     }`}
                             >
                                 {item.icon}
                             </span>
                             <div className="flex-1 min-w-0 leading-tight">
-                                <span className={`block font-medium truncate ${isActive ? "text-brand-800" : ""}`}>
+                                <span className={`block font-medium truncate ${isActive ? "text-brand-800 dark:text-brand-200" : ""}`}>
                                     {item.label}
                                 </span>
                                 {item.description && (
-                                    <span className={`block truncate text-[11px] mt-0.5 ${isActive ? "text-brand-700/70" : "text-neutral-400 group-hover:text-neutral-500"}`}>
+                                    <span className={`block truncate text-[11px] mt-0.5 ${isActive ? "text-brand-700/70 dark:text-brand-300/70" : "text-neutral-400 dark:text-neutral-500 group-hover:text-neutral-500 dark:group-hover:text-neutral-400"}`}>
                                         {item.description}
                                     </span>
                                 )}
@@ -188,7 +188,7 @@ export default function Sidebar({ userRole, onNavigate }: Props) {
             </nav>
 
             <div className="mt-7 px-1">
-                <div className="rounded-2xl border border-neutral-200/70 bg-gradient-to-br from-brand-50/60 via-white to-white p-3 md:p-3.5 shadow-[0_2px_8px_rgba(15,23,42,0.04)]">
+                <div className="rounded-2xl border border-neutral-200/70 dark:border-neutral-800 bg-gradient-to-br from-brand-50/60 via-white to-white dark:from-brand-500/10 dark:via-neutral-900 dark:to-neutral-900 p-3 md:p-3.5 shadow-[0_2px_8px_rgba(15,23,42,0.04)] transition-colors duration-300">
                     {canCreateAppointment ? (
                         <Link
                             href="/dashboard/agendamento/novo"
@@ -220,7 +220,7 @@ export default function Sidebar({ userRole, onNavigate }: Props) {
                             Minha Agenda
                         </Link>
                     )}
-                    <p className="mt-2.5 px-1 text-[11px] leading-relaxed text-neutral-500">
+                    <p className="mt-2.5 px-1 text-[11px] leading-relaxed text-neutral-500 dark:text-neutral-400">
                         {canCreateAppointment
                             ? "Marque consultas, exames e procedimentos para qualquer médico."
                             : "Visualize sua agenda diária e confirme as consultas do dia."}

@@ -282,13 +282,13 @@ function mapApiToPatient(ap: ApiPatient, idx: number): Patient {
 function statusStyles(s: PatientStatus) {
     switch (s) {
         case "Ativo":
-            return "bg-green-100/80 text-green-700 ring-1 ring-green-600/15"
+            return "bg-green-100/80 dark:bg-green-500/10 text-green-700 dark:text-green-300 ring-1 ring-green-600/15"
         case "Em Tratamento":
-            return "bg-neutral-100 text-neutral-600 ring-1 ring-neutral-300/60"
+            return "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 ring-1 ring-neutral-300/60"
         case "Aguardando":
-            return "bg-neutral-100 text-neutral-600 ring-1 ring-neutral-300/70"
+            return "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 ring-1 ring-neutral-300/70"
         case "Inativo":
-            return "bg-red-50 text-red-600 ring-1 ring-red-500/15"
+            return "bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-300 ring-1 ring-red-500/15"
     }
 }
 
@@ -390,7 +390,7 @@ export default function PatientsPage() {
             {/* Search + Unidade */}
             <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-5">
                 <div className="relative flex-1 max-w-3xl">
-                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">
+                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <circle cx="11" cy="11" r="8" />
                             <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -401,12 +401,12 @@ export default function PatientsPage() {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Pesquisar por pacientes, prontuários ou médicos..."
-                        className="w-full rounded-2xl border border-neutral-200/80 bg-white/90 py-3.5 pl-12 pr-4 text-sm text-neutral-800 placeholder:text-neutral-400 shadow-[0_2px_6px_rgba(15,23,42,0.04)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
+                        className="w-full rounded-2xl border border-neutral-200/80 bg-white/90 py-3.5 pl-12 pr-4 text-sm text-neutral-800 placeholder:text-neutral-400 shadow-[0_2px_6px_rgba(15,23,42,0.04)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition dark:border-neutral-800/80 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500"
                     />
                 </div>
 
-                <div className="hidden md:flex items-center gap-2 pl-5 border-l border-neutral-200/80 text-neutral-700">
-                    <span className="h-9 w-9 inline-flex items-center justify-center rounded-xl bg-brand-50 text-brand-700">
+                <div className="hidden md:flex items-center gap-2 pl-5 border-l border-neutral-200/80 text-neutral-700 dark:border-neutral-800/80 dark:text-neutral-200">
+                    <span className="h-9 w-9 inline-flex items-center justify-center rounded-xl bg-brand-50 text-brand-700 dark:bg-brand-500/10 dark:text-brand-300">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                             <circle cx="12" cy="10" r="3" />
@@ -414,29 +414,29 @@ export default function PatientsPage() {
                     </span>
                     <div className="leading-tight">
                         <p className="text-sm font-semibold">Unidade Central</p>
-                        <p className="text-[11px] text-neutral-500">São Paulo, SP</p>
+                        <p className="text-[11px] text-neutral-500 dark:text-neutral-400">São Paulo, SP</p>
                     </div>
                 </div>
             </div>
 
             {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 text-sm text-neutral-500">
-                <Link href="/dashboard" className="hover:text-neutral-800 transition-colors">
+            <nav className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+                <Link href="/dashboard" className="hover:text-neutral-800 dark:hover:text-neutral-100 transition-colors">
                     Vitalis Health
                 </Link>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300 dark:text-neutral-600" aria-hidden="true">
                     <polyline points="9 18 15 12 9 6" />
                 </svg>
-                <span className="font-semibold text-brand-700">Pacientes</span>
+                <span className="font-semibold text-brand-700 dark:text-brand-300">Pacientes</span>
             </nav>
 
             {/* Header + CTA */}
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
                 <div className="space-y-2">
-                    <h1 className="text-3xl md:text-4xl font-serif font-semibold tracking-tight text-neutral-900">
+                    <h1 className="text-3xl md:text-4xl font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                         Gestão de Pacientes
                     </h1>
-                    <p className="text-sm md:text-[15px] text-neutral-600 max-w-2xl">
+                    <p className="text-sm md:text-[15px] text-neutral-600 max-w-2xl dark:text-neutral-400">
                         Visualize, edite e acompanhe o histórico completo de todos os pacientes da clínica.
                     </p>
                 </div>
@@ -495,12 +495,12 @@ export default function PatientsPage() {
             </section>
 
             {/* Table wrapper */}
-            <section className="relative rounded-3xl border border-neutral-200/70 bg-white shadow-[0_4px_24px_-12px_rgba(15,23,42,0.12)]">
+            <section className="relative rounded-3xl border border-neutral-200/70 bg-white shadow-[0_4px_24px_-12px_rgba(15,23,42,0.12)] dark:border-neutral-800/80 dark:bg-neutral-900">
                 {/* Filter bar */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 lg:items-center lg:justify-between gap-3 px-5 md:px-7 py-5 border-b border-neutral-100">
+                <div className="grid grid-cols-1 lg:grid-cols-2 lg:items-center lg:justify-between gap-3 px-5 md:px-7 py-5 border-b border-neutral-100 dark:border-neutral-800">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                         <div className="relative w-full sm:max-w-xs">
-                            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500">
+                            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500 dark:text-neutral-400">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
                                 </svg>
@@ -508,7 +508,7 @@ export default function PatientsPage() {
                             <select
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
-                                className="w-full appearance-none rounded-xl border border-neutral-200/80 bg-neutral-50/70 pl-10 pr-10 py-2.5 text-sm font-medium text-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
+                                className="w-full appearance-none rounded-xl border border-neutral-200/80 bg-neutral-50/70 pl-10 pr-10 py-2.5 text-sm font-medium text-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition dark:border-neutral-800/80 dark:bg-neutral-900/60 dark:text-neutral-200"
                             >
                                 <option value="all">Todos os Status</option>
                                 <option value="Ativo">Ativo</option>
@@ -516,7 +516,7 @@ export default function PatientsPage() {
                                 <option value="Aguardando">Aguardando</option>
                                 <option value="Inativo">Inativo</option>
                             </select>
-                            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400">
+                            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <polyline points="6 9 12 15 18 9" />
                                 </svg>
@@ -524,7 +524,7 @@ export default function PatientsPage() {
                         </div>
 
                         <div className="relative w-full sm:max-w-xs">
-                            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500">
+                            <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-500 dark:text-neutral-400">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                                     <circle cx="12" cy="7" r="4" />
@@ -533,7 +533,7 @@ export default function PatientsPage() {
                             <select
                                 value={insuranceFilter}
                                 onChange={(e) => setInsuranceFilter(e.target.value)}
-                                className="w-full appearance-none rounded-xl border border-neutral-200/80 bg-neutral-50/70 pl-10 pr-10 py-2.5 text-sm font-medium text-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
+                                className="w-full appearance-none rounded-xl border border-neutral-200/80 bg-neutral-50/70 pl-10 pr-10 py-2.5 text-sm font-medium text-neutral-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition dark:border-neutral-800/80 dark:bg-neutral-900/60 dark:text-neutral-200"
                             >
                                 <option value="all">Todos os Convênios</option>
                                 {insuranceOptions.map((plan) => (
@@ -542,7 +542,7 @@ export default function PatientsPage() {
                                     </option>
                                 ))}
                             </select>
-                            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400">
+                            <span className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                     <polyline points="6 9 12 15 18 9" />
                                 </svg>
@@ -550,13 +550,13 @@ export default function PatientsPage() {
                         </div>
                     </div>
 
-                    <p className="text-xs md:text-sm text-neutral-500 lg:text-right">
+                    <p className="text-xs md:text-sm text-neutral-500 lg:text-right dark:text-neutral-400">
                         Mostrando{" "}
-                        <span className="font-semibold text-neutral-800 tabular-nums">
+                        <span className="font-semibold text-neutral-800 tabular-nums dark:text-neutral-100">
                             {startLabel}–{endLabel}
                         </span>{" "}
                         de{" "}
-                        <span className="font-semibold text-neutral-800 tabular-nums">
+                        <span className="font-semibold text-neutral-800 tabular-nums dark:text-neutral-100">
                             {totalFiltered.toLocaleString("pt-BR")}
                         </span>{" "}
                         pacientes
@@ -567,7 +567,7 @@ export default function PatientsPage() {
                 <div className="overflow-x-auto">
                     <table className="min-w-full">
                         <thead>
-                            <tr className="border-b border-neutral-100 bg-neutral-50/40">
+                            <tr className="border-b border-neutral-100 bg-neutral-50/40 dark:border-neutral-800 dark:bg-neutral-900/60">
                                 <Th>Paciente</Th>
                                 <Th>Contato</Th>
                                 <Th>Última Visita</Th>
@@ -576,7 +576,7 @@ export default function PatientsPage() {
                                 <Th className="text-right pr-6">Ações</Th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-neutral-100">
+                        <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
                             {loading && pageData.length === 0
                                 ? Array.from({ length: 5 }).map((_, i) => <PatientRowSkeleton key={i} />)
                                 : pageData.map((p) => <PatientRow key={p.id} patient={p} />)}
@@ -584,16 +584,16 @@ export default function PatientsPage() {
                                 <tr>
                                     <td colSpan={6} className="py-14 text-center">
                                         <div className="mx-auto max-w-md">
-                                            <div className="mx-auto h-12 w-12 inline-flex items-center justify-center rounded-full bg-neutral-100 text-neutral-400">
+                                            <div className="mx-auto h-12 w-12 inline-flex items-center justify-center rounded-full bg-neutral-100 text-neutral-400 dark:bg-neutral-800 dark:text-neutral-500">
                                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                                     <circle cx="11" cy="11" r="8" />
                                                     <line x1="21" y1="21" x2="16.65" y2="16.65" />
                                                 </svg>
                                             </div>
-                                            <p className="mt-4 text-sm font-semibold text-neutral-800">
+                                            <p className="mt-4 text-sm font-semibold text-neutral-800 dark:text-neutral-100">
                                                 Nenhum paciente encontrado
                                             </p>
-                                            <p className="mt-1.5 text-sm text-neutral-500 leading-relaxed">
+                                            <p className="mt-1.5 text-sm text-neutral-500 leading-relaxed dark:text-neutral-400">
                                                 Tente remover filtros de status ou convênio, ou pesquise por outro termo.
                                             </p>
                                             <Link
@@ -611,12 +611,12 @@ export default function PatientsPage() {
                 </div>
 
                 {/* Pagination */}
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-5 md:px-7 py-5 border-t border-neutral-100">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-5 md:px-7 py-5 border-t border-neutral-100 dark:border-neutral-800">
                     <button
                         type="button"
                         onClick={() => setPage((p) => Math.max(1, p - 1))}
                         disabled={safePage <= 1}
-                        className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-600 border border-transparent hover:bg-neutral-50 hover:text-neutral-900 transition-colors disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-not-allowed"
+                        className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-600 border border-transparent hover:bg-neutral-50 hover:text-neutral-900 transition-colors disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-not-allowed dark:text-neutral-400 dark:hover:bg-neutral-800/60 dark:hover:text-neutral-100"
                     >
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <polyline points="15 18 9 12 15 6" />
@@ -643,7 +643,7 @@ export default function PatientsPage() {
                         })}
                         {totalPages > 5 && safePage < totalPages - 2 && (
                             <>
-                                <span className="px-1 text-neutral-400" aria-hidden="true">…</span>
+                                <span className="px-1 text-neutral-400 dark:text-neutral-500" aria-hidden="true">…</span>
                                 <PageButton onClick={() => setPage(totalPages)}>{totalPages}</PageButton>
                             </>
                         )}
@@ -653,7 +653,7 @@ export default function PatientsPage() {
                         type="button"
                         onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                         disabled={safePage >= totalPages}
-                        className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-800 hover:bg-neutral-50 transition-colors disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-not-allowed"
+                        className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-neutral-800 hover:bg-neutral-50 transition-colors disabled:opacity-40 disabled:hover:bg-transparent disabled:cursor-not-allowed dark:text-neutral-100 dark:hover:bg-neutral-800/60"
                     >
                         Próximo
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -680,40 +680,40 @@ export default function PatientsPage() {
 
 function PatientRow({ patient }: { patient: Patient }) {
     return (
-        <tr key={patient.id} className="group hover:bg-brand-50/30 transition-colors">
+        <tr key={patient.id} className="group hover:bg-brand-50/30 transition-colors dark:hover:bg-brand-500/10">
             <td className="py-4.5 md:py-5 pl-5 md:pl-7 pr-4">
                 <div className="flex items-center gap-3 min-w-0">
                     <div className={`relative h-11 w-11 shrink-0 rounded-full bg-gradient-to-br ${patient.avatarColor} text-white text-sm font-bold shadow-sm ring-2 ring-white overflow-hidden flex items-center justify-center`}>
                         {patient.initials}
                     </div>
                     <div className="min-w-0 leading-tight">
-                        <p className="text-[15px] font-semibold text-neutral-900 truncate">
+                        <p className="text-[15px] font-semibold text-neutral-900 truncate dark:text-neutral-100">
                             {patient.name}
                         </p>
-                        <p className="text-sm text-neutral-500 mt-0.5">
-                            Prontuário: <span className="font-medium text-neutral-700">{patient.record}</span>
+                        <p className="text-sm text-neutral-500 mt-0.5 dark:text-neutral-400">
+                            Prontuário: <span className="font-medium text-neutral-700 dark:text-neutral-200">{patient.record}</span>
                         </p>
                     </div>
                 </div>
             </td>
             <td className="py-4.5 md:py-5 px-4">
                 <div className="leading-tight space-y-0.5">
-                    <p className="text-sm font-medium text-neutral-800 flex items-center gap-1.5">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-400 shrink-0" aria-hidden="true">
+                    <p className="text-sm font-medium text-neutral-800 flex items-center gap-1.5 dark:text-neutral-100">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-400 shrink-0 dark:text-neutral-500" aria-hidden="true">
                             <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                         </svg>
                         <span className="truncate">{patient.phone}</span>
                     </p>
-                    <p className="text-xs text-neutral-500 flex items-center gap-1.5 truncate">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-400 shrink-0" aria-hidden="true">
+                    <p className="text-xs text-neutral-500 flex items-center gap-1.5 truncate dark:text-neutral-400">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-400 shrink-0 dark:text-neutral-500" aria-hidden="true">
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                             <polyline points="22,6 12,13 2,6" />
                         </svg>
                         <span className="truncate">{patient.email}</span>
                     </p>
                     {patient.cityState && patient.cityState !== "—" ? (
-                        <p className="text-[11px] text-neutral-500 flex items-center gap-1.5">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-400 shrink-0" aria-hidden="true">
+                        <p className="text-[11px] text-neutral-500 flex items-center gap-1.5 dark:text-neutral-400">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-400 shrink-0 dark:text-neutral-500" aria-hidden="true">
                                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                                 <circle cx="12" cy="10" r="3" />
                             </svg>
@@ -724,8 +724,8 @@ function PatientRow({ patient }: { patient: Patient }) {
             </td>
             <td className="py-4.5 md:py-5 px-4">
                 <div className="leading-tight">
-                    <p className="text-sm font-medium text-neutral-900">{patient.lastVisitDate}</p>
-                    <p className="text-xs text-neutral-500 mt-0.5 truncate">{patient.lastVisitDoctor}</p>
+                    <p className="text-sm font-medium text-neutral-900 dark:text-neutral-100">{patient.lastVisitDate}</p>
+                    <p className="text-xs text-neutral-500 mt-0.5 truncate dark:text-neutral-400">{patient.lastVisitDoctor}</p>
                 </div>
             </td>
             <td className="py-4.5 md:py-5 px-4">
@@ -734,7 +734,7 @@ function PatientRow({ patient }: { patient: Patient }) {
                 </span>
             </td>
             <td className="py-4.5 md:py-5 px-4">
-                <p className="text-sm font-medium text-neutral-700 whitespace-nowrap truncate max-w-[180px]">
+                <p className="text-sm font-medium text-neutral-700 whitespace-nowrap truncate max-w-[180px] dark:text-neutral-200">
                     {patient.insurance}
                 </p>
             </td>
@@ -742,7 +742,7 @@ function PatientRow({ patient }: { patient: Patient }) {
                 <div className="flex items-center justify-end">
                     <Link
                         href={`/dashboard/pacientes/${patient.id}/historico`}
-                        className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50 transition-colors"
+                        className="inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50 transition-colors dark:text-brand-300 dark:hover:bg-brand-500/10"
                     >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
@@ -762,34 +762,34 @@ function PatientRowSkeleton() {
         <tr className="animate-pulse">
             <td className="py-5 pl-5 md:pl-7 pr-4">
                 <div className="flex items-center gap-3">
-                    <div className="h-11 w-11 rounded-full bg-neutral-100" />
+                    <div className="h-11 w-11 rounded-full bg-neutral-100 dark:bg-neutral-800" />
                     <div className="space-y-2 min-w-[200px]">
-                        <div className="h-4 w-40 rounded-xl bg-neutral-100" />
-                        <div className="h-3 w-28 rounded-xl bg-neutral-100" />
+                        <div className="h-4 w-40 rounded-xl bg-neutral-100 dark:bg-neutral-800" />
+                        <div className="h-3 w-28 rounded-xl bg-neutral-100 dark:bg-neutral-800" />
                     </div>
                 </div>
             </td>
             <td className="py-5 px-4">
                 <div className="space-y-2 min-w-[180px]">
-                    <div className="h-4 w-36 rounded-xl bg-neutral-100" />
-                    <div className="h-3 w-40 rounded-xl bg-neutral-100" />
-                    <div className="h-3 w-24 rounded-xl bg-neutral-100" />
+                    <div className="h-4 w-36 rounded-xl bg-neutral-100 dark:bg-neutral-800" />
+                    <div className="h-3 w-40 rounded-xl bg-neutral-100 dark:bg-neutral-800" />
+                    <div className="h-3 w-24 rounded-xl bg-neutral-100 dark:bg-neutral-800" />
                 </div>
             </td>
             <td className="py-5 px-4">
                 <div className="space-y-2">
-                    <div className="h-4 w-28 rounded-xl bg-neutral-100" />
-                    <div className="h-3 w-32 rounded-xl bg-neutral-100" />
+                    <div className="h-4 w-28 rounded-xl bg-neutral-100 dark:bg-neutral-800" />
+                    <div className="h-3 w-32 rounded-xl bg-neutral-100 dark:bg-neutral-800" />
                 </div>
             </td>
             <td className="py-5 px-4">
-                <div className="h-6 w-24 rounded-full bg-neutral-100" />
+                <div className="h-6 w-24 rounded-full bg-neutral-100 dark:bg-neutral-800" />
             </td>
             <td className="py-5 px-4">
-                <div className="h-4 w-32 rounded-xl bg-neutral-100" />
+                <div className="h-4 w-32 rounded-xl bg-neutral-100 dark:bg-neutral-800" />
             </td>
             <td className="py-5 pr-5 md:pr-7">
-                <div className="h-9 w-28 rounded-xl bg-brand-50 ml-auto" />
+                <div className="h-9 w-28 rounded-xl bg-brand-50 dark:bg-brand-500/10 ml-auto" />
             </td>
         </tr>
     )
@@ -797,7 +797,7 @@ function PatientRowSkeleton() {
 
 function Th({ children, className = "" }: { children: React.ReactNode; className?: string }) {
     return (
-        <th scope="col" className={`px-4 py-4 text-left text-[11px] font-semibold tracking-[0.16em] text-neutral-500 uppercase whitespace-nowrap ${className}`}>
+        <th scope="col" className={`px-4 py-4 text-left text-[11px] font-semibold tracking-[0.16em] text-neutral-500 dark:text-neutral-400 uppercase whitespace-nowrap ${className}`}>
             {children}
         </th>
     )
@@ -826,7 +826,7 @@ function PageButton({
         <button
             type="button"
             onClick={onClick}
-            className="inline-flex h-9 min-w-9 items-center justify-center rounded-xl px-3 text-sm font-semibold text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors"
+            className="inline-flex h-9 min-w-9 items-center justify-center rounded-xl px-3 text-sm font-semibold text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 transition-colors dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-100"
         >
             {children}
         </button>
@@ -849,21 +849,21 @@ function StatCard({
     iconType?: "positive" | "success"
 }) {
     return (
-        <div className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-6 shadow-[0_4px_20px_-14px_rgba(15,23,42,0.15)] hover:shadow-[0_8px_28px_-14px_rgba(15,23,42,0.22)] transition-shadow">
+        <div className="rounded-3xl border border-neutral-200/70 bg-white p-5 md:p-6 shadow-[0_4px_20px_-14px_rgba(15,23,42,0.15)] hover:shadow-[0_8px_28px_-14px_rgba(15,23,42,0.22)] transition-shadow dark:border-neutral-800/80 dark:bg-neutral-900">
             <div className="flex items-start justify-between gap-3">
-                <p className="text-[11px] md:text-xs font-semibold tracking-[0.18em] text-neutral-400 uppercase">
+                <p className="text-[11px] md:text-xs font-semibold tracking-[0.18em] text-neutral-400 uppercase dark:text-neutral-500">
                     {label}
                 </p>
                 {!icon && badge && badgeType === "positive" && (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-green-50 text-green-700 text-[11px] font-bold ring-1 ring-green-600/10">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-lg bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-300 text-[11px] font-bold ring-1 ring-green-600/10">
                         {badge}
                     </span>
                 )}
                 {icon && (
                     <span
                         className={`inline-flex h-8 w-8 items-center justify-center rounded-xl ring-1 ${iconType === "success"
-                            ? "bg-green-50 text-green-600 ring-green-600/10"
-                            : "bg-brand-50 text-brand-700 ring-brand-600/10"
+                            ? "bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-300 ring-green-600/10"
+                            : "bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-300 ring-brand-600/10"
                             }`}
                     >
                         {icon}
@@ -872,11 +872,11 @@ function StatCard({
             </div>
 
             <div className="mt-4 flex items-end justify-between gap-3">
-                <p className="text-3xl md:text-[34px] font-bold tracking-tight text-neutral-900 tabular-nums">
+                <p className="text-3xl md:text-[34px] font-bold tracking-tight text-neutral-900 tabular-nums dark:text-neutral-100">
                     {value}
                 </p>
                 {badge && icon && (
-                    <span className="mb-1 inline-flex items-center px-2 py-0.5 rounded-lg bg-green-50 text-green-700 text-[11px] font-bold ring-1 ring-green-600/10">
+                    <span className="mb-1 inline-flex items-center px-2 py-0.5 rounded-lg bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-300 text-[11px] font-bold ring-1 ring-green-600/10">
                         {badge}
                     </span>
                 )}

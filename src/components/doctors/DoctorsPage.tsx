@@ -258,7 +258,7 @@ export default function DoctorsPage({ userRole }: { userRole: Role }) {
             {/* Search bar */}
             <div className="mx-auto max-w-3xl w-full">
                 <div className="relative">
-                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400">
+                    <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400 dark:text-neutral-500">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <circle cx="11" cy="11" r="8" />
                             <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -269,29 +269,29 @@ export default function DoctorsPage({ userRole }: { userRole: Role }) {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Buscar médicos, especialidades..."
-                        className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-3.5 pl-12 pr-4 text-sm text-neutral-800 placeholder:text-neutral-400 shadow-[0_2px_10px_rgba(15,23,42,0.06)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition"
+                        className="w-full rounded-full border border-neutral-200/80 bg-white/90 py-3.5 pl-12 pr-4 text-sm text-neutral-800 placeholder:text-neutral-400 shadow-[0_2px_10px_rgba(15,23,42,0.06)] focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-400/60 transition dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-100 dark:placeholder:text-neutral-500"
                     />
                 </div>
             </div>
 
             {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 text-sm text-neutral-500">
-                <Link href="/dashboard" className="hover:text-neutral-800 transition-colors">
+            <nav className="flex items-center gap-2 text-sm text-neutral-500 dark:text-neutral-400">
+                <Link href="/dashboard" className="hover:text-neutral-800 dark:hover:text-neutral-200 transition-colors">
                     Médicos
                 </Link>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-neutral-300" aria-hidden="true">
                     <polyline points="9 18 15 12 9 6" />
                 </svg>
-                <span className="font-semibold text-brand-700">Corpo Clínico</span>
+                <span className="font-semibold text-brand-700 dark:text-brand-300">Corpo Clínico</span>
             </nav>
 
             {/* Header + CTA */}
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
                 <div className="space-y-2">
-                    <h1 className="text-4xl md:text-5xl font-serif font-semibold tracking-tight text-brand-700">
+                    <h1 className="text-4xl md:text-5xl font-serif font-semibold tracking-tight text-brand-700 dark:text-brand-300">
                         Corpo Clínico
                     </h1>
-                    <p className="text-[15px] text-neutral-600 max-w-xl">
+                    <p className="text-[15px] text-neutral-600 dark:text-neutral-400 max-w-xl">
                         Gerencie a equipe de especialistas da Vitalis Health.
                     </p>
                 </div>
@@ -322,9 +322,9 @@ export default function DoctorsPage({ userRole }: { userRole: Role }) {
                 {canManage && (
                     <Link
                         href="/dashboard/medicos/novo"
-                        className="group relative min-h-[420px] rounded-3xl border-2 border-dashed border-neutral-300/90 bg-white/40 p-6 flex flex-col items-center justify-center text-center hover:border-brand-400/70 hover:bg-brand-50/40 transition-all duration-200"
+                        className="group relative min-h-[420px] rounded-3xl border-2 border-dashed border-neutral-300/90 bg-white/40 p-6 flex flex-col items-center justify-center text-center hover:border-brand-400/70 hover:bg-brand-50/40 transition-all duration-200 dark:border-neutral-700 dark:bg-neutral-900/40 dark:hover:border-brand-500/50 dark:hover:bg-brand-500/10"
                     >
-                        <span className="relative inline-flex h-16 w-16 items-center justify-center rounded-full bg-neutral-100 text-neutral-500 group-hover:bg-brand-100 group-hover:text-brand-700 transition-colors">
+                        <span className="relative inline-flex h-16 w-16 items-center justify-center rounded-full bg-neutral-100 text-neutral-500 group-hover:bg-brand-100 group-hover:text-brand-700 transition-colors dark:bg-neutral-800 dark:text-neutral-400 dark:group-hover:bg-brand-500/20 dark:group-hover:text-brand-200">
                             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                                 <circle cx="9" cy="7" r="4" />
@@ -332,7 +332,7 @@ export default function DoctorsPage({ userRole }: { userRole: Role }) {
                                 <line x1="22" y1="11" x2="16" y2="11" />
                             </svg>
                         </span>
-                        <p className="mt-5 text-[15px] font-semibold text-neutral-600 group-hover:text-brand-800 leading-snug max-w-[200px] transition-colors">
+                        <p className="mt-5 text-[15px] font-semibold text-neutral-600 group-hover:text-brand-800 leading-snug max-w-[200px] transition-colors dark:text-neutral-400 dark:group-hover:text-brand-200">
                             Registrar novo profissional
                             <br /> no sistema
                         </p>
@@ -370,7 +370,7 @@ export default function DoctorsPage({ userRole }: { userRole: Role }) {
 
 function DoctorCard({ doctor, canManage }: { doctor: Doctor; canManage: boolean }) {
     return (
-        <article className="group relative rounded-3xl border border-neutral-200/80 bg-white p-5 md:p-6 shadow-[0_4px_20px_-14px_rgba(15,23,42,0.15)] hover:shadow-[0_18px_40px_-18px_rgba(16,142,93,0.25)] hover:-translate-y-0.5 transition-all duration-200">
+        <article className="group relative rounded-3xl border border-neutral-200/80 bg-white p-5 md:p-6 shadow-[0_4px_20px_-14px_rgba(15,23,42,0.15)] hover:shadow-[0_18px_40px_-18px_rgba(16,142,93,0.25)] hover:-translate-y-0.5 transition-all duration-200 dark:border-neutral-800 dark:bg-neutral-900">
             {/* Avatar */}
             <div className="relative mx-auto">
                 <div className={`relative h-24 w-24 mx-auto rounded-2xl bg-gradient-to-br ${doctor.avatarGradient} text-white text-lg font-bold shadow-[0_10px_22px_-6px_rgba(15,23,42,0.25)] ring-2 ring-white overflow-hidden flex flex-col items-center justify-center`}>
@@ -391,20 +391,20 @@ function DoctorCard({ doctor, canManage }: { doctor: Doctor; canManage: boolean 
 
             {/* Info */}
             <div className="mt-8 text-center space-y-1.5">
-                <h3 className="text-xl md:text-[22px] font-serif font-semibold tracking-tight text-neutral-900">
+                <h3 className="text-xl md:text-[22px] font-serif font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
                     {doctor.name}
                 </h3>
                 <div className="flex items-center justify-center">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-[12px] font-semibold ring-1 ring-brand-600/10">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full bg-brand-50 text-brand-700 text-[12px] font-semibold ring-1 ring-brand-600/10 dark:bg-brand-500/10 dark:text-brand-300">
                         {doctor.specialty}
                     </span>
                 </div>
             </div>
 
             {/* Meta */}
-            <div className="mt-5 space-y-2.5 text-sm text-neutral-600">
+            <div className="mt-5 space-y-2.5 text-sm text-neutral-600 dark:text-neutral-400">
                 <div className="flex items-center gap-2">
-                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-neutral-100 text-neutral-500">
+                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <rect x="3" y="4" width="18" height="18" rx="2" />
                             <line x1="16" y1="2" x2="16" y2="6" />
@@ -416,13 +416,13 @@ function DoctorCard({ doctor, canManage }: { doctor: Doctor; canManage: boolean 
                 </div>
                 {doctor.rating !== "—" && (
                     <div className="flex items-center gap-2">
-                        <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 text-amber-500">
+                        <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 text-amber-500 dark:bg-amber-500/10 dark:text-amber-400">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
                             </svg>
                         </span>
-                        <span className="font-semibold text-neutral-800">{doctor.rating}</span>
-                        <span className="text-neutral-500 text-[13px]">
+                        <span className="font-semibold text-neutral-800 dark:text-neutral-100">{doctor.rating}</span>
+                        <span className="text-neutral-500 dark:text-neutral-400 text-[13px]">
                             ({doctor.reviewsCount} avaliações)
                         </span>
                     </div>
@@ -433,7 +433,7 @@ function DoctorCard({ doctor, canManage }: { doctor: Doctor; canManage: boolean 
             <div className={`mt-6 grid gap-2.5 ${canManage ? "grid-cols-[minmax(0,1fr)_auto]" : "grid-cols-1"}`}>
                 <Link
                     href={`/dashboard/medicos/${doctor.id}`}
-                    className="group/btn inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-brand-700 bg-white px-4 py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-700 hover:text-white hover:shadow-[0_8px_18px_rgba(16,142,93,0.22)] transition-all duration-200"
+                    className="group/btn inline-flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-brand-700 bg-white px-4 py-3 text-[14px] font-bold text-brand-700 hover:bg-brand-700 hover:text-white hover:shadow-[0_8px_18px_rgba(16,142,93,0.22)] transition-all duration-200 dark:border-brand-400 dark:bg-neutral-900 dark:text-brand-300"
                 >
                     Ver Perfil
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="transition-transform group-hover/btn:translate-x-1">
@@ -446,7 +446,7 @@ function DoctorCard({ doctor, canManage }: { doctor: Doctor; canManage: boolean 
                         href={`/dashboard/medicos/novo?id=${doctor.id}`}
                         title="Editar informações"
                         aria-label={`Editar informações de ${doctor.name}`}
-                        className="inline-flex items-center justify-center rounded-2xl border-2 border-neutral-200 bg-white px-4 text-brand-700 hover:border-brand-700 hover:bg-brand-50 transition-colors"
+                        className="inline-flex items-center justify-center rounded-2xl border-2 border-neutral-200 bg-white px-4 text-brand-700 hover:border-brand-700 hover:bg-brand-50 transition-colors dark:border-neutral-800 dark:bg-neutral-900 dark:text-brand-300"
                     >
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <path d="M12 20h9" />
@@ -461,18 +461,18 @@ function DoctorCard({ doctor, canManage }: { doctor: Doctor; canManage: boolean 
 
 function DoctorCardSkeleton() {
     return (
-        <article className="rounded-3xl border border-neutral-200/60 bg-white p-5 md:p-6 shadow-[0_4px_20px_-14px_rgba(15,23,42,0.1)] min-h-[420px]">
-            <div className="mx-auto h-24 w-24 rounded-2xl bg-neutral-100 animate-pulse" />
-            <div className="mx-auto -mt-3 h-6 w-24 rounded-full bg-white ring-2 ring-white" />
+        <article className="rounded-3xl border border-neutral-200/60 bg-white p-5 md:p-6 shadow-[0_4px_20px_-14px_rgba(15,23,42,0.1)] min-h-[420px] dark:border-neutral-800 dark:bg-neutral-900">
+            <div className="mx-auto h-24 w-24 rounded-2xl bg-neutral-100 dark:bg-neutral-800 animate-pulse" />
+            <div className="mx-auto -mt-3 h-6 w-24 rounded-full bg-white dark:bg-neutral-900 ring-2 ring-white" />
             <div className="mt-8 space-y-2 text-center">
-                <div className="mx-auto h-6 w-3/4 rounded-xl bg-neutral-100 animate-pulse" />
-                <div className="mx-auto mt-2 h-6 w-1/2 rounded-full bg-brand-50 animate-pulse" />
+                <div className="mx-auto h-6 w-3/4 rounded-xl bg-neutral-100 dark:bg-neutral-800 animate-pulse" />
+                <div className="mx-auto mt-2 h-6 w-1/2 rounded-full bg-brand-50 dark:bg-brand-500/10 animate-pulse" />
             </div>
             <div className="mt-6 space-y-3">
-                <div className="h-4 w-full rounded-xl bg-neutral-100 animate-pulse" />
-                <div className="h-4 w-2/3 rounded-xl bg-neutral-100 animate-pulse" />
+                <div className="h-4 w-full rounded-xl bg-neutral-100 dark:bg-neutral-800 animate-pulse" />
+                <div className="h-4 w-2/3 rounded-xl bg-neutral-100 dark:bg-neutral-800 animate-pulse" />
             </div>
-            <div className="mt-6 h-11 w-full rounded-2xl border-2 border-brand-700/30 bg-white animate-pulse" />
+            <div className="mt-6 h-11 w-full rounded-2xl border-2 border-brand-700/30 bg-white dark:bg-neutral-900 animate-pulse" />
         </article>
     )
 }
